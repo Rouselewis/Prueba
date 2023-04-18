@@ -44,6 +44,65 @@ export interface Event {
   created_at: string;
 }
 
+export interface EventNew {
+  event_general: {
+    supplier_id: string;
+    category_id: string;
+    sub_category_id: string;
+    sub_sub_cateogry_id: string;
+    images: {
+      web: string;
+      app: string;
+      flyer: string;
+    };
+    tags: string[];
+    content: {
+      name: string;
+      description: string;
+      lang: string;
+    }[];
+  };
+  event_aditional: {
+    social_media: {
+      facebook: string;
+      instagram: string;
+      twitter: string;
+    };
+    info: {
+      age_limit: number;
+      duration: string;
+      content: {
+        lang: string;
+        general: string;
+        observations: string;
+        services: string;
+        restrictions: string;
+        access_limit: string;
+      }[];
+    };
+  };
+  eventDates: {
+    dates: {
+      range: {
+        start_at: Date;
+        end_at: Date;
+      };
+    };
+    schedules: {
+      start_at: Date;
+      end_at: Date;
+      costs: {
+        cost: number;
+        lower: number;
+        high: number;
+      };
+      urls: {
+        ticket: string;
+        streaming: string;
+      };
+    }[];
+  };
+}
 export interface EventCategory {
   _id: string;
   category: BasicTranslate[];
@@ -176,7 +235,7 @@ export interface EventSpecialCategory {
     };
     description: string;
   };
-  description:string
+  description: string;
 }
 
 export interface EventSubcategory {

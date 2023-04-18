@@ -105,7 +105,6 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
   const [step, setStep] = useState(0);
   const t = useTranslations('Panel_SideBar');
   const te = useTranslations('Ferrors');
-  const ts = useTranslations('Fsuccess')
   const validationSchema = [
     yup.object().shape({
       event_general: yup.object({
@@ -191,12 +190,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
     },
     resolver: yupResolver(currentValidationSchema),
   });
-  const {
-    handleSubmit,
-    control,
-    watch,
-    formState: { errors },
-  } = useFormReturn;
+  const { handleSubmit, control, watch } = useFormReturn;
   const generalContentArray = useFieldArray({
     control,
     name: 'event_general.content',
@@ -258,8 +252,6 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
     }
   };
 
-
-
   return (
     <>
       {/* Breadcrumb section */}
@@ -285,8 +277,8 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
             )}
 
             {/* Buttons section */}
-            <div className="divide-y divide-gray-200 pt-6">
-              <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
+            <div className="pt-6 divide-y divide-gray-200">
+              <div className="flex justify-end px-4 py-4 mt-4 gap-x-3 sm:px-6">
                 <div onClick={() => setStep((prv) => (prv == 0 ? 0 : prv - 1))}>
                   <CustomCancel />
                 </div>

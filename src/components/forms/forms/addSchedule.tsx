@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { removeProperties } from '@/helpers';
+
 type Props = {
   open: boolean;
   setOpen: any;
@@ -190,7 +191,7 @@ export const AddSchedule: React.FC<Props> = ({
     setOpen(false);
     reset();
   };
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: FormData) => {
     try {
       if (!start_date || !end_date)
         throw new Error('Please select an intial and final date');
@@ -201,12 +202,14 @@ export const AddSchedule: React.FC<Props> = ({
         end_hour,
         repeat_days,
       });
-      console.log(typeof new Date());
+
       schedules.forEach((schedule) => {
-        setSchedules((prv) => [...prv, { ...formData, ...schedule }]);
-        console.log(schedule);
+        setSchedules((prv) => [
+          ...prv,
+          { ...removeProperties(['repeat_days'], formData), ...schedule },
+        ]);
       });
-      // onClose();
+      onClose();
       toast.success(
         schedules.length > 1 ? ts('schedule_added') : ts('schedules_added')
       );
@@ -232,11 +235,11 @@ export const AddSchedule: React.FC<Props> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex items-end justify-center min-h-full p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -246,17 +249,17 @@ export const AddSchedule: React.FC<Props> = ({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
+              <Dialog.Panel className="relative px-4 pt-5 pb-4 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
                 <div className="lg:col-span-9">
                   <div className="grid grid-cols-12 gap-6">
-                    <div className="col-span-12 border-b-2 flex justify-between">
+                    <div className="flex justify-between col-span-12 border-b-2">
                       <div>
                         <span className="text-2xl">{t('title')}</span>
                       </div>
                       <div>
                         <button
                           type="button"
-                          className="mt-3 inline-flex justify-end bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-50 sm:mt-0"
+                          className="inline-flex justify-end px-3 py-2 mt-3 text-sm font-semibold bg-white hover:bg-gray-50 sm:mt-0"
                           onClick={onClose}
                           ref={cancelButtonRef}
                         >
@@ -381,9 +384,9 @@ export const AddSchedule: React.FC<Props> = ({
                           className={FormStyles('input')}
                           {...register('urls.ticket')}
                         />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                           <LinkIcon
-                            className="h-5 w-5 text-gray-400"
+                            className="w-5 h-5 text-gray-400"
                             aria-hidden="true"
                           />
                         </div>
@@ -410,9 +413,9 @@ export const AddSchedule: React.FC<Props> = ({
                           className={FormStyles('input')}
                           {...register('urls.streaming')}
                         />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                           <LinkIcon
-                            className="h-5 w-5 text-gray-400"
+                            className="w-5 h-5 text-gray-400"
                             aria-hidden="true"
                           />
                         </div>
@@ -428,7 +431,7 @@ export const AddSchedule: React.FC<Props> = ({
                         <div className="col-span-12">
                           <span className="text-lg">{t('reply')}</span>
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="monday"
                             name={tc('field_monday')}
@@ -442,7 +445,7 @@ export const AddSchedule: React.FC<Props> = ({
                             {...register('repeat_days')}
                           />
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="tuesday"
                             name={tc('field_tuesday')}
@@ -456,7 +459,7 @@ export const AddSchedule: React.FC<Props> = ({
                             {...register('repeat_days')}
                           />
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="wednesday"
                             name={tc('field_wednesday')}
@@ -470,7 +473,7 @@ export const AddSchedule: React.FC<Props> = ({
                             {...register('repeat_days')}
                           />
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="thursday"
                             name={tc('field_thursday')}
@@ -484,7 +487,7 @@ export const AddSchedule: React.FC<Props> = ({
                             {...register('repeat_days')}
                           />
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="friday"
                             name={tc('field_friday')}
@@ -498,7 +501,7 @@ export const AddSchedule: React.FC<Props> = ({
                             {...register('repeat_days')}
                           />
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="saturday"
                             name={tc('field_saturday')}
@@ -512,7 +515,7 @@ export const AddSchedule: React.FC<Props> = ({
                             {...register('repeat_days')}
                           />
                         </div>
-                        <div className="col-span-4 sm:col-span-3 text-center">
+                        <div className="col-span-4 text-center sm:col-span-3">
                           <CustomLabel
                             field="sunday"
                             name={tc('field_sunday')}
@@ -537,8 +540,8 @@ export const AddSchedule: React.FC<Props> = ({
                   </div>
 
                   {/* Buttons section */}
-                  <div className="divide-y divide-gray-200 pt-6">
-                    <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
+                  <div className="pt-6 divide-y divide-gray-200">
+                    <div className="flex justify-end px-4 py-4 mt-4 gap-x-3 sm:px-6">
                       <div onClick={onClose}>
                         <CustomCancel />
                       </div>
