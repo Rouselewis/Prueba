@@ -9,7 +9,10 @@ import HeaderCategory from '@/components/main/search/HeaderCategory';
 import HeaderSearch from '@/components/main/search/HeaderSearch';
 import { useEvents } from '@/hooks/event/event';
 import { useEventScheduleTimetables } from '@/hooks/event/event_schedules_timetables';
-import { useEventsSpecialsCategories } from '@/hooks/event/event_special_category';
+import {
+  useEventSpecialCategoryList,
+  useEventsSpecialsCategories,
+} from '@/hooks/event/event_special_category';
 import { faker } from '@faker-js/faker';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -32,8 +35,6 @@ const Program = ({ categories }) => {
   const locale = useLocale();
 
   const specialCategories = useEventsSpecialsCategories();
-
-  const events = useEventScheduleTimetables();
 
   console.log(specialCategories?.data?.items);
   const category = categories?.find((item) => item._id == queryObj?.category);
@@ -60,7 +61,7 @@ const Program = ({ categories }) => {
           size="small"
           setCurrentPage={() => {}}
           setPageSize={() => {}}
-          totalDocs={12}
+          totalDocs={categories?.length}
           {...useFormReturn}
         />
         {typeof queryObj?.category == 'string' && queryObj?.category !== '' && (
@@ -82,11 +83,11 @@ const Program = ({ categories }) => {
             categories={categories}
             className="col-span-6 md:col-span-4"
             controls
-            loading={specialCategories?.isLoading}
+            loading={specialCategories.isLoading}
             layout="swiper"
             setCurrentPage={() => {}}
             setPageSize={() => {}}
-            totalDocs={10}
+            totalDocs={specialCategories.data?.total}
             title={t('home.new_events')}
             items={specialCategories.data?.items?.map((item) => ({
               image: item.event_img,
@@ -111,7 +112,7 @@ const Program = ({ categories }) => {
           layout="swiper"
           setCurrentPage={() => {}}
           setPageSize={() => {}}
-          totalDocs={10}
+          totalDocs={specialCategories.data?.total}
           title={
             query
               ? t('commons.results', {
@@ -120,19 +121,15 @@ const Program = ({ categories }) => {
                 })
               : t('commons.recommended_events')
           }
-          items={events?.data?.items?.map((item) => ({
-            // image: item.schedule_id.event_id.images.picture,
-            image: 'https://loremflickr.com/640/480/cats',
+          items={specialCategories.data?.items?.map((item) => ({
+            image: item.event_img,
             name:
-              item.schedule_id.event_id.content.find(
-                (obj) => obj.lang == locale
-              )?.name ||
-              item.schedule_id.event_id.content.find((obj) => obj.lang == 'es')
-                ?.name,
-            startDate: item.start_at,
-            endDate: item.end_at,
-            location: `${item.schedule_id.venue_id.address.country.long_name}, ${item.schedule_id.venue_id.address.city} ${item.schedule_id.venue_id.address.address}`,
-            color: item.schedule_id.event_id.category_id.color,
+              item.category.find((obj) => obj.lang == locale)?.name ||
+              item.category.find((obj) => obj.lang == 'es')?.name,
+            startDate: item.initial_date,
+            endDate: item.final_date,
+            location: `${item.location.city}, ${item.location.state.long_name} ${item.location.country.long_name}`,
+            color: item.color,
             id: item._id,
           }))}
           {...useFormReturn}

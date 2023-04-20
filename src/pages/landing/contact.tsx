@@ -1,8 +1,7 @@
 /** @format */
-import { LegacyRef, createRef, useRef, useState } from 'react';
+import { LegacyRef, createRef, useRef, useState, useCallback } from 'react';
 import { GetStaticPropsContext } from 'next';
 import { useTranslations } from 'next-intl';
-import ReCaptcha from 'react-google-recaptcha';
 // Forms
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -25,6 +24,7 @@ import {
 //Images
 import image from 'public/images/assets/landing/contact/slide.jpg';
 import { useContact } from '@/hooks/use_contact';
+import { GoogleReCaptcha, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const validationSchema = yup.object().shape({
   firstname: yup.string().min(2).max(32).required(),
@@ -38,7 +38,9 @@ const validationSchema = yup.object().shape({
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [submittedError, setSubmittedError] = useState(false);
-  const recaptchaRef = useRef<ReCaptcha>();
+  const [token, setToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const currentColor = CurrentColor();
   const t = useTranslations('Contact');
   const tc = useTranslations('Common_Forms');
@@ -54,17 +56,34 @@ const Contact = () => {
   });
 
   const { mutate, isError } = useContact();
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log('Execute recaptcha not yet available');
+      return;
+    }
+
+    const token = await executeRecaptcha();
+    setToken(token);
+    // Do whatever you want with the token
+  }, [executeRecaptcha]);
+  console.log(token);
   const onSubmitHandler = async (data: Contact) => {
-    const token = await recaptchaRef.current.executeAsync();
+    await handleReCaptchaVerify();
     if (token) {
       mutate({
         ...data,
         g_captcha: token,
       });
     }
-    if (isError || !token) setSubmittedError(true);
-    else setSubmitted(true);
-    reset();
+
+    if (isError || !token) {
+      setSubmittedError(true);
+      setSubmitted(false);
+    } else {
+      setSubmitted(true);
+      setSubmittedError(false);
+      reset();
+    }
   };
 
   return (
@@ -217,11 +236,6 @@ const Contact = () => {
               method="POST"
               className="px-6 pt-20 pb-24 sm:pb-32 lg:py-20 lg:px-8"
             >
-              <ReCaptcha
-                sitekey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
-                ref={recaptchaRef as any}
-                size="invisible"
-              />
               <div className="max-w-xl mx-auto lg:mr-0 lg:max-w-lg">
                 <div className="grid grid-cols-1 gap-y-6 gap-x-8 sm:grid-cols-2">
                   <div>
