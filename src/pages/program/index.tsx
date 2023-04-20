@@ -8,6 +8,7 @@ import SidebarSearch from '@/components/main/commons/SidebarSearch';
 import HeaderCategory from '@/components/main/search/HeaderCategory';
 import HeaderSearch from '@/components/main/search/HeaderSearch';
 import { useEvents } from '@/hooks/event/event';
+import { useEventScheduleTimetables } from '@/hooks/event/event_schedules_timetables';
 import { useEventsSpecialsCategories } from '@/hooks/event/event_special_category';
 import { faker } from '@faker-js/faker';
 import { useQuery } from '@tanstack/react-query';
@@ -29,23 +30,14 @@ const Program = ({ categories }) => {
   const query = watch('query');
   const t = useTranslations('Public');
   const locale = useLocale();
-  const [heroImages, setHeroImages] = useState([]);
-  const [imageAdvertisment, setImageAdvertisment] = useState('');
 
-  const events = useEventsSpecialsCategories();
-  console.log(events?.data);
-  const category = categories?.find((item) =>
-    item.category.find((obj) => obj.name == queryObj?.category)
-  );
+  const specialCategories = useEventsSpecialsCategories();
 
-  useEffect(() => {
-    setHeroImages(
-      Array.from({ length: 5 }, () => ({
-        image: faker.image.abstract(),
-      }))
-    );
-    setImageAdvertisment(faker.image.cats());
-  }, []);
+  const events = useEventScheduleTimetables();
+
+  console.log(specialCategories?.data?.items);
+  const category = categories?.find((item) => item._id == queryObj?.category);
+
   return (
     <div className="mb-44 -mt-8">
       <Hero
@@ -62,6 +54,7 @@ const Program = ({ categories }) => {
             name: item.category.find((obj) => obj.lang == locale)?.name,
             color: item.color,
             image: item.picture,
+            id: item._id,
           }))}
           layout="swiper"
           size="small"
@@ -79,7 +72,7 @@ const Program = ({ categories }) => {
             size="large"
           />
         )}
-        {/* <div className="grid grid-cols-6 gap-5 md:gap-10">
+        <div className="grid grid-cols-6 gap-5 md:gap-10">
           <SidebarSearch
             categories={categories}
             className="col-span-2 hidden md:block"
@@ -89,19 +82,20 @@ const Program = ({ categories }) => {
             categories={categories}
             className="col-span-6 md:col-span-4"
             controls
-            loading={events?.isLoading}
+            loading={specialCategories?.isLoading}
             layout="swiper"
             setCurrentPage={() => {}}
             setPageSize={() => {}}
             totalDocs={10}
             title={t('home.new_events')}
-            items={events?.data?.map((item) => ({
-              image: 'https://loremflickr.com/640/480/cats',
-              name: item.category.find((obj) => obj.lang == locale)?.name,
-              startDate: item.initial_date as unknown as Date,
-              startTime: '1:00',
-              endTime: '12:00',
-              location: 'Location',
+            items={specialCategories.data?.items?.map((item) => ({
+              image: item.event_img,
+              name:
+                item.category.find((obj) => obj.lang == locale)?.name ||
+                item.category.find((obj) => obj.lang == 'es')?.name,
+              startDate: item.initial_date,
+              endDate: item.final_date,
+              location: `${item.location.city}, ${item.location.state.long_name} ${item.location.country.long_name}`,
               color: item.color,
               id: item._id,
             }))}
@@ -113,7 +107,7 @@ const Program = ({ categories }) => {
 
         <ListCardEvent
           categories={categories}
-          loading={events?.isLoading}
+          loading={specialCategories?.isLoading}
           layout="swiper"
           setCurrentPage={() => {}}
           setPageSize={() => {}}
@@ -121,23 +115,28 @@ const Program = ({ categories }) => {
           title={
             query
               ? t('commons.results', {
-                  length: events?.data?.length,
+                  length: specialCategories?.data?.total,
                   query,
                 })
               : t('commons.recommended_events')
           }
           items={events?.data?.items?.map((item) => ({
+            // image: item.schedule_id.event_id.images.picture,
             image: 'https://loremflickr.com/640/480/cats',
-            name: item.content.find((obj) => obj.lang == locale)?.name,
-            startDate: item.created_at as unknown as Date,
-            startTime: '1:00',
-            endTime: '12:00',
-            location: 'Location',
-            category_id: item.category_id?._id,
+            name:
+              item.schedule_id.event_id.content.find(
+                (obj) => obj.lang == locale
+              )?.name ||
+              item.schedule_id.event_id.content.find((obj) => obj.lang == 'es')
+                ?.name,
+            startDate: item.start_at,
+            endDate: item.end_at,
+            location: `${item.schedule_id.venue_id.address.country.long_name}, ${item.schedule_id.venue_id.address.city} ${item.schedule_id.venue_id.address.address}`,
+            color: item.schedule_id.event_id.category_id.color,
             id: item._id,
           }))}
           {...useFormReturn}
-        /> */}
+        />
 
         <CardAdvertisment
           image="/images/advertisements/anunciate_aqui.png"

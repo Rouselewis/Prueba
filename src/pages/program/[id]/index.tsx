@@ -27,47 +27,30 @@ const ProgramDetailed = () => {
   const t = useTranslations('Public');
   const locale = useLocale();
   const { query } = useRouter();
-  const [cardProgramDetails, setCardProgramDetails] = useState<any>();
-  const [eventsRecommendations, setEventsRecommendations] = useState([]);
   const [listProgramDays, setListProgramDays] = useState([]);
 
   const { data: specialCategory } = useEventSpecialCategory(
-    query?.id as string
+    query?._id as string
   );
 
-  console.log(new Date(specialCategory?.initial_date));
-
   const { data: eventsSchedules, isLoading } = useEventScheduleTimetables();
-  const eventRange = useEventSpecialCategoryDateRange(query?.id as string);
-  console.log('range ', eventRange.data);
+
+  const eventRange = useEventSpecialCategoryDateRange(query?._id as string);
+
   const categoryName =
     specialCategory?.category.find((item) => item.lang == locale).name ||
     specialCategory?.category.find((item) => item.lang == 'es').name;
+
   useEffect(() => {
-    setCardProgramDetails({
-      image: faker.image.cats(),
-      name: faker.lorem.sentence(),
-      startDate: faker.date.future(),
-      endDate: faker.date.future(),
-      location: faker.address.city(),
-      description: faker.lorem.sentences(),
-    });
     setListProgramDays(
       Array.from({ length: 10 }, () => faker.datatype.datetime())
-    );
-    setEventsRecommendations(
-      Array.from({ length: 4 }, () => ({
-        category: faker.lorem.word(),
-        image: faker.image.cats(),
-        location: faker.address.streetAddress(),
-        name: faker.name.jobTitle(),
-      }))
     );
   }, []);
   return (
     <div>
       <HeaderProgram
-        image="https://loremflickr.com/640/480/cats"
+        color={specialCategory?.color}
+        image={specialCategory?.header_img.replace('http', 'https')}
         name={categoryName}
       />
 

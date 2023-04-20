@@ -20,6 +20,7 @@ import {
 } from '@/hooks/user/user_favorites';
 import { useUserAttends } from '@/hooks/user/user_attends';
 import { useUsers } from '@/hooks/user/user';
+import { useRouter } from 'next/router';
 
 export type props = {
   className?: string;
@@ -52,6 +53,7 @@ const CardEvent: React.FC<props> = ({
   const { mutate: addFavorite } = useMutationAddFavorite();
   const { mutate: removeFavorite } = useMutationRemoveFavorite();
   const locale = useLocale();
+  const { pathname } = useRouter();
   const favorite = favorites
     ?.filter((item) => item.user_id.id === user._id)
     .find((item) => item.events_likes.find((event) => event.id == id));
@@ -114,7 +116,9 @@ const CardEvent: React.FC<props> = ({
         />
       )}
       <Link
-        href={`/event/${slug}?_id=${id}`}
+        href={`/${
+          pathname.includes('event') ? 'event' : 'program'
+        }/${slug}?_id=${id}`}
         className={classNames(
           'relative block',
           layout == 'grid' ? 'aspect-[4/3]' : 'aspect-square w-72 '
