@@ -7,6 +7,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     /** OpenID ID Token */
     id: string;
+    roles: string[];
     role?: string;
     avatar?: string;
     accessToken?: string;
@@ -17,9 +18,10 @@ declare module 'next-auth' {
   interface User {
     id: string;
     firstName: string;
-    lastName: string;
+    surname: string;
     email: string;
     avatar?: string;
+    roles: string[];
     role: string;
     accessToken: string;
   }
@@ -30,6 +32,7 @@ declare module 'next-auth' {
       name: string;
       email: string;
       image?: string;
+      roles: string[];
       role: string;
       accessToken: string;
     };

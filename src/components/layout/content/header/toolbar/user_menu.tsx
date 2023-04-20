@@ -9,9 +9,11 @@ import { classNames } from '@/helpers';
 // Icons
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { signOut, useSession } from 'next-auth/react';
 
 export const UserMenu = () => {
   const { user: existUser, queryClient, isLoading } = useUserAuthObserver();
+  const { data: session } = useSession();
   const logout_ = () => {
     queryClient.setQueryData(['user'], () => null);
     localStorage.clear();
@@ -21,7 +23,7 @@ export const UserMenu = () => {
   const userNavigation = [
     { name: 'Your Profile', onclick: () => {}, href: '/panel/profile' },
     { name: 'Settings', onclick: () => {}, href: '/panel/profile/config' },
-    { name: 'Sign out', onClick: logout_, href: '/' },
+    { name: 'Sign out', onClick: () => signOut(), href: '/' },
   ];
 
   return (
@@ -30,7 +32,7 @@ export const UserMenu = () => {
       <Menu as="div" className="relative flex-shrink-0">
         <div className="mr-2">
           <Menu.Button className="flex px-2 rounded-full text-sm text-white focus:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-sky-900">
-            <span className="pr-2">email.aquí@gmail.com</span>
+            <span className="pr-2">{session?.user?.name}</span>
             <span className="sr-only">Open user menu</span>
             <ChevronDownIcon className="w-4 h4" />
           </Menu.Button>

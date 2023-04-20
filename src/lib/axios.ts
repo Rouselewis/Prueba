@@ -1,35 +1,16 @@
-// import axios from 'axios';
-
-// const instance = axios.create({
-//     baseURL: process.env.NEXT_PUBLIC_API_URL,
-// });
-
-// // Add this interceptor to inject the Authorization header
-// instance.interceptors.request.use((config) => {
-//     const token = localStorage.getItem('token');
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-// }, (error) => {
-//     return Promise.reject(error);
-// });
-
-// export default instance;
-
-
 import axios from 'axios';
+import { getSession } from 'next-auth/react';
 
 const instance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL
-})
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+});
 
-instance.interceptors.request.use(function (config) {
-    const token = typeof window !== 'undefined' ? "bearer " + localStorage.getItem('token') : '';
+instance.interceptors.request.use(async function (config) {
+  const session = await getSession();
+  const token = session?.user?.accessToken;
+  (config.headers as any)['Authorization'] = `Bearer ${token}`;
 
-    (config.headers as any)['Authorization'] = token;
-
-    return config
-})
+  return config;
+});
 
 export default instance;

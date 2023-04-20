@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 // Components
 import {
   LanguageSwitcher,
@@ -19,6 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 export const ToolBar = () => {
+  const { data: session } = useSession();
   const { user: existUser, queryClient, isLoading } = useUserAuthObserver();
   const t = useTranslations('Header_Tool');
   const tc = useTranslations('Common_Forms');
@@ -89,7 +91,7 @@ export const ToolBar = () => {
             </div>
           </div>
         </div>
-        {existUser ? (
+        {session ? (
           <div className="flex basis-1/2 justify-end lg:flex lg:basis-1/6 lg:justify-end my-4">
             <UserMenu />
           </div>
