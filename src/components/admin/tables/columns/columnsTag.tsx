@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, Options, SwitchTable } from './components';
+import { Checkbox, Options, SwitchTag } from './components';
 // Helpers
 import { CurrentColor } from '@/helpers';
 import { EventTag } from '@/interfaces/event';
@@ -72,7 +72,7 @@ export function columnsTag(category: string) {
       id: 'status',
       header: () => tcc('status'),
       cell: (props) => (
-        <SwitchTable
+        <SwitchTag
           color={currentColor}
           id={props.row.original.id}
           category={props.row.original.category}

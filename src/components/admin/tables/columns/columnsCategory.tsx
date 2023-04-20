@@ -1,17 +1,17 @@
-import { useTranslations } from "next-intl";
+import { useTranslations } from 'next-intl';
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, Options, SwitchTable } from "./components";
+import { Checkbox, Options, SwitchTable } from './components';
 // Helpers
 import { CurrentColor } from '@/helpers';
 
 export function columnsCategory(category: string) {
-  const tcc = useTranslations("table_columns");
+  const tcc = useTranslations('table_columns');
 
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
 
-  return ([
+  return [
     columnHelper.accessor('select', {
       id: 'select',
       header: ({ table }) => (
@@ -39,21 +39,19 @@ export function columnsCategory(category: string) {
     columnHelper.accessor('category', {
       id: 'category',
       header: () => category,
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('status', {
       id: 'status',
       header: () => tcc('status'),
-      cell: props => (
-        <SwitchTable color={currentColor} />
-      ),
+      cell: (props) => <SwitchTable color={currentColor} />,
     }),
     columnHelper.accessor('options', {
       id: 'options',
       header: () => tcc('option'),
-      cell: props => (
+      cell: (props) => (
         <Options id={props.row.original.id} color={currentColor} />
       ),
-    })
-  ]);
+    }),
+  ];
 }

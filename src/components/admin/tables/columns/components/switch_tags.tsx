@@ -5,19 +5,13 @@ import { classNames } from '@/helpers';
 
 type Props = {
   color: string;
-  id?: string;
-  category?: string;
-  status?: boolean;
-  onChange?: (id: string, category: string, status: boolean) => void;
+  id: string;
+  category: string;
+  status: boolean;
+  onChange: (id: string, category: string, status: boolean) => void;
 };
 
-export const SwitchTable = ({
-  color,
-  id,
-  category,
-  status,
-  onChange,
-}: Props) => {
+export const SwitchTag = ({ color, id, category, status, onChange }: Props) => {
   const [enabled, setEnabled] = useState(status);
 
   const changeHandler = (e) => {
@@ -28,7 +22,7 @@ export const SwitchTable = ({
   return (
     <Switch
       checked={enabled}
-      onChange={setEnabled}
+      onChange={changeHandler}
       className={`group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:${color} focus:ring-offset-2`}
     >
       <span className="sr-only">Status</span>

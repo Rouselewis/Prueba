@@ -38,8 +38,8 @@ const EventCreateTag = () => {
         resolver: yupResolver(validationSchema),
     });
 
+    const { mutate } = useCreateTag();
     const onSubmitHandler = (data: EventTag) => {
-        const { mutate } = useCreateTag();
         mutate(data, {
             onError: () => {
                 toast.error(tt('event_tag.create.error'), {

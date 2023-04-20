@@ -50,7 +50,9 @@ export interface EventCategory {
   picture: string;
   color: string;
   status?: boolean;
-  content: Content[];
+  content?: Content[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface EventDiscount {
