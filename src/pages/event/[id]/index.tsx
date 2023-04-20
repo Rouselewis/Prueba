@@ -34,10 +34,8 @@ const EventDetailed = () => {
   const router = useRouter();
   const { _id } = router.query;
   const { data: eventsSchedules } = useEventScheduleTimetables();
-  // const { data: eventSchedule } = useEventScheduleTimetable(_id as string);
-  const a = axios
-    .get(`/events/schedules/timetables/${_id}`)
-    .then((data) => console.log(data.data));
+  const { data: eventSchedule } = useEventScheduleTimetable(_id as string);
+  console.log(eventSchedule);
 
   // const category = useEventCategory(event?.data?.category_id?._id);
   // const eventSupplier = useEventSupplier(event?.data?.supplier_id?.id);
