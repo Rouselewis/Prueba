@@ -1,19 +1,16 @@
 import React from 'react';
-import { classNames } from '@/helpers';
+import { CurrentColor, classNames } from '@/helpers';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { ButtonLink, Icon } from '@/components/commons';
 import Link from 'next/link';
 import { Tab } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import FacebookOutlined from '@mui/icons-material/FacebookOutlined'
-import Instagram from '@mui/icons-material/Instagram'
-import Telegram from '@mui/icons-material/Telegram'
-import Twitter from '@mui/icons-material/Twitter'
-import WhatsApp from '@mui/icons-material/WhatsApp'
-
-
-
+import FacebookOutlined from '@mui/icons-material/FacebookOutlined';
+import Instagram from '@mui/icons-material/Instagram';
+import Telegram from '@mui/icons-material/Telegram';
+import Twitter from '@mui/icons-material/Twitter';
+import WhatsApp from '@mui/icons-material/WhatsApp';
 
 export type props = {
   className?: string;
@@ -48,6 +45,7 @@ const CardEventDetails: React.FC<props> = ({
   };
 
   const t = useTranslations('Card_Event_Details');
+  const currentColor = CurrentColor();
   return (
     <div className={classNames('', className)}>
       <div className="relative w-auto overflow-hidden rounded-md h-72 md:h-96">
@@ -56,27 +54,27 @@ const CardEventDetails: React.FC<props> = ({
 
       <div className="flex flex-col my-5">
         <div className="flex gap-10 ml-auto text-gray-500">
-          <span className="font-semibold">{t('shared_event')}</span>
+          <span className={`text-${currentColor}`}>{t('shared_event')}</span>
           <div className="flex gap-2">
             <FacebookOutlined
-              className="text-gray-400 cursor-pointer hover:text-current"
+              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
               onClick={() => handleShare('Facebook')}
             />
             <Instagram
-              className="text-gray-400 cursor-pointer hover:text-current"
+              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
               onClick={() => handleShare('Instagram')}
             />
             <Twitter
-              className="text-gray-400 cursor-pointer hover:text-current"
+              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
               onClick={() => handleShare('Twitter')}
             />
             <WhatsApp
-              className="text-gray-400 cursor-pointer hover:text-current"
+              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
               onClick={() => handleShare('WhatsApp')}
             />
             <Icon
               name="telegram"
-              className="w-6 h-6 text-gray-400 cursor-pointer hover:text-current"
+              className={`w-6 h-6 text-gray-400 cursor-pointer hover:text-${currentColor}`}
               onClick={() => handleShare('Telegram')}
             />
           </div>

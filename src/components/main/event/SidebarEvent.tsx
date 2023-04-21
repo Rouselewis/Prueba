@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '@/helpers';
+import { CurrentColor, classNames } from '@/helpers';
 import { Button, Icon, WillAttend } from '@/components/commons';
 import formatNumber from 'format-number';
 import { useLocale, useTranslations } from 'next-intl';
@@ -8,6 +8,12 @@ import { enUS, es } from 'date-fns/locale';
 import parseDate from '@/helpers/parseDate';
 import { useRouter } from 'next/router';
 import { useUserAuthObserver } from '@/hooks/auth';
+import {
+  CalendarDaysIcon,
+  ClockIcon,
+  CurrencyDollarIcon,
+  MapIcon,
+} from '@heroicons/react/24/outline';
 export type props = {
   className?: string;
   id: string;
@@ -40,6 +46,7 @@ const SidebarEvent: React.FC<props> = ({
   supplier,
 }) => {
   const t = useTranslations('Sidebar_Event');
+  const currentColor = CurrentColor();
   const { isAuthenticated } = useUserAuthObserver();
   const router = useRouter();
   const locale = useLocale();
@@ -73,18 +80,26 @@ const SidebarEvent: React.FC<props> = ({
         </div>
         <hr className="border-gray-200 h-[1px]" />
         <div className="px-10 py-5">
-          <span className="block text-lg font-bold">
-            {t('cost', {
-              value: formatNumber({ prefix: '$', suffix: ' MXN' })(cost),
-            })}
-          </span>
-          <ul className="mt-10 space-y-3">
+          <ul className="mt-5 space-y-3">
             <li>
-              <span className="font-semibold flex items-center gap-1.5">
-                <Icon name="calendar-outline" className="w-4 h-4 text-black" />
+              <span className="font-base flex items-center gap-1.5">
+                <CurrencyDollarIcon
+                  className={`w-5 h-5 text-${currentColor}`}
+                />
+                {t('cost_label')}
+              </span>
+              <p className="flex gap-2 text-customGray">
+                {t('cost_value', {
+                  value: formatNumber({ prefix: '$', suffix: ' MXN' })(cost),
+                })}
+              </p>
+            </li>
+            <li>
+              <span className="font-base flex items-center gap-1.5">
+                <CalendarDaysIcon className={`w-5 h-5 text-${currentColor}`} />
                 {t('date')}
               </span>
-              <p className="flex gap-2">
+              <p className="flex gap-2 text-customGray">
                 <span>
                   {format(parseDate(startDate), 'EEEE, dd MMMM yyyy', {
                     locale: locale == 'en' ? enUS : es,
@@ -99,22 +114,22 @@ const SidebarEvent: React.FC<props> = ({
               </p>
             </li>
             <li>
-              <span className="font-semibold flex items-center gap-1.5">
-                <Icon name="clock-outline" className="w-4 h-4 text-black" />
+              <span className="font-base flex items-center gap-1.5">
+                <ClockIcon className={`w-5 h-5 text-${currentColor}`} />
                 {t('time')}
               </span>
-              <p className="flex gap-2">
+              <p className="flex gap-2 text-customGray">
                 {startTime}
                 <span>-</span>
                 {endTime}
               </p>
             </li>
             <li>
-              <span className="font-semibold flex items-center gap-1.5">
-                <Icon name="map-pin-outline" className="w-4 h-4 text-black" />
+              <span className="font-base flex items-center gap-1.5">
+                <MapIcon className={`w-5 h-5 text-${currentColor}`} />
                 {t('location')}
               </span>
-              <span>{location}</span>
+              <span className="text-customGray">{location}</span>
             </li>
           </ul>
 

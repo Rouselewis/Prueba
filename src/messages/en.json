@@ -757,6 +757,8 @@
   },
   "Sidebar_Event": {
     "cost": "Cost: {value}",
+    "cost_label": "Cost:",
+    "cost_value": "{value}",
     "date": "Date:",
     "time": "Time:",
     "location": "Location:",
