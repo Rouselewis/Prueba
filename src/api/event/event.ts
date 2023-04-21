@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { Event } from '@/interfaces/event';
+import { Event, EventNew } from '@/interfaces/event';
 
 export const getEvents = async (pagination) => {
   const { data } = await axios.get(`/events/`, {
@@ -12,6 +12,14 @@ export const createEvent = async (event: Event) => {
   const { data } = await axios.post(`/events/`, event);
 
   return data;
+};
+
+export const createNewEvent = async (Event: EventNew) => {
+  const { data } = await axios.post('/events/newevent', event, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 export const readEvent = async (id: number) => {

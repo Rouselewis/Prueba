@@ -1,28 +1,22 @@
 import axios from '@/lib/axios';
-import { User } from '@/interfaces/user';
-import { Role } from "@/interfaces/user";
+import { User, Role } from '@/interfaces/user';
+import { SignIn, AuthResponse } from '@/interfaces/auth';
 
-type UserLogin = { uid: string, id_token: string }
-
-interface AuthResponse {
-    user: User,
-    autorization: {
-        token: string
-        token_type: string
-    }
-    providerId: string
-    role: Role
-}
+type UserLogin = { uid: string; id_token: string };
 
 export const userLogin = async (login: UserLogin) => {
-    const { data } = await axios.post<AuthResponse>(`/auths/login/`, login);
+  const { data } = await axios.post<AuthResponse>(`/auths/login/`, login);
 
-    return data;
-}
+  return data;
+};
 
 export const userRegister = async (user: User) => {
-    const { data } = await axios.post<AuthResponse>(`/auths/register`, user);
+  const { data } = await axios.post<AuthResponse>(`/auths/register`, user);
 
-    return data;
-}
+  return data;
+};
 
+export const signIn = async (args: SignIn): Promise<AuthResponse> => {
+  const { data } = await axios.post<AuthResponse>('/auths/signin', args);
+  return data;
+};

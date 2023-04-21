@@ -66,7 +66,7 @@ const ListProgramDays: React.FC<props> = ({ className, items, ...props }) => {
           spaceBetween={20}
           slidesPerView={cols}
         >
-          {items.map((date, idx) => (
+          {items?.map((date, idx) => (
             <SwiperSlide
               key={idx}
               style={

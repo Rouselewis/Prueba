@@ -6,7 +6,13 @@ type Props = {
 
 export const CustomError = ({ className, error }: Props) => {
   return (
-    <p className={classNames('py-1 text-sm text-customRed', className)}>
+    <p
+      className={classNames(
+        ' text-sm text-customRed',
+        error && 'py-1',
+        className
+      )}
+    >
       {error}
     </p>
   );

@@ -13,6 +13,7 @@ import {
 import {
   useEventSpecialCategory,
   useEventSpecialCategoryDateRange,
+  useEventSpecialCategoryList,
 } from '@/hooks/event/event_special_category';
 import { faker } from '@faker-js/faker';
 import { useQuery } from '@tanstack/react-query';
@@ -27,47 +28,25 @@ const ProgramDetailed = () => {
   const t = useTranslations('Public');
   const locale = useLocale();
   const { query } = useRouter();
-  const [cardProgramDetails, setCardProgramDetails] = useState<any>();
-  const [eventsRecommendations, setEventsRecommendations] = useState([]);
-  const [listProgramDays, setListProgramDays] = useState([]);
 
   const { data: specialCategory } = useEventSpecialCategory(
-    query?.id as string
+    query?._id as string
   );
 
-  console.log(new Date(specialCategory?.initial_date));
+  const eventRange = useEventSpecialCategoryDateRange(query?._id as string);
 
-  const { data: eventsSchedules, isLoading } = useEventScheduleTimetables();
-  const eventRange = useEventSpecialCategoryDateRange(query?.id as string);
-  console.log('range ', eventRange.data);
+  const eventSpecialCategories = useEventSpecialCategoryList(
+    query?._id as string
+  );
   const categoryName =
     specialCategory?.category.find((item) => item.lang == locale).name ||
     specialCategory?.category.find((item) => item.lang == 'es').name;
-  useEffect(() => {
-    setCardProgramDetails({
-      image: faker.image.cats(),
-      name: faker.lorem.sentence(),
-      startDate: faker.date.future(),
-      endDate: faker.date.future(),
-      location: faker.address.city(),
-      description: faker.lorem.sentences(),
-    });
-    setListProgramDays(
-      Array.from({ length: 10 }, () => faker.datatype.datetime())
-    );
-    setEventsRecommendations(
-      Array.from({ length: 4 }, () => ({
-        category: faker.lorem.word(),
-        image: faker.image.cats(),
-        location: faker.address.streetAddress(),
-        name: faker.name.jobTitle(),
-      }))
-    );
-  }, []);
+
   return (
     <div>
       <HeaderProgram
-        image="https://loremflickr.com/640/480/cats"
+        color={specialCategory?.color}
+        image={specialCategory?.header_img}
         name={categoryName}
       />
 
@@ -82,18 +61,20 @@ const ProgramDetailed = () => {
           name={categoryName}
         />
         <ListProgramDays
-          items={listProgramDays}
+          items={eventRange.data?.map(
+            (stringDate: string) => new Date(stringDate)
+          )}
           name="field"
           control={control}
         />
         <ListCardEvent
-          loading={isLoading}
+          loading={eventSpecialCategories.isLoading}
           layout="swiper"
           setCurrentPage={() => {}}
           setPageSize={() => {}}
-          totalDocs={10}
+          totalDocs={eventSpecialCategories?.data?.length}
           title={t('home.new_events')}
-          items={eventsSchedules?.items.map((item) => ({
+          items={eventSpecialCategories?.data?.map((item) => ({
             // image: item.schedule_id.event_id.images.picture,
             image: 'https://loremflickr.com/640/480/cats',
             name:
@@ -113,7 +94,8 @@ const ProgramDetailed = () => {
         />
 
         <ListCardEventRecommendation
-          items={eventsSchedules?.items.map((item) => ({
+          loading={eventSpecialCategories.isLoading}
+          items={eventSpecialCategories?.data?.map((item) => ({
             // image: item.schedule_id.event_id.images.picture,
             image: 'https://loremflickr.com/640/480/cats',
             name:
@@ -131,7 +113,7 @@ const ProgramDetailed = () => {
           }))}
           setCurrentPage={() => {}}
           setPageSize={() => {}}
-          totalDocs={10}
+          totalDocs={eventSpecialCategories?.data?.length}
         />
       </div>
     </div>

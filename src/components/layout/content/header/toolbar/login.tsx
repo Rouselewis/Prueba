@@ -13,6 +13,9 @@ import { CustomError, CustomLabel } from '@/components/forms';
 import { FormStyles } from '@/helpers';
 // Icons
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { signIn, useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
+import { Button } from '@/components/commons';
 
 type Props = {
   currentColor: string;
@@ -22,38 +25,40 @@ const signInSchema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().min(6).required(),
 });
-
+type FormData = {
+  email: string;
+  password: string;
+};
 export const Login = ({ currentColor }: Props) => {
   const t = useTranslations('Access');
   const tc = useTranslations('Common_Forms');
-
-  const [submitted, setSubmitted] = useState(false);
-  const [submittedError, setSubmittedError] = useState(false);
-
+  const ts = useTranslations('Fsuccess');
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<SignIn>({
+  } = useForm<FormData>({
     resolver: yupResolver(signInSchema),
   });
 
-  const onSubmitHandler = async (data: SignIn) => {
-    login_user(data);
+  const onSubmit = async (formData: FormData) => {
+    setLoading(true);
+    try {
+      const { error } = await signIn('credentials', {
+        ...formData,
+        redirect: false,
+      });
+      console.log(error);
+      if (error) throw new Error(error);
+      toast.success(ts('signin_succesfully'));
+      reset();
+    } catch (error) {
+      toast.error(error.message);
+    }
+    setLoading(false);
   };
-
-  const {
-    customError: error_login,
-    login_user,
-    isLoading,
-    isError,
-    error,
-  } = useAuthLogin();
-
-  const { customError: error_login_provider, login_provider } =
-    useAuthWithProvider();
-
   return (
     <Menu as="div" className="relative z-50 inline-block text-left">
       <Menu.Button
@@ -98,11 +103,7 @@ export const Login = ({ currentColor }: Props) => {
 
             <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
               <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-                <form
-                  onSubmit={handleSubmit(onSubmitHandler)}
-                  method="POST"
-                  className="space-y-6"
-                >
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
                     <CustomLabel field="email" name={tc('field_email')} />
                     <div className="mt-2">
@@ -115,6 +116,7 @@ export const Login = ({ currentColor }: Props) => {
                         {...register('email')}
                       />
                     </div>
+                    <CustomError error={errors?.email?.message} />
                   </div>
 
                   <div>
@@ -129,6 +131,7 @@ export const Login = ({ currentColor }: Props) => {
                         {...register('password')}
                       />
                     </div>
+                    <CustomError error={errors?.password?.message} />
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -158,12 +161,9 @@ export const Login = ({ currentColor }: Props) => {
                   </div>
 
                   <div>
-                    <button
-                      type="submit"
-                      className="flex justify-center w-full px-3 py-2 text-sm font-semibold text-white rounded-md shadow-sm bg-customGreen hover:loginHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
+                    <Button type="submit" loading={loading} fullWidth>
                       {t('signin')}
-                    </button>
+                    </Button>
                   </div>
                 </form>
 
@@ -182,7 +182,7 @@ export const Login = ({ currentColor }: Props) => {
                   <div className="grid grid-cols-3 gap-3 mt-6">
                     <div>
                       <button
-                        onClick={() => login_provider('facebook')}
+                        onClick={() => signIn('facebook')}
                         className="inline-flex justify-center w-full px-4 py-2 text-gray-500 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                       >
                         <span className="sr-only">Log in with Facebook</span>
@@ -203,7 +203,8 @@ export const Login = ({ currentColor }: Props) => {
 
                     <div>
                       <button
-                        onClick={() => login_provider('google')}
+                        type="button"
+                        onClick={() => signIn('google')}
                         className="inline-flex justify-center w-full px-4 py-2 text-gray-500 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                       >
                         <span className="sr-only">Log in with Google</span>
@@ -220,7 +221,7 @@ export const Login = ({ currentColor }: Props) => {
 
                     <div>
                       <button
-                        onClick={() => login_provider('apple')}
+                        onClick={() => signIn('apple')}
                         className="inline-flex justify-center w-full px-4 py-2 text-gray-500 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                       >
                         <span className="sr-only">Log in with Apple</span>

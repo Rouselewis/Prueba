@@ -83,7 +83,7 @@ const CreateEventStep0 = ({
           )}
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 sm:col-span-6 lg:col-span-6">
           <CustomLabel
             field="special_category"
@@ -134,7 +134,7 @@ const CreateEventStep0 = ({
           )}
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 sm:col-span-6 lg:col-span-6">
           <CustomLabel
             field="subcategory"
@@ -189,21 +189,15 @@ const CreateEventStep0 = ({
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 sm:col-span-6 lg:col-span-4">
           <CustomLabel
             field="event_image_web-upload"
             name={tc('field_event_image_web')}
           />
-          <CardUpload
-            className="mt-2"
-            name="event_general.images.web"
-            control={control}
-          />
-          {errors?.['event_general']?.['images']?.['web'] && (
-            <CustomError
-              error={errors?.['event_general']?.['images']?.['web']?.message}
-            />
+          <CardUpload className="mt-2" name="picture_web" control={control} />
+          {errors?.picture_web && (
+            <CustomError error={errors?.picture_web?.message} />
           )}
         </div>
 
@@ -214,14 +208,10 @@ const CreateEventStep0 = ({
           />
           <CardUpload
             className="mt-2"
-            name="event_general.images.app"
+            name="app_web"
             control={control}
           />
-          {errors?.['event_general']?.['images']?.['app'] && (
-            <CustomError
-              error={errors?.['event_general']?.['images']?.['app']?.message}
-            />
-          )}
+          {errors?.app_web && <CustomError error={errors?.app_web?.message} />}
         </div>
 
         <div className="col-span-12 sm:col-span-6 lg:col-span-4">
@@ -229,20 +219,12 @@ const CreateEventStep0 = ({
             field="event_image_flyer-upload"
             name={tc('field_event_image_flyer')}
           />
-          <CardUpload
-            className="mt-2"
-            name="event_general.images.flyer"
-            control={control}
-          />
-          {errors?.['event_general']?.['images']?.['flyer'] && (
-            <CustomError
-              error={errors?.['event_general']?.['images']?.['flyer']?.message}
-            />
-          )}
+          <CardUpload className="mt-2" name="flyer" control={control} />
+          {errors?.flyer && <CustomError error={errors?.flyer?.message} />}
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 sm:col-span-6">
           <CustomLabel field="tags" name={tc('field_tags')} />
           <Controller
@@ -256,13 +238,13 @@ const CreateEventStep0 = ({
               />
             )}
           />
-          {errors?.['event_general']?.["tags"] && (
-            <CustomError error={errors?.['event_general']?.["tags"]?.message} />
+          {errors?.['event_general']?.['tags'] && (
+            <CustomError error={errors?.['event_general']?.['tags']?.message} />
           )}
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         {fields?.map((field, index) => (
           <NameDescLang key={field?.id} index={index} />
         ))}

@@ -7,7 +7,7 @@ const nextConfig = {
     defaultLocale: "es",
   },
   images: {
-    domains: ["loremflickr.com"]
+    domains: ["loremflickr.com", "ctickets.app"]
   }
 }
 

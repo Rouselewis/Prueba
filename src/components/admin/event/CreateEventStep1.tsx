@@ -30,7 +30,7 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
             <CustomLabel field="facebook" name={tc('field_facebook')} />
             <div className="relative rounded-md shadow-sm">
               <input
-                type="text"
+                type="url"
                 name="facebook"
                 id="facebook"
                 autoComplete={tc('field_facebook')}
@@ -38,9 +38,9 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
                 className={FormStyles('input')}
                 {...register('event_aditional.social_media.facebook')}
               />
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <LinkIcon
-                  className="h-5 w-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400"
                   aria-hidden="true"
                 />
               </div>
@@ -57,7 +57,7 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
             <CustomLabel field="instagram" name={tc('field_instagram')} />
             <div className="relative rounded-md shadow-sm">
               <input
-                type="text"
+                type="url"
                 name="instagram"
                 id="instagram"
                 autoComplete={tc('field_instagram')}
@@ -65,9 +65,9 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
                 className={FormStyles('input')}
                 {...register('event_aditional.social_media.instagram')}
               />
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <LinkIcon
-                  className="h-5 w-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400"
                   aria-hidden="true"
                 />
               </div>
@@ -84,7 +84,7 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
             <CustomLabel field="twitter" name={tc('field_twitter')} />
             <div className="relative rounded-md shadow-sm">
               <input
-                type="text"
+                type="url"
                 name="twitter"
                 id="twitter"
                 autoComplete={tc('field_twitter')}
@@ -92,9 +92,9 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
                 className={FormStyles('input')}
                 {...register('event_aditional.social_media.twitter')}
               />
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <LinkIcon
-                  className="h-5 w-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400"
                   aria-hidden="true"
                 />
               </div>
@@ -123,11 +123,13 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
               })}
             >
               <option value="0">{tc('field_select_age_limit')}</option>
-              {Array(22).fill(1).map((i, idx) => (
-                <option value={idx + 18} key={idx}>
-                  {idx + 18}
-                </option>
-              ))}
+              {Array(22)
+                .fill(1)
+                .map((i, idx) => (
+                  <option value={idx + 18} key={idx}>
+                    {idx + 18}
+                  </option>
+                ))}
             </select>
             {errors?.event_aditional?.['info']?.age_limit && (
               <CustomError
@@ -158,7 +160,7 @@ const CreateEventStep1: React.FC<Props> = ({ fields }) => {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-6 mt-6">
           {fields?.map((field, index) => (
             <EventLang key={field?.id} index={index} />
           ))}

@@ -141,17 +141,17 @@ const Search = ({ categories }) => {
                     // image: item.schedule_id.event_id.images.picture,
                     image: 'https://loremflickr.com/640/480/cats',
                     name:
-                      item.schedule_id.event_id.content.find(
+                      item?.schedule_id?.event_id?.content?.find(
                         (obj) => obj.lang == locale
                       )?.name ||
-                      item.schedule_id.event_id.content.find(
+                      item?.schedule_id?.event_id?.content?.find(
                         (obj) => obj.lang == 'es'
                       )?.name,
-                    startDate: item.start_at,
-                    endDate: item.end_at,
-                    location: `${item.schedule_id.venue_id.address.country.long_name}, ${item.schedule_id.venue_id.address.city} ${item.schedule_id.venue_id.address.address}`,
+                    startDate: item?.start_at,
+                    endDate: item?.end_at,
+                    location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
                     color: item.schedule_id.event_id.category_id.color,
-                    id: item._id,
+                    id: item?._id,
                   }))
                 )}
                 {...useFormReturn}
@@ -175,17 +175,17 @@ const Search = ({ categories }) => {
                   // image: item.schedule_id.event_id.images.picture,
                   image: 'https://loremflickr.com/640/480/cats',
                   name:
-                    item.schedule_id.event_id.content.find(
+                    item?.schedule_id?.event_id?.content?.find(
                       (obj) => obj.lang == locale
                     )?.name ||
-                    item.schedule_id.event_id.content.find(
+                    item?.schedule_id?.event_id?.content?.find(
                       (obj) => obj.lang == 'es'
                     )?.name,
-                  startDate: item.start_at,
-                  endDate: item.end_at,
-                  location: `${item.schedule_id.venue_id.address.country.long_name}, ${item.schedule_id.venue_id.address.city} ${item.schedule_id.venue_id.address.address}`,
+                  startDate: item?.start_at,
+                  endDate: item?.end_at,
+                  location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
                   color: item.schedule_id.event_id.category_id.color,
-                  id: item._id,
+                  id: item?._id,
                 }))
               )}
               {...useFormReturn}

@@ -426,7 +426,8 @@
     "dashboard": "Dashboard",
     "user": "User",
     "actions": {
-      "create": "Create"
+      "create": "Create",
+      "update": "Update"
     },
     "profile": {
       "favorite": "Favorites",
@@ -715,7 +716,10 @@
   "Fsuccess": {
     "schedule_added": "Schedule added",
     "schedules_added": "Schedules added",
-    "url": "Invalid url"
+    "url": "Invalid url",
+    "signin_succesfully": "Sign in succesfully",
+    "deleted": "Deleted",
+    "updated": "Updated"
   },
   "Main_Comment_Molecules": "/////////////////////////////////////// Molecules",
   "Card_Event_Queue": {

@@ -48,3 +48,9 @@ export const readEventSpecialCategoryDateRange = async (id: string) => {
 
   return data;
 };
+
+export const getEventSpecialCategoryList = async (id: string) => {
+  const { data } = await axios.get(`/events/specials/categories/${id}/getlist`);
+
+  return data;
+};

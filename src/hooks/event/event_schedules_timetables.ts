@@ -1,4 +1,10 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+  useMutation,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import {
   createEventScheduleTimetable,
   deleteEventScheduleTimetable,
@@ -31,10 +37,30 @@ export function useInfinteEventSchedulesTimetables(
   );
 }
 
-export function useEventScheduleTimetable(event_schedule_timetable_id: string) {
-  console.log('schedule id ', event_schedule_timetable_id);
+export function useEventScheduleTimetable(
+  event_schedule_timetable_id: string,
+  options?: UseQueryOptions
+) {
   return useQuery<EventScheduleTimetable>(
     [key, event_schedule_timetable_id],
     () => readEventScheduleTimetable(event_schedule_timetable_id)
   );
+}
+
+export function useDeleteEventScheduleTimetable() {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading, isError, isSuccess } = useMutation(
+    deleteEventScheduleTimetable,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData([key], (prev: any) => prev.concat(data));
+      },
+      onSettled: () => {
+        queryClient.refetchQueries();
+        // or you can use queryClient.refetchQueries('todos');
+      },
+    }
+  );
+  return { mutate, isLoading, isError, isSuccess };
 }
