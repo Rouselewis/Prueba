@@ -113,10 +113,12 @@ export const UserDashboard = () => {
                   setCurrentPage={() => {}}
                   setPageSize={() => {}}
                   totalDocs={10}
-                  title=""
+                  title={t('home.featured_events')}
                   items={events?.data?.items?.map((item) => ({
                     image: 'https://loremflickr.com/640/480/cats',
-                    name: item.content.find((obj) => obj.lang == locale)?.name,
+                    name:
+                      item.content.find((obj) => obj.lang == locale)?.name ||
+                      item.content.find((obj) => obj.lang == 'es')?.name,
                     startDate: item.created_at as unknown as Date,
                     endDate: new Date(),
                     location: 'Location',
@@ -133,31 +135,12 @@ export const UserDashboard = () => {
                   setCurrentPage={() => {}}
                   setPageSize={() => {}}
                   totalDocs={10}
-                  title=""
+                  title={t('home.featured_events')}
                   items={events?.data?.items?.map((item) => ({
                     image: 'https://loremflickr.com/640/480/cats',
-                    name: item.content.find((obj) => obj.lang == locale)?.name,
-                    startDate: item.created_at as unknown as Date,
-                    endDate: new Date(),
-                    location: 'Location',
-                    color: item.category_id?.color,
-                    id: item._id,
-                  }))}
-                  {...useFormReturn}
-                />
-              </Tab.Panel>
-
-              <Tab.Panel>
-                <ListCardEvent
-                  loading={events?.isLoading}
-                  layout="swiper"
-                  setCurrentPage={() => {}}
-                  setPageSize={() => {}}
-                  totalDocs={10}
-                  title=""
-                  items={events?.data?.items?.map((item) => ({
-                    image: 'https://loremflickr.com/640/480/cats',
-                    name: item.content.find((obj) => obj.lang == locale)?.name,
+                    name:
+                      item.content.find((obj) => obj.lang == locale)?.name ||
+                      item.content.find((obj) => obj.lang == 'es')?.name,
                     startDate: item.created_at as unknown as Date,
                     endDate: new Date(),
                     location: 'Location',
@@ -175,10 +158,35 @@ export const UserDashboard = () => {
                   setCurrentPage={() => {}}
                   setPageSize={() => {}}
                   totalDocs={10}
-                  title=""
+                  title={t('home.featured_events')}
                   items={events?.data?.items?.map((item) => ({
                     image: 'https://loremflickr.com/640/480/cats',
-                    name: item.content.find((obj) => obj.lang == locale)?.name,
+                    name:
+                      item.content.find((obj) => obj.lang == locale)?.name ||
+                      item.content.find((obj) => obj.lang == 'es')?.name,
+                    startDate: item.created_at as unknown as Date,
+                    endDate: new Date(),
+                    location: 'Location',
+                    color: item.category_id?.color,
+                    id: item._id,
+                  }))}
+                  {...useFormReturn}
+                />
+              </Tab.Panel>
+
+              <Tab.Panel>
+                <ListCardEvent
+                  loading={events?.isLoading}
+                  layout="swiper"
+                  setCurrentPage={() => {}}
+                  setPageSize={() => {}}
+                  totalDocs={10}
+                  title={t('home.featured_events')}
+                  items={events?.data?.items?.map((item) => ({
+                    image: 'https://loremflickr.com/640/480/cats',
+                    name:
+                      item.content.find((obj) => obj.lang == locale)?.name ||
+                      item.content.find((obj) => obj.lang == 'es')?.name,
                     startDate: item.created_at as unknown as Date,
                     endDate: new Date(),
                     location: 'Location',

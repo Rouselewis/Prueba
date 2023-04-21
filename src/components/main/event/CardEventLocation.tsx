@@ -82,7 +82,7 @@ const CardEventLocation: React.FC<props> = ({
       <div>
         <p>{location}</p>
         <Map
-          className="mt-3 w-full h-[300px]"
+          className="w-full h-[300px]"
           origin={userLocation || origin}
           destination={origin}
           zoom={15}
