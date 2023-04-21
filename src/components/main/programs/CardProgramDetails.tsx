@@ -10,8 +10,8 @@ export type props = {
   className?: string;
   image: string;
   name: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
   location: string;
   description: string;
 };

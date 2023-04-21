@@ -26,13 +26,11 @@ import {
 export interface Event {
   _id: string;
   user_id: string;
-  supplier_id?: {
-    id: string;
-    collection: string;
-  } | null;
+  supplier_id?: EventSupplier;
   category_id: EventCategory;
-  subcategory_id: string | null;
-  special_category_id?: string | null;
+  subcategory_id: EventCategory;
+  sub_subcategory_id: EventCategory;
+  special_category_id?: EventCategory;
   tags: EventTag[];
   content: Content[];
   info: EventInfo;
@@ -45,63 +43,82 @@ export interface Event {
 }
 
 export interface EventNew {
-  event_general: {
-    supplier_id: string;
-    category_id: string;
-    sub_category_id: string;
-    sub_sub_cateogry_id: string;
-    images: {
-      web: string;
-      app: string;
-      flyer: string;
-    };
-    tags: string[];
-    content: {
-      name: string;
-      description: string;
-      lang: string;
-    }[];
-  };
-  event_aditional: {
-    social_media: {
-      facebook: string;
-      instagram: string;
-      twitter: string;
-    };
-    info: {
-      age_limit: number;
-      duration: string;
+  event_request: {
+    event_general: {
+      supplier_id: string;
+      category_id: string;
+      sub_category_id: string;
+      sub_sub_cateogry_id: string;
+      tags: string[];
       content: {
+        name: string;
+        description: string;
         lang: string;
-        general: string;
-        observations: string;
-        services: string;
-        restrictions: string;
-        access_limit: string;
       }[];
     };
-  };
-  eventDates: {
-    dates: {
-      range: {
-        start_at: Date;
-        end_at: Date;
+    event_aditional: {
+      social_media: {
+        facebook: string;
+        instagram: string;
+        twitter: string;
+      };
+      info: {
+        age_limit: number;
+        duration: string;
+        content: {
+          lang: string;
+          general: string;
+          observations: string;
+          services: string;
+          restrictions: string;
+          access_limit: string;
+        }[];
       };
     };
-    schedules: {
-      start_at: Date;
-      end_at: Date;
-      costs: {
-        cost: number;
-        lower: number;
-        high: number;
+    event_dates: {
+      dates: {
+        range: {
+          start_at: Date;
+          end_at: Date;
+        };
       };
-      urls: {
-        ticket: string;
-        streaming: string;
+      schedules: {
+        start_at: Date;
+        end_at: Date;
+        costs: {
+          cost: number;
+          lower: number;
+          high: number;
+        };
+        urls: {
+          ticket: string;
+          streaming: string;
+        };
+      }[];
+    };
+    event_direction: {
+      venue_name: string;
+      address: {
+        latitude: string;
+        longitude: string;
+        address: string;
+        address2: string;
+        city: string;
+        state: {
+          long_name: string;
+          short_name: string;
+        };
+        country: {
+          long_name: string;
+          short_name: string;
+        };
+        zipcode: string;
       };
-    }[];
+    };
   };
+  picture_web: File;
+  app_web: File;
+  flyer: File;
 }
 export interface EventCategory {
   _id: string;
@@ -109,7 +126,9 @@ export interface EventCategory {
   picture: string;
   color: string;
   status?: boolean;
-  content: Content[];
+  content?: Content[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface EventDiscount {
@@ -155,14 +174,15 @@ export interface EventOrderPayment {
 }
 
 export interface EventSchedule {
-  event_id: string;
-  venue_id: string;
+  event_id: Event;
+  venue_id: EventVenue;
   type: EventDate;
   status?: boolean;
 }
 
 export interface EventScheduleTimetable {
-  schedule_id: string;
+  _id: string;
+  schedule_id: EventSchedule;
   start_at: Date;
   end_at?: Date | null;
   costs: EventCost;
@@ -220,7 +240,7 @@ export interface EventSpecialCategory {
   color: string;
   status?: boolean;
   initial_date: string;
-  finish_date: string;
+  final_date: string;
   location: {
     latitude: string;
     longitude: string;
@@ -262,6 +282,7 @@ export interface EventSupplier {
 }
 
 export interface EventTag {
+  _id?: string;
   tag: string;
   status?: boolean;
 }

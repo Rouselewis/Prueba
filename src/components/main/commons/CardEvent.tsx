@@ -20,15 +20,15 @@ import {
 } from '@/hooks/user/user_favorites';
 import { useUserAttends } from '@/hooks/user/user_attends';
 import { useUsers } from '@/hooks/user/user';
+import { useRouter } from 'next/router';
 
 export type props = {
   className?: string;
   layout?: 'grid' | 'column';
   image: string;
   name: string;
-  startDate: Date;
-  startTime: string;
-  endTime: string;
+  startDate: any;
+  endDate: any;
   location: string;
   favorite?: boolean;
   willAttend?: boolean;
@@ -39,8 +39,7 @@ export type props = {
 const CardEvent: React.FC<props> = ({
   className,
   startDate,
-  endTime,
-  startTime,
+  endDate,
   image,
   layout = 'grid',
   location,
@@ -54,6 +53,7 @@ const CardEvent: React.FC<props> = ({
   const { mutate: addFavorite } = useMutationAddFavorite();
   const { mutate: removeFavorite } = useMutationRemoveFavorite();
   const locale = useLocale();
+  const { pathname } = useRouter();
   const favorite = favorites
     ?.filter((item) => item.user_id.id === user._id)
     .find((item) => item.events_likes.find((event) => event.id == id));
@@ -74,7 +74,7 @@ const CardEvent: React.FC<props> = ({
       });
     }
   };
-  const slug = name.replace(' ', '-')
+  const slug = name.replaceAll(' ', '-');
 
   const handleAddAttend = () => {
     if (!attend) {
@@ -116,7 +116,9 @@ const CardEvent: React.FC<props> = ({
         />
       )}
       <Link
-        href={`/event/${slug}?id=${id}`}
+        href={`/${
+          pathname.includes('event') ? 'event' : 'program'
+        }/${slug}?_id=${id}`}
         className={classNames(
           'relative block',
           layout == 'grid' ? 'aspect-[4/3]' : 'aspect-square w-72 '
@@ -166,7 +168,8 @@ const CardEvent: React.FC<props> = ({
                 })}
               </span>
               <span className="flex gap-2 text-customGray">
-                {startTime} <span>-</span> {endTime}
+                {format(parseDate(startDate), 'HH:mm')} <span>-</span>{' '}
+                {format(parseDate(endDate), 'HH:mm')}
               </span>
             </span>
 

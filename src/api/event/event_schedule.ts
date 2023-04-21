@@ -1,8 +1,10 @@
 import axios from '@/lib/axios';
 import { EventSchedule } from '@/interfaces/event';
 
-export const getEventsSchedules = async () => {
-    const { data } = await axios.get(`/events/schedules/`);
+export const getEventsSchedules = async (pagination) => {
+    const { data } = await axios.get(`/events/schedules/`, {
+        params: pagination
+    });
     return data;
 };
 

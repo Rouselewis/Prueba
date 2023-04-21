@@ -6,34 +6,41 @@ import AdminLayout from '@/components/layout/admin';
 import { BasicTable } from '@/components/admin/tables';
 import { columnsEvent } from '@/components/admin/tables/columns/columnsEvent';
 import { Heading } from '@/components/headers/admin/heading';
-import { useEvents } from '@/hooks/event/event';
 import { format } from 'date-fns';
-
+import { useEventScheduleTimetables } from '@/hooks/event/event_schedules_timetables';
 const Event = () => {
   const ts = useTranslations('Panel_SideBar');
   const tb = useTranslations('btn');
   const locale = useLocale();
-  const events = useEvents();
+  const events = useEventScheduleTimetables();
   const breadcrumb = [{ page: ts('event.event'), href: '' }];
   const buttonBread = { text: tb('add_event'), href: '/panel/event/create' };
   const formatedEvents = events?.data?.items.map((event, idx) => ({
     ...event,
-    content:
-      event?.content?.find((e) => e.lang == locale) ||
-      event?.content?.find((e) => e.lang == 'es'),
+    schedule_id: {
+      ...event.schedule_id,
+      event_id: {
+        ...event?.schedule_id?.event_id,
+        content:
+          event?.schedule_id?.event_id?.content?.find(
+            (e) => e.lang == locale
+          ) ||
+          event?.schedule_id?.event_id?.content?.find((e) => e.lang == 'es'),
+      },
+    },
   }));
 
   const data = useMemo(
     () =>
       formatedEvents?.map((event) => ({
-        id: event._id,
-        event: event?.content?.name,
+        id: event?._id,
+        event: event?.schedule_id?.event_id?.content?.name,
         date: format(new Date(), 'yyyy-mm-dd'),
-        visit: 100,
-        like: 100,
-        assited: 100,
-        shared: 100,
-        status: true,
+        visit: event?.schedule_id?.event_id?.stats?.visit,
+        like: event?.schedule_id?.event_id?.stats?.like,
+        assited: event?.schedule_id?.event_id?.stats?.attend,
+        shared: event?.schedule_id?.event_id?.stats?.shared?.facebook,
+        status: event?.schedule_id?.event_id?.status,
       })),
     [formatedEvents]
   );

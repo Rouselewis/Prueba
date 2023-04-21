@@ -35,7 +35,7 @@ const Home = () => {
       />
       <div className="mt-16 space-y-16 section-container">
         <ListCardCategory
-        className="max-w-5xl mx-auto"
+          className="max-w-5xl mx-auto"
           items={categories?.data?.map((item) => ({
             name: item.category.find((obj) => obj.lang == locale)?.name,
             color: item.color,
@@ -61,8 +61,7 @@ const Home = () => {
               item.content.find((obj) => obj.lang == locale)?.name ||
               item.content.find((obj) => obj.lang == 'es')?.name,
             startDate: item.created_at as unknown as Date,
-            startTime: '1:00',
-            endTime: '12:00',
+            endDate: new Date(),
             location: 'Location',
             color: item.category_id?.color,
             id: item._id,
@@ -83,8 +82,7 @@ const Home = () => {
               item.content.find((obj) => obj.lang == locale)?.name ||
               item.content.find((obj) => obj.lang == 'es')?.name,
             startDate: item.created_at as unknown as Date,
-            startTime: '1:00',
-            endTime: '12:00',
+            endDate: new Date(),
             location: 'Location',
             color: item.category_id?.color,
             id: item._id,

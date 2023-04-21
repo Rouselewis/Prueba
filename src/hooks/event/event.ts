@@ -1,10 +1,16 @@
-import { useMutation, useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   getEvents,
   createEvent,
   readEvent,
   updateEvent,
   deleteEvent,
+  createNewEvent,
 } from '@/api/event/event';
 import { Event } from '@/interfaces/event';
 import { WithDocs } from '@/interfaces/serializers/commons';
@@ -34,5 +40,26 @@ export function useCreateEventSubcategory() {
       queryClient.setQueryData([key], (prev: any) => prev.concat(data));
     },
   });
+  return { mutate, isLoading, isError, isSuccess };
+}
+
+export function useMutationUpdateEvent() {
+  const queryClient = useQueryClient();
+  return useMutation(updateEvent, {
+    onSuccess: () => queryClient.invalidateQueries([key]),
+  });
+}
+
+export function useCreateNewEvent() {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading, isError, isSuccess } = useMutation(
+    createNewEvent,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData([key], (prev: any) => prev.concat(data));
+      },
+    }
+  );
   return { mutate, isLoading, isError, isSuccess };
 }

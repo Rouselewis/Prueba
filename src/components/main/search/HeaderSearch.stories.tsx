@@ -15,6 +15,7 @@ const Template: StoryFn<props> = (args) => {
 };
 
 const items = Array.from({ length: 12 }, () => ({
+  id: faker.datatype.uuid(),
   color: faker.internet.color(),
   image: faker.image.cats(),
   name: faker.lorem.word(),

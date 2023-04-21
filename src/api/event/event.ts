@@ -15,7 +15,11 @@ export const createEvent = async (event: Event) => {
 };
 
 export const createNewEvent = async (Event: EventNew) => {
-  const { data } = await axios.post('/events/newevent', event);
+  const { data } = await axios.post('/events/newevent', event, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 export const readEvent = async (id: number) => {
@@ -24,8 +28,8 @@ export const readEvent = async (id: number) => {
   return data;
 };
 
-export const updateEvent = async (id: number, event: Event) => {
-  const { data } = await axios.put(`/events/${id}`, event);
+export const updateEvent = async (event: Partial<Event>) => {
+  const { data } = await axios.put(`/events/${event._id}`, event);
 
   return data;
 };

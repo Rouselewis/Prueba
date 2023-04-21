@@ -47,6 +47,27 @@ export interface Address {
   }[];
 }
 
+export interface CreateTicket {
+  event_id: string;
+  date: Date;
+  schedule: string;
+  resale: boolean;
+  reserve: boolean;
+  starting_date: Date;
+  ending_date: Date;
+  cost_percentage: number;
+  pay_limit: number;
+  free_event: boolean;
+  charity: boolean;
+  sell_limit: number;
+  currency: string;
+  sale_start: Date;
+  pre_sale_start: Date;
+  three_months: boolean;
+  six_months: boolean;
+  nine_months: boolean;
+}
+
 export interface Collection {
   id: string;
   collection: string;

@@ -1,8 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getMe, getUsers, createUser, readUser, updateUser, deleteUser } from '@/api/user/user'
-import { User } from "@/interfaces/user";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  getMe,
+  getUsers,
+  createUser,
+  readUser,
+  updateUser,
+  deleteUser,
+} from '@/api/user/user';
+import { User } from '@/interfaces/user';
 
-const key = "user";
+const key = 'user';
 
 export function useMe() {
   return useQuery([key], getMe);
@@ -45,5 +52,6 @@ export function useMutationUpdateUser() {
   });
 }
 
-
-
+export function useDeleteUser(user_id: string) {
+  return useQuery([key, user_id], () => deleteUser(user_id));
+}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
-import ListCardCategory, { props } from '@/components/main/commons/ListCardCategory';
+import ListCardCategory, {
+  props,
+} from '@/components/main/commons/ListCardCategory';
 import { faker } from '@faker-js/faker';
 
 export default {
@@ -11,6 +13,7 @@ export default {
 const Template: StoryFn<props> = (args) => <ListCardCategory {...args} />;
 
 const items = Array.from({ length: 12 }, () => ({
+  id: faker.datatype.uuid(),
   color: faker.internet.color(),
   image: faker.image.cats(),
   name: faker.lorem.word(),

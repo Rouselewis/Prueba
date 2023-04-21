@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GetStaticPropsContext } from 'next';
 import { useTranslations } from 'next-intl';
 // Layout and Header
@@ -25,19 +25,16 @@ import CreateEventStep3 from '@/components/admin/event/CreateEventStep3';
 import { getEventsCategories } from '@/api/event/event_category';
 import { getEventsSpecialsCategories } from '@/api/event/event_special_category';
 import { getEventsSuppliers } from '@/api/event/event_supplier';
-
+import { useCreateNewEvent } from '@/hooks/event/event';
+import { useEventScheduleTimetable } from '@/hooks/event/event_schedules_timetables';
+import { keepProperties, removeProperties } from '@/helpers';
+import { useRouter } from 'next/router';
 type FormData = {
-  lang: string;
   event_general: {
     supplier_id: string;
     category_id: string;
     sub_category_id: string;
-    sub_sub_cateogry_id: string;
-    images: {
-      web: string;
-      app: string;
-      flyer: string;
-    };
+    sub_sub_category_id: string;
     tags: string[];
     content: {
       name: string;
@@ -64,7 +61,7 @@ type FormData = {
       }[];
     };
   };
-  eventDates: {
+  event_dates: {
     dates: {
       range: {
         start_at: Date;
@@ -85,13 +82,20 @@ type FormData = {
       };
     }[];
   };
+  picture_web: File;
+  app_web: File;
+  flyer: File;
+  lang: string;
   address: string;
   address2: string;
-  zipcode: string;
   country: string;
-  state: string;
   city: string;
-  currency: string;
+  state: string;
+  zipcode: string;
+  latitude: string;
+  longitude: string;
+  short_country: string;
+  short_state: string;
   date_type: 'define' | 'range';
 };
 
@@ -102,6 +106,15 @@ type Props = {
 };
 
 const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
+  const router = useRouter();
+  const { id } = router.query;
+  const { data: eventScheduleTimeTable } = useEventScheduleTimetable(
+    id as string,
+    {
+      enabled: Boolean(id),
+    }
+  );
+  const { mutate: createNewEvent } = useCreateNewEvent();
   const [step, setStep] = useState(0);
   const t = useTranslations('Panel_SideBar');
   const te = useTranslations('Ferrors');
@@ -190,7 +203,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
     },
     resolver: yupResolver(currentValidationSchema),
   });
-  const { handleSubmit, control, watch } = useFormReturn;
+  const { handleSubmit, control, watch, reset } = useFormReturn;
   const generalContentArray = useFieldArray({
     control,
     name: 'event_general.content',
@@ -208,7 +221,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
 
   const breadcrumb = [
     { page: t('event.event'), href: '' },
-    { page: t('actions.create'), href: '' },
+    { page: id ? t('actions.update') : t('actions.create'), href: '' },
   ];
 
   const onAppend = () => {
@@ -235,8 +248,47 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
       toast.error(error.message);
     }
   };
+
   const onSubmit = async (formData: FormData) => {
-    console.log('formData', formData);
+    const {
+      event_general,
+      event_aditional,
+      event_dates,
+      picture_web,
+      app_web,
+      flyer,
+    } = formData;
+    const event_direction = {
+      venue_name: '',
+      address: {
+        latitude: formData?.latitude,
+        longitude: formData?.longitude,
+        address: formData?.address,
+        address2: formData?.address2,
+        city: formData?.city,
+        state: {
+          long_name: formData?.state,
+          short_name: formData?.short_state,
+        },
+        country: {
+          long_name: formData?.country,
+          short_name: formData?.short_country,
+        },
+        zipcode: formData?.zipcode,
+      },
+    };
+    const event_request = {
+      event_general,
+      event_aditional,
+      event_dates,
+      event_direction,
+    };
+    console.log('form data', {
+      event_request,
+      picture_web,
+      app_web,
+      flyer,
+    });
     try {
       if (step == 0) {
         setStep(1);
@@ -245,6 +297,13 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
       } else if (step == 2) {
         setStep(3);
       } else if (step == 3) {
+        const newFormData = new FormData();
+        newFormData.append('event_request', JSON.stringify(event_request));
+        newFormData.append('picture_web', picture_web);
+        newFormData.append('app_web', app_web);
+        newFormData.append('flyer', flyer);
+
+        await createNewEvent(newFormData as any);
         toast.success('Event created');
       }
     } catch (error) {
@@ -252,6 +311,101 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (id && eventScheduleTimeTable) {
+      reset({
+        event_general: {
+          supplier_id:
+            eventScheduleTimeTable?.schedule_id?.event_id?.supplier_id?._id,
+          category_id:
+            eventScheduleTimeTable?.schedule_id?.event_id?.category_id?._id,
+          sub_category_id:
+            eventScheduleTimeTable?.schedule_id?.event_id?.subcategory_id?._id,
+          sub_sub_category_id:
+            eventScheduleTimeTable?.schedule_id?.event_id?.subcategory_id?._id,
+          tags: [],
+          content: [
+            {
+              name: '',
+              description: '',
+              lang: '',
+            },
+          ],
+        },
+        event_aditional: {
+          social_media: {
+            facebook:
+              eventScheduleTimeTable?.schedule_id?.event_id?.social_media
+                ?.facebook,
+            instagram:
+              eventScheduleTimeTable?.schedule_id?.event_id?.social_media
+                ?.instagram,
+            twitter:
+              eventScheduleTimeTable?.schedule_id?.event_id?.social_media
+                ?.twitter,
+          },
+          info: {
+            age_limit: 0,
+            duration:
+              eventScheduleTimeTable?.schedule_id?.event_id?.info?.duration as any,
+            content:
+              eventScheduleTimeTable?.schedule_id?.event_id?.info?.content,
+          },
+        },
+        event_dates: {
+          dates: {
+            range: {
+              start_at: eventScheduleTimeTable?.start_at,
+              end_at: eventScheduleTimeTable?.end_at,
+            },
+          },
+          schedules: [
+            {
+              start_at: new Date(),
+              end_at: new Date(),
+              costs: {
+                cost: eventScheduleTimeTable?.costs?.cost,
+                lower: eventScheduleTimeTable?.costs?.lower,
+                high: eventScheduleTimeTable?.costs?.high,
+              },
+              urls: {
+                ticket: eventScheduleTimeTable?.urls?.ticket,
+                streaming: eventScheduleTimeTable?.urls?.streaming,
+              },
+            },
+          ],
+        },
+        picture_web: null,
+        app_web: null,
+        flyer: null,
+        lang: 'es',
+        address:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.address,
+        address2:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.address2,
+        country:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.country
+            ?.short_name,
+        city: eventScheduleTimeTable?.schedule_id?.venue_id?.address?.city,
+        state:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.state
+            ?.short_name,
+        zipcode:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.zipcode,
+        latitude:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.latitude,
+        longitude:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.longitude,
+        short_country:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.short_country,
+        short_state:
+          eventScheduleTimeTable?.schedule_id?.venue_id?.address?.short_state,
+        date_type: eventScheduleTimeTable?.schedule_id?.type?.defined
+          ? 'define'
+          : 'range',
+      });
+    }
+  }, [eventScheduleTimeTable]);
   return (
     <>
       {/* Breadcrumb section */}

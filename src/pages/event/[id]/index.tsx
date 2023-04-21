@@ -13,7 +13,10 @@ import CardEventLocation from '@/components/main/event/CardEventLocation';
 import SidebarEvent from '@/components/main/event/SidebarEvent';
 import { useEventCategory } from '@/hooks/event/event_category';
 import { useEvent, useEvents } from '@/hooks/event/event';
-import { useEventScheduleTimetable } from '@/hooks/event/event_schedules_timetables';
+import {
+  useEventScheduleTimetable,
+  useEventScheduleTimetables,
+} from '@/hooks/event/event_schedules_timetables';
 import { useEventSeatmap, useEventSeatmaps } from '@/hooks/event/event_seatmap';
 import { useEventSupplier } from '@/hooks/event/event_supplier';
 import { EventCategory, Event } from '@/interfaces/event';
@@ -23,24 +26,29 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import axios from '@/lib/axios';
 
 const EventDetailed = () => {
   const useFormReturn = useForm();
   const t = useTranslations('Public');
   const router = useRouter();
-  const {id} = router.query
-  const events = useEvents();
-  const event = useEvent(id as string);
-  const category = useEventCategory(event?.data?.category_id?._id);
-  const eventSupplier = useEventSupplier(event?.data?.supplier_id?.id);
+  const { _id } = router.query;
+  const { data: eventsSchedules } = useEventScheduleTimetables();
+  // const { data: eventSchedule } = useEventScheduleTimetable(_id as string);
+  const a = axios
+    .get(`/events/schedules/timetables/${_id}`)
+    .then((data) => console.log(data.data));
+
+  // const category = useEventCategory(event?.data?.category_id?._id);
+  // const eventSupplier = useEventSupplier(event?.data?.supplier_id?.id);
 
   const locale = useLocale();
-  const info =
-    event?.data?.info.content.find((obj) => obj.lang == locale) ||
-    event?.data?.info.content.find((obj) => obj.lang == 'es');
+  // const info =
+  //   event?.data?.info.content.find((obj) => obj.lang == locale) ||
+  //   event?.data?.info.content.find((obj) => obj.lang == 'es');
   return (
     <div className="mt-16 space-y-16 section-container mb-44">
-      <div className="flex flex-col-reverse justify-between gap-10 md:flex-row">
+      {/* <div className="flex flex-col-reverse justify-between gap-10 md:flex-row">
         <CardEventDetails
           className="flex-1"
           details={
@@ -96,14 +104,13 @@ const EventDetailed = () => {
           image: 'https://loremflickr.com/640/480/cats',
           name: item.content.find((obj) => obj.lang == locale)?.name,
           startDate: new Date(),
-          startTime: '1:00',
-          endTime: '12:00',
+          endDate: new Date(),
           location: 'Location',
           color: item.category_id?.color,
           id: item._id,
         }))}
         {...useFormReturn}
-      />
+      /> */}
       {/* <ListCardEventRecommendation
         items={events?.data?.items?.map((item) => ({
           category_id: item.category_id._id,

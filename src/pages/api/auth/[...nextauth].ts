@@ -41,6 +41,7 @@ export default NextAuth({
           console.log('credentials', credentials);
           const { email, password } = credentials;
           const authResponse = await signIn({ email, password });
+          console.log('authResponse', authResponse);
           const user = authResponse.user;
           return {
             id: user._id,
@@ -92,6 +93,7 @@ export default NextAuth({
         token.roles = user.roles;
         token.role = user.role || '';
         token.avatar = user.avatar;
+        token.accessToken = user.accessToken;
       }
       if (profile) {
         token.accessToken = jwt.sign(

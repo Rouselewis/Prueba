@@ -8,6 +8,7 @@ export type props = {
   name: string;
   size: 'small' | 'large';
   color: string;
+  id: string;
 };
 
 const HeaderCategory: React.FC<props> = ({
@@ -16,6 +17,7 @@ const HeaderCategory: React.FC<props> = ({
   name,
   size = 'small',
   color,
+  id,
 }) => {
   return (
     <div className={classNames('relative', className)}>

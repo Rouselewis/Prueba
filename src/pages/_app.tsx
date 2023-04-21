@@ -32,6 +32,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'swiper/css/bundle';
 // Google Maps
 import { Wrapper } from '@googlemaps/react-wrapper';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 export default function App({ Component, pageProps }: CustomAppProps) {
   const Layout: CustomNextComponent | typeof Fragment = Component.Layout
@@ -42,25 +43,29 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     <NextIntlProvider messages={pageProps.messages}>
       <SessionProvider session={pageProps.session}>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <Head>
-              <title>CTickets</title>
-              <meta
-                name="viewport"
-                content="initial-scale=1, width=device-width"
-              />
-            </Head>
-            <Layout>
-              <Wrapper
-                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-                libraries={['places']}
-              >
-                <ToastContainer />
-                <Component {...pageProps} />
-              </Wrapper>
-            </Layout>
-            <ReactQueryDevtools initialIsOpen={true} />
-          </AuthProvider>
+          <GoogleReCaptchaProvider
+            reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
+          >
+            <AuthProvider>
+              <Head>
+                <title>CTickets</title>
+                <meta
+                  name="viewport"
+                  content="initial-scale=1, width=device-width"
+                />
+              </Head>
+              <Layout>
+                <Wrapper
+                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+                  libraries={['places']}
+                >
+                  <ToastContainer />
+                  <Component {...pageProps} />
+                </Wrapper>
+              </Layout>
+              <ReactQueryDevtools initialIsOpen={true} />
+            </AuthProvider>
+          </GoogleReCaptchaProvider>
         </QueryClientProvider>
       </SessionProvider>
     </NextIntlProvider>

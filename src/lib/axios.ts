@@ -7,6 +7,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(async function (config) {
   const session = await getSession();
+  console.log('session', session);
   const token = session?.user?.accessToken;
   (config.headers as any)['Authorization'] = `Bearer ${token}`;
 

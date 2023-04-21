@@ -34,7 +34,7 @@ export default withAuth(
             if (roles?.includes('ADMIN')) return true;
             return false;
           }
-          if (pathname.includes('/event') || pathname.includes('ticket')) {
+          if (pathname.includes('/event') || pathname.includes('/ticket')) {
             if (roles?.includes('ADMIN') || roles?.includes('PROMOTER'))
               return true;
             return false;

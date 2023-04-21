@@ -35,7 +35,7 @@ const SidebarSearch: React.FC<props> = ({
   const categoriesArray = categories
     ? categories?.map((item) => ({
         name: item?.category?.find((obj) => obj.lang == locale)?.name,
-        value: item?.category?.find((obj) => obj.lang == locale)?.name,
+        value: item._id,
       }))
     : [];
   const categoriesOptions = [

@@ -10,6 +10,7 @@ export type props = {
   color: string;
   image: string;
   name: string;
+  id: string;
 };
 
 const CardCategory: React.FC<props> = ({
@@ -18,6 +19,7 @@ const CardCategory: React.FC<props> = ({
   image,
   size = 'large',
   name,
+  id,
 }) => {
   const { query, pathname } = useRouter();
   return (
@@ -27,7 +29,7 @@ const CardCategory: React.FC<props> = ({
         pathname: pathname == '/program' ? '/program' : '/search',
         query: {
           ...query,
-          category: name,
+          category: id,
         },
       }}
       className={classNames(

@@ -18,8 +18,8 @@ export const readEventTag = async (id: string) => {
     return data;
 }
 
-export const updateEventTag = async (id: string, tag: EventTag) => {
-    const { data } = await axios.put(`/events/tags/${id}`, tag);
+export const updateEventTag = async (tag: EventTag) => {
+    const { data } = await axios.put(`/events/tags/${tag._id}`, tag);
 
     return data;
 }

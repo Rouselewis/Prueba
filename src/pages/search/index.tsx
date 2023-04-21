@@ -11,6 +11,7 @@ import SidebarSearch from '@/components/main/commons/SidebarSearch';
 import HeaderCategory from '@/components/main/search/HeaderCategory';
 import HeaderSearch from '@/components/main/search/HeaderSearch';
 import { useInfinteEvents } from '@/hooks/event/event';
+import { useInfinteEventSchedulesTimetables } from '@/hooks/event/event_schedules_timetables';
 import axios from 'axios';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
@@ -39,18 +40,23 @@ const Search = ({ categories }) => {
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useInfinteEvents({
-    searchword: queryObj?.category,
-    searchkey: query,
+  } = useInfinteEventSchedulesTimetables({
+    category: queryObj?.category,
+    sub_category: queryObj?.sub_category,
+    sub_subcategory: queryObj?.sub_sub_category,
+    init_date: queryObj?.initial_date
+      ? new Date(queryObj?.initial_date as string)
+      : undefined,
+    end_date: queryObj?.finish_date
+      ? new Date(queryObj?.finish_date as string)
+      : undefined,
     page: pagination?.page,
     size: pagination?.size,
   });
-  const category = categories?.find((item) =>
-    item.category.find((obj) => obj.name == queryObj?.category)
-  );
-
+  const category = categories?.find((item) => item._id == queryObj?.category);
+  console.log(data?.pages?.map((page) => page.items));
   useEffect(() => {
-    setPagination(queryObj);
+    setPagination({ ...queryObj, page: 1, size: 50 });
     refetch();
   }, [
     query,
@@ -81,6 +87,7 @@ const Search = ({ categories }) => {
             name: item.category.find((obj) => obj.lang == locale)?.name,
             color: item.color,
             image: item.picture,
+            id: item._id,
           }))}
           layout="swiper"
           size="small"
@@ -92,6 +99,7 @@ const Search = ({ categories }) => {
 
         {typeof queryObj?.category == 'string' && queryObj?.category !== '' && (
           <HeaderCategory
+            id={category?.category?.find((obj) => obj.lang == locale)?._id}
             color={category?.color}
             image={category?.picture}
             name={category?.category?.find((obj) => obj.lang == locale)?.name}
@@ -130,16 +138,20 @@ const Search = ({ categories }) => {
                 title={t('commons.recommended_events')}
                 items={data?.pages?.flatMap((page) =>
                   page.items.map((item) => ({
+                    // image: item.schedule_id.event_id.images.picture,
                     image: 'https://loremflickr.com/640/480/cats',
                     name:
-                      item.content.find((obj) => obj.lang == locale)?.name ||
-                      item.content.find((obj) => obj.lang == 'es')?.name,
-                    startDate: new Date(),
-                    startTime: '1:00',
-                    endTime: '12:00',
-                    location: 'Location',
-                    color: item.category_id?.color,
-                    id: item._id,
+                      item?.schedule_id?.event_id?.content?.find(
+                        (obj) => obj.lang == locale
+                      )?.name ||
+                      item?.schedule_id?.event_id?.content?.find(
+                        (obj) => obj.lang == 'es'
+                      )?.name,
+                    startDate: item?.start_at,
+                    endDate: item?.end_at,
+                    location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
+                    color: item.schedule_id.event_id.category_id.color,
+                    id: item?._id,
                   }))
                 )}
                 {...useFormReturn}
@@ -160,16 +172,20 @@ const Search = ({ categories }) => {
               title={t('commons.recommended_events')}
               items={data?.pages?.flatMap((page) =>
                 page.items.map((item) => ({
+                  // image: item.schedule_id.event_id.images.picture,
                   image: 'https://loremflickr.com/640/480/cats',
                   name:
-                    item.content.find((obj) => obj.lang == locale)?.name ||
-                    item.content.find((obj) => obj.lang == 'es')?.name,
-                  startDate: new Date(),
-                  startTime: '1:00',
-                  endTime: '12:00',
-                  location: 'Location',
-                  color: item.category_id?.color,
-                  id: item._id,
+                    item?.schedule_id?.event_id?.content?.find(
+                      (obj) => obj.lang == locale
+                    )?.name ||
+                    item?.schedule_id?.event_id?.content?.find(
+                      (obj) => obj.lang == 'es'
+                    )?.name,
+                  startDate: item?.start_at,
+                  endDate: item?.end_at,
+                  location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
+                  color: item.schedule_id.event_id.category_id.color,
+                  id: item?._id,
                 }))
               )}
               {...useFormReturn}
