@@ -76,17 +76,6 @@ const SidebarEvent: React.FC<props> = ({
         </div>
         <hr className="border-gray-200 h-[1px]" />
         <div className="px-10 py-5">
-          <span className="block text-lg font-bold">
-            {t('cost', {
-              value: `${cost
-                .map((c, idx) =>
-                  formatNumber({ prefix: '$', suffix: idx == 0 ? '' : ' MXN' })(
-                    c
-                  )
-                )
-                .join(' - ')}`,
-            })}
-          </span>
           <ul className="mt-10 space-y-3">
             <li>
               <span className="font-base flex items-center gap-1.5">
@@ -96,9 +85,14 @@ const SidebarEvent: React.FC<props> = ({
                 {t('cost_label')}
               </span>
               <p className="flex gap-2 text-customGray">
-                {t('cost_value', {
-                  value: formatNumber({ prefix: '$', suffix: ' MXN' })(cost),
-                })}
+                {cost
+                  .map((c, idx) =>
+                    formatNumber({
+                      prefix: '$',
+                      suffix: idx == 0 ? '' : ' MXN',
+                    })(c)
+                  )
+                  .join(' - ')}
               </p>
             </li>
             <li>

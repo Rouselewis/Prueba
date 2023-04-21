@@ -3,7 +3,6 @@ import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 // Auth
 import { useUserAuthObserver } from '@/hooks/auth';
-import { logout_firebase } from '@/lib/firebase_auth';
 // Helpers
 import { classNames } from '@/helpers';
 // Icons
@@ -14,11 +13,6 @@ import { signOut, useSession } from 'next-auth/react';
 export const UserMenu = () => {
   const { user: existUser, queryClient, isLoading } = useUserAuthObserver();
   const { data: session } = useSession();
-  const logout_ = () => {
-    queryClient.setQueryData(['user'], () => null);
-    localStorage.clear();
-    logout_firebase();
-  };
 
   const userNavigation = [
     { name: 'Your Profile', onclick: () => {}, href: '/panel/profile' },
