@@ -88,7 +88,7 @@ const CreateEventStep3 = () => {
           </span>
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 sm:col-span-6">
           <CustomLabel
             field="initial_date"
@@ -140,7 +140,7 @@ const CreateEventStep3 = () => {
           </div>
         )}
       </div>
-      <div className="mt-6 grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         <div className="col-span-12 sm:col-span-12">
           <BasicTable
             columns={columns}

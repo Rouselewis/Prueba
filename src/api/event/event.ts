@@ -14,10 +14,10 @@ export const createEvent = async (event: Event) => {
   return data;
 };
 
-export const createNewEvent = async (Event: EventNew) => {
+export const createNewEvent = async (event: EventNew) => {
   const { data } = await axios.post('/events/newevent', event, {
     headers: {
-      'Content-Type': 'multipart/form-data',
+      Accept: 'application/json',
     },
   });
 };

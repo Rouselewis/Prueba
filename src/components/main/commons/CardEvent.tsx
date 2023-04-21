@@ -56,13 +56,13 @@ const CardEvent: React.FC<props> = ({
   const locale = useLocale();
   const { pathname } = useRouter();
   const favorite = favorites
-    ?.filter((item) => item.user_id.id === user.id)
-    .find((item) => item.events_likes.find((event) => event.id == id));
+    ?.filter((item) => item?.user_id?.id === user?._id)
+    .find((item) => item?.events_likes?.find((event) => event?.id == id));
 
   const attend = favorites
-    ?.filter((item) => item.user_id.id == user.id)
-    .find((item) => item.events_attends.find((attend) => attend.id == id));
-  // console.log(favorites?.filter((item) => item.user_id.id == user._id));
+    ?.filter((item) => item?.user_id?.id == user?._id)
+    .find((item) => item?.events_attends?.find((attend) => attend?.id == id));
+
   const handleAddFavorite = (e) => {
     e.preventDefault();
     if (!favorite) {
@@ -158,7 +158,7 @@ const CardEvent: React.FC<props> = ({
           >
             <span
               title={name}
-              className="block text-lg font-semibold text-black break-words truncate w- capitalize"
+              className="block text-lg font-semibold text-black capitalize break-words truncate w-"
             >
               {name}
             </span>
@@ -179,7 +179,7 @@ const CardEvent: React.FC<props> = ({
               </span>
             </span>
 
-            <p className="flex items-center gap-2 text-customGray text-base leading-tight break-words">
+            <p className="flex items-center gap-2 text-base leading-tight break-words text-customGray">
               <MapPinIcon name="location" className="w-5 h-5" />
               {location}
             </p>
