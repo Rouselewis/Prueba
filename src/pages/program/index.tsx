@@ -35,10 +35,64 @@ const Program = ({ categories }) => {
   const locale = useLocale();
 
   const specialCategories = useEventsSpecialsCategories();
+  const [filteredResults, setFilteredResults] = useState([]);
+  // const filteredResults =
+  //   queryObj?.initial_date || queryObj?.finish_date || queryObj?.address
+  //     ? specialCategories.data?.items?.filter((item) => {
+  //         if (queryObj?.initial_date && queryObj?.finish_date) {
+  //           console.log('filtering by date');
+  //           const finalDate = new Date(item.final_date);
+  //           const initialDate = new Date(item.initial_date);
+  //           return (
+  //             initialDate >= new Date(queryObj?.initial_date as string) &&
+  //             finalDate <= new Date(queryObj?.finish_date as string)
+  //           );
+  //         }
 
-  console.log(specialCategories?.data?.items);
+  //         if (queryObj?.query) {
+  //           console.log('filtering by query');
+  //           const category =
+  //             item?.category?.find((obj) => obj.lang == locale)?.name ||
+  //             item?.category?.find((obj) => obj.lang == 'es')?.name;
+  //           return category.includes(queryObj?.query as string);
+  //         }
+  //       })
+  //     : specialCategories.data?.items;
+  useEffect(() => {
+    const newFilteredResults = specialCategories.data?.items?.filter((item) => {
+      if (queryObj?.initial_date && queryObj?.finish_date) {
+        console.log('filtering by date');
+        const finalDate = new Date(item.final_date);
+        const initialDate = new Date(item.initial_date);
+        return (
+          initialDate >= new Date(queryObj?.initial_date as string) &&
+          finalDate <= new Date(queryObj?.finish_date as string)
+        );
+      }
+
+      if (queryObj?.query) {
+        console.log('filtering by query');
+        const category =
+          item?.category?.find((obj) => obj.lang == locale)?.name ||
+          item?.category?.find((obj) => obj.lang == 'es')?.name;
+        return category
+          .toLowerCase()
+          .includes((queryObj?.query as string).toLowerCase());
+      }
+
+      if (queryObj?.address) {
+        console.log('filtering by address');
+        const address =
+          `${item.location.city}, ${item.location.state.long_name} ${item.location.country.long_name}`.toLowerCase();
+        return address.includes((queryObj?.address as string).toLowerCase());
+      }
+
+      return true; // include all items by default
+    });
+
+    setFilteredResults(newFilteredResults);
+  }, [queryObj]);
   const category = categories?.find((item) => item._id == queryObj?.category);
-
   return (
     <div className="mb-44 -mt-8">
       <Hero
@@ -87,9 +141,16 @@ const Program = ({ categories }) => {
             layout="swiper"
             setCurrentPage={() => {}}
             setPageSize={() => {}}
-            totalDocs={specialCategories.data?.total}
-            title={t('home.new_events')}
-            items={specialCategories.data?.items?.map((item) => ({
+            totalDocs={filteredResults?.length}
+            title={
+              query
+                ? t('commons.results', {
+                    length: filteredResults?.length,
+                    query,
+                  })
+                : t('home.new_events')
+            }
+            items={filteredResults?.map((item) => ({
               image: item.event_img,
               name:
                 item.category.find((obj) => obj.lang == locale)?.name ||
@@ -113,15 +174,8 @@ const Program = ({ categories }) => {
           setCurrentPage={() => {}}
           setPageSize={() => {}}
           totalDocs={specialCategories.data?.total}
-          title={
-            query
-              ? t('commons.results', {
-                  length: specialCategories?.data?.total,
-                  query,
-                })
-              : t('commons.recommended_events')
-          }
-          items={specialCategories.data?.items?.map((item) => ({
+          title={t('commons.recommended_events')}
+          items={specialCategories?.data?.items?.map((item) => ({
             image: item.event_img,
             name:
               item.category.find((obj) => obj.lang == locale)?.name ||

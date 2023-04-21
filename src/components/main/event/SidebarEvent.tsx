@@ -19,11 +19,9 @@ export type props = {
   id: string;
   name: string;
   willAttend?: boolean;
-  cost: number;
+  cost: number[];
   startDate: Date;
   endDate: Date;
-  startTime: string;
-  endTime: string;
   location: string;
   category: string;
   color: string;
@@ -34,12 +32,10 @@ const SidebarEvent: React.FC<props> = ({
   className,
   cost,
   endDate,
-  endTime,
   id,
   location,
   name,
   startDate,
-  startTime,
   willAttend = false,
   category,
   color,
@@ -80,7 +76,18 @@ const SidebarEvent: React.FC<props> = ({
         </div>
         <hr className="border-gray-200 h-[1px]" />
         <div className="px-10 py-5">
-          <ul className="mt-5 space-y-3">
+          <span className="block text-lg font-bold">
+            {t('cost', {
+              value: `${cost
+                .map((c, idx) =>
+                  formatNumber({ prefix: '$', suffix: idx == 0 ? '' : ' MXN' })(
+                    c
+                  )
+                )
+                .join(' - ')}`,
+            })}
+          </span>
+          <ul className="mt-10 space-y-3">
             <li>
               <span className="font-base flex items-center gap-1.5">
                 <CurrencyDollarIcon
@@ -119,9 +126,13 @@ const SidebarEvent: React.FC<props> = ({
                 {t('time')}
               </span>
               <p className="flex gap-2 text-customGray">
-                {startTime}
+                {format(parseDate(startDate), 'HH:mm', {
+                  locale: locale == 'en' ? enUS : es,
+                })}
                 <span>-</span>
-                {endTime}
+                {format(parseDate(endDate), 'HH:mm', {
+                  locale: locale == 'en' ? enUS : es,
+                })}
               </p>
             </li>
             <li>

@@ -78,7 +78,11 @@ export const AddressForm = ({
     <>
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12">
-          <CustomLabel field="searchaddress" name={tc('field_searchaddress')} />
+          <CustomLabel
+            required
+            field="searchaddress"
+            name={tc('field_searchaddress')}
+          />
           <Autocomplete
             onLoad={onAutocompleteLoad}
             onPlaceChanged={onPlaceChanged}
@@ -123,7 +127,7 @@ export const AddressForm = ({
           {errors?.address && <CustomError error={errors?.address?.message} />}
         </div>
         <div className="col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-4">
-          <CustomLabel field="address2" name={tc('field_address2')} />
+          <CustomLabel required field="address2" name={tc('field_address2')} />
           <input
             {...register('address2')}
             type="text"

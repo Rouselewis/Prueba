@@ -26,7 +26,7 @@ import {
 export interface Event {
   _id: string;
   user_id: string;
-  supplier_id?: EventSupplier;
+  supplier_id?: EventSupplier | null;
   category_id: EventCategory;
   subcategory_id: EventCategory;
   sub_subcategory_id: EventCategory;

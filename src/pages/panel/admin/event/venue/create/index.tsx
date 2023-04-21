@@ -37,32 +37,32 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
     // addressname: yup.string().required("Address name is required"),
     searchaddress: yup.string(),
     address: yup.string().required(te('required')),
-    address2: yup.string(),
+    address2: yup.string().required(te('required')),
     zipcode: yup.string().max(5).required(te('required')),
     country: yup.string().required(te('required')),
     state: yup.string().required(te('required')),
     city: yup.string().required(te('required')),
-    currency: yup.string(),
-    venue: yup.string(),
+    currency: yup.string().required(te('required')),
+    venue: yup.string().required(te('required')),
     type: yup.string().required(te('required')),
-    quota: yup.string(),
-    url: yup.string().url(te('url')),
-    generic_rules: yup.string(),
-    children_rules: yup.string(),
+    quota: yup.string().required(te('required')),
+    url: yup.string().url(te('url')).required(te('required')),
+    generic_rules: yup.string().required(te('required')),
+    children_rules: yup.string().required(te('required')),
     accessible: yup.boolean(),
-    facebook: yup.string().url(te('url')),
-    instagram: yup.string().url(te('url')),
-    twitter: yup.string().url(te('url')),
-    cost: yup.number(),
-    box_office: yup.number(),
+    facebook: yup.string().url(te('url')).required(te('required')),
+    instagram: yup.string().url(te('url')).required(te('required')),
+    twitter: yup.string().url(te('url')).required(te('required')),
+    cost: yup.number().required(te('required')),
+    box_office: yup.number().required(te('required')),
     cash: yup.boolean(),
     credit: yup.boolean(),
     debit: yup.boolean(),
     day: yup.array(
       yup.object({
-        day: yup.string(),
-        start_at: yup.string(),
-        end_at: yup.string(),
+        day: yup.string().required(te('required')),
+        start_at: yup.string().required(te('required')),
+        end_at: yup.string().required(te('required')),
       })
     ),
   });
@@ -171,7 +171,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
             endDate.setHours(parseInt(endHours));
             endDate.setMinutes(parseInt(endMinutes));
             return {
-              ...item,
+              day: item.day,
               end_at: endDate,
               start_at: startDate,
             };
@@ -187,6 +187,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
         children_rules: data.children_rules,
       },
     });
+    reset();
   };
   return (
     <>
@@ -204,7 +205,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
           >
             <div className="mt-6 grid grid-cols-12 gap-6 mb-6">
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="venue" name={tc('field_venue')} />
+                <CustomLabel required field="venue" name={tc('field_venue')} />
                 <input
                   type="text"
                   name="venue"
@@ -217,7 +218,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                 <CustomError error={errors?.venue?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="type" name={tc('field_type')} />
+                <CustomLabel required field="type" name={tc('field_type')} />
                 <select
                   id="type"
                   name="type"
@@ -247,7 +248,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
             <div className="mt-6 grid grid-cols-12 gap-6">
               <div className="col-span-12">Information</div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="quota" name={tc('field_quota')} />
+                <CustomLabel required field="quota" name={tc('field_quota')} />
                 <input
                   type="text"
                   name="quota"
@@ -260,7 +261,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                 <CustomError error={errors?.quota?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="url" name={tc('field_url')} />
+                <CustomLabel required field="url" name={tc('field_url')} />
                 <div className="relative rounded-md shadow-sm">
                   <input
                     type="text"
@@ -282,6 +283,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
                 <CustomLabel
+                  required
                   field="generic_rules"
                   name={tc('field_generic_rules')}
                 />
@@ -298,6 +300,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
                 <CustomLabel
+                  required
                   field="children_rules"
                   name={tc('field_children_rules')}
                 />
@@ -342,7 +345,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
             <div className="mt-6 grid grid-cols-12 gap-6">
               <div className="col-span-12">Social Media</div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="facebook" name={tc('field_facebook')} />
+                <CustomLabel
+                  required
+                  field="facebook"
+                  name={tc('field_facebook')}
+                />
                 <div className="relative rounded-md shadow-sm">
                   <input
                     type="text"
@@ -363,7 +370,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                 <CustomError error={errors?.facebook?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="instagram" name={tc('field_instagram')} />
+                <CustomLabel
+                  required
+                  field="instagram"
+                  name={tc('field_instagram')}
+                />
                 <div className="relative rounded-md shadow-sm">
                   <input
                     type="text"
@@ -384,7 +395,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                 <CustomError error={errors?.instagram?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="twitter" name={tc('field_twitter')} />
+                <CustomLabel
+                  required
+                  field="twitter"
+                  name={tc('field_twitter')}
+                />
                 <div className="relative rounded-md shadow-sm">
                   <input
                     type="text"
@@ -409,7 +424,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
             <div className="mt-6 grid grid-cols-12 gap-6">
               <div className="col-span-12">Parking</div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="currency" name={tc('field_currency')} />
+                <CustomLabel
+                  required
+                  field="currency"
+                  name={tc('field_currency')}
+                />
                 <select
                   id="currency"
                   name="currency"
@@ -423,7 +442,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                 <CustomError error={errors?.currency?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel field="cost" name={tc('field_cost')} />
+                <CustomLabel required field="cost" name={tc('field_cost')} />
                 <input
                   type="number"
                   name="cost"
@@ -443,6 +462,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                   <div className="col-span-12">Box Office</div>
                   <div className="col-span-12 sm:col-span-6 lg:col-span-6">
                     <CustomLabel
+                      required
                       field="box_office"
                       name={tc('field_box_office')}
                     />
@@ -463,7 +483,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                 <div className="grid grid-cols-12 gap-6">
                   <div className="col-span-12">Payment</div>
                   <div className="col-span-12 sm:col-span-6 lg:col-span-4">
-                    <CustomLabel field="cash" name={tc('field_cash')} />
+                    <CustomLabel
+                      required
+                      field="cash"
+                      name={tc('field_cash')}
+                    />
                     <Switch.Group as="div" className="flex items-center">
                       <Switch
                         checked={watch('cash')}
@@ -487,7 +511,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                     <CustomError error={errors?.cash?.message} />
                   </div>
                   <div className="col-span-12 sm:col-span-6 lg:col-span-4">
-                    <CustomLabel field="credit" name={tc('field_credit')} />
+                    <CustomLabel
+                      required
+                      field="credit"
+                      name={tc('field_credit')}
+                    />
                     <Switch.Group as="div" className="flex items-center">
                       <Switch
                         checked={watch('credit')}
@@ -555,7 +583,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                   key={item.id}
                 >
                   <div className="col-span-12 sm:col-span-4">
-                    <CustomLabel field="day" name={tc('field_day')} />
+                    <CustomLabel required field="day" name={tc('field_day')} />
                     <select
                       id="day"
                       name="v"
@@ -574,7 +602,11 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                     <CustomError error={errors?.day?.[idx]?.day?.message} />
                   </div>
                   <div className="col-span-12 sm:col-span-4">
-                    <CustomLabel field="start" name={tc('field_start')} />
+                    <CustomLabel
+                      required
+                      field="start"
+                      name={tc('field_start')}
+                    />
                     <input
                       type="time"
                       name="start"
@@ -589,7 +621,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
                     />
                   </div>
                   <div className="col-span-12 sm:col-span-4">
-                    <CustomLabel field="end" name={tc('field_end')} />
+                    <CustomLabel required field="end" name={tc('field_end')} />
                     <input
                       type="time"
                       name="end"

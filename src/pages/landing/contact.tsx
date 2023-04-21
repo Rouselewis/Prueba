@@ -1,5 +1,12 @@
 /** @format */
-import { LegacyRef, createRef, useRef, useState, useCallback } from 'react';
+import {
+  LegacyRef,
+  createRef,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 import { GetStaticPropsContext } from 'next';
 import { useTranslations } from 'next-intl';
 // Forms
@@ -24,7 +31,10 @@ import {
 //Images
 import image from 'public/images/assets/landing/contact/slide.jpg';
 import { useContact } from '@/hooks/use_contact';
-import { GoogleReCaptcha, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from 'react-google-recaptcha-v3';
 
 const validationSchema = yup.object().shape({
   firstname: yup.string().min(2).max(32).required(),
@@ -38,8 +48,6 @@ const validationSchema = yup.object().shape({
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [submittedError, setSubmittedError] = useState(false);
-  const [token, setToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const currentColor = CurrentColor();
   const t = useTranslations('Contact');
@@ -55,36 +63,33 @@ const Contact = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const { mutate, isError } = useContact();
-  const handleReCaptchaVerify = useCallback(async () => {
-    if (!executeRecaptcha) {
-      console.log('Execute recaptcha not yet available');
-      return;
-    }
+  const { mutate, error } = useContact();
 
-    const token = await executeRecaptcha();
-    setToken(token);
-    // Do whatever you want with the token
-  }, [executeRecaptcha]);
-  console.log(token);
-  const onSubmitHandler = async (data: Contact) => {
-    await handleReCaptchaVerify();
-    if (token) {
-      mutate({
-        ...data,
-        g_captcha: token,
-      });
-    }
+  const onSubmitHandler = useCallback(
+    async (data: Contact) => {
+      if (!executeRecaptcha) {
+        console.log('Execute recaptcha not yet available');
+        return;
+      }
+      const token = await executeRecaptcha('formSubmit');
 
-    if (isError || !token) {
-      setSubmittedError(true);
-      setSubmitted(false);
-    } else {
-      setSubmitted(true);
-      setSubmittedError(false);
-      reset();
-    }
-  };
+      if (token) {
+        mutate({
+          ...data,
+          g_captcha: token,
+        });
+      }
+      if (error || !token) {
+        setSubmittedError(true);
+        setSubmitted(false);
+      } else {
+        setSubmitted(true);
+        setSubmittedError(false);
+        reset();
+      }
+    },
+    [executeRecaptcha]
+  );
 
   return (
     <>
@@ -368,9 +373,25 @@ const Contact = () => {
     </>
   );
 };
+
+const ContactWithProvider = () => {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
+      scriptProps={{
+        async: false,
+        defer: false,
+        appendTo: 'head',
+        nonce: undefined,
+      }}
+    >
+      <Contact />
+    </GoogleReCaptchaProvider>
+  );
+};
 //@ts-ignore
-Contact.Layout = MainLayout;
-export default Contact;
+ContactWithProvider.Layout = MainLayout;
+export default ContactWithProvider;
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   return {

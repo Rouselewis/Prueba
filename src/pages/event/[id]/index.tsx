@@ -31,98 +31,129 @@ import axios from '@/lib/axios';
 const EventDetailed = () => {
   const useFormReturn = useForm();
   const t = useTranslations('Public');
-  const router = useRouter();
-  const { _id } = router.query;
-  const { data: eventsSchedules } = useEventScheduleTimetables();
-  // const { data: eventSchedule } = useEventScheduleTimetable(_id as string);
-  const a = axios
-    .get(`/events/schedules/timetables/${_id}`)
-    .then((data) => console.log(data.data));
-
-  // const category = useEventCategory(event?.data?.category_id?._id);
-  // const eventSupplier = useEventSupplier(event?.data?.supplier_id?.id);
+  const { query } = useRouter();
+  const { data: eventsSchedules, isLoading } = useEventScheduleTimetables();
+  const { data: eventSchedule } = useEventScheduleTimetable(
+    query?._id as string
+  );
 
   const locale = useLocale();
-  // const info =
-  //   event?.data?.info.content.find((obj) => obj.lang == locale) ||
-  //   event?.data?.info.content.find((obj) => obj.lang == 'es');
+  const info =
+    eventSchedule?.schedule_id?.event_id?.info.content?.find(
+      (obj) => obj.lang == locale
+    ) ||
+    eventSchedule?.schedule_id?.event_id?.info.content?.find(
+      (obj) => obj.lang == 'es'
+    );
   return (
     <div className="mt-16 space-y-16 section-container mb-44">
-      {/* <div className="flex flex-col-reverse justify-between gap-10 md:flex-row">
+      <div className="flex flex-col-reverse justify-between gap-10 md:flex-row">
         <CardEventDetails
           className="flex-1"
           details={
-            event?.data?.content?.find((obj) => obj.lang == locale)
-              ?.description ||
-            event?.data?.content?.find((obj) => obj.lang == 'es')?.description
+            eventSchedule?.schedule_id?.event_id?.content.find(
+              (obj) => obj?.lang == locale
+            )?.description ||
+            eventSchedule?.schedule_id?.event_id?.content.find(
+              (obj) => obj?.lang == 'es'
+            )?.description
           }
           access={info?.access_limit}
           general={info?.general}
           observations={info?.observations}
           restrictions={info?.restrictions}
           services={info?.services}
-          id={event?.data?._id}
+          id={eventSchedule?.schedule_id?.event_id?._id}
+          // image={eventSchedule?.schedule_id?.event_id?.images?.picture?.web}
           image="https://loremflickr.com/640/480/cats"
         />
         <SidebarEvent
           className="h-max"
           category={
-            category?.data?.content?.find((obj) => obj.lang == locale)?.name ||
-            category?.data?.content?.find((obj) => obj.lang == 'es')?.name
+            eventSchedule?.schedule_id?.event_id?.category_id?.category?.find(
+              (obj) => obj.lang == locale
+            )?.name ||
+            eventSchedule?.schedule_id?.event_id?.category_id?.category?.find(
+              (obj) => obj.lang == 'es'
+            )?.name
           }
-          color={category?.data?.color}
-          cost={300}
-          startDate={new Date()}
-          endDate={new Date()}
-          startTime="1:00"
-          endTime="12:00"
-          id={event?.data?._id}
-          location="Location"
-          supplier={eventSupplier?.data?.name}
+          color={eventSchedule?.schedule_id?.event_id?.category_id?.color}
+          cost={[eventSchedule?.costs?.lower, eventSchedule?.costs?.high]}
+          startDate={eventSchedule?.start_at || new Date()}
+          endDate={eventSchedule?.end_at || new Date()}
+          id={eventSchedule?.schedule_id?.event_id?._id}
+          location={`${eventSchedule?.schedule_id?.venue_id?.address.country?.long_name}, ${eventSchedule?.schedule_id?.venue_id?.address?.city} ${eventSchedule?.schedule_id?.venue_id?.address?.address}`}
+          supplier={eventSchedule?.schedule_id?.event_id?.supplier_id?.name}
           name={
-            event?.data?.content?.find((obj) => obj.lang == locale)?.name ||
-            event?.data?.content?.find((obj) => obj.lang == 'es')?.name
+            eventSchedule?.schedule_id?.event_id?.content?.find(
+              (obj) => obj.lang == locale
+            )?.name ||
+            eventSchedule?.schedule_id?.event_id?.content?.find(
+              (obj) => obj.lang == 'es'
+            )?.name
           }
         />
       </div>
       <CardEventLocation
-        location="Location"
+        location={`${eventSchedule?.schedule_id?.venue_id?.address?.address}, ${eventSchedule?.schedule_id?.venue_id?.address?.address2}`}
         origin={{
-          lat: -2.18331,
-          lng: -79.8833,
+          lat: parseInt(
+            eventSchedule?.schedule_id?.venue_id?.address?.latitude
+          ),
+          lng: parseInt(
+            eventSchedule?.schedule_id?.venue_id?.address?.longitude
+          ),
         }}
-        tags={event?.data?.tags?.map((obj) => obj.tag)}
+        tags={eventSchedule?.schedule_id?.event_id?.tags?.map(
+          (tag) => tag?.tag
+        )}
       />
       <ListCardEvent
-        loading={events?.isLoading}
+        loading={isLoading}
         layout="swiper"
         setCurrentPage={() => {}}
         setPageSize={() => {}}
-        totalDocs={10}
+        totalDocs={eventsSchedules?.total}
         title={t('home.new_events')}
-        items={events?.data?.items?.map((item) => ({
+        items={eventsSchedules?.items?.map((item) => ({
+          // image: item.schedule_id.event_id.images.picture,
           image: 'https://loremflickr.com/640/480/cats',
-          name: item.content.find((obj) => obj.lang == locale)?.name,
-          startDate: new Date(),
-          endDate: new Date(),
-          location: 'Location',
-          color: item.category_id?.color,
-          id: item._id,
+          name:
+            item?.schedule_id?.event_id?.content?.find(
+              (obj) => obj.lang == locale
+            )?.name ||
+            item?.schedule_id?.event_id?.content?.find(
+              (obj) => obj.lang == 'es'
+            )?.name,
+          startDate: item?.start_at,
+          endDate: item?.end_at,
+          location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
+          color: item.schedule_id.event_id.category_id.color,
+          id: item?._id,
         }))}
         {...useFormReturn}
-      /> */}
-      {/* <ListCardEventRecommendation
-        items={events?.data?.items?.map((item) => ({
-          category_id: item.category_id._id,
+      />
+      <ListCardEventRecommendation
+        loading={isLoading}
+        items={eventsSchedules?.items?.map((item) => ({
+          // image: item.schedule_id.event_id.images.picture,
           image: 'https://loremflickr.com/640/480/cats',
-          location: 'Location',
-          name: item.content.find((obj) => obj.lang == locale)?.name,
+          name:
+            item.schedule_id.event_id.content.find((obj) => obj.lang == locale)
+              ?.name ||
+            item.schedule_id.event_id.content.find((obj) => obj.lang == 'es')
+              ?.name,
+          startDate: item.start_at,
+          endDate: item.end_at,
+          location: `${item.schedule_id.venue_id.address.country.long_name}, ${item.schedule_id.venue_id.address.city} ${item.schedule_id.venue_id.address.address}`,
+          color: item.schedule_id.event_id.category_id.color,
           id: item._id,
+          category_id: item.schedule_id.event_id.category_id._id,
         }))}
         setCurrentPage={() => {}}
         setPageSize={() => {}}
-        totalDocs={10}
-      /> */}
+        totalDocs={eventsSchedules?.total}
+      />
     </div>
   );
 };
