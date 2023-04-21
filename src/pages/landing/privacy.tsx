@@ -1,37 +1,184 @@
 /** @format */
-import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
+import { GetStaticPropsContext } from 'next';
+import { useTranslations } from 'next-intl';
 // Layout and Header
-import MainLayout from "@/components/layout/main";
-import Section from "@/components/headers/landing/section";
+import MainLayout from '@/components/layout/main';
+import Section from '@/components/headers/landing/section';
 // Helpers
-import { CurrentColor } from "@/helpers/currentColor";
+import { CurrentColor } from '@/helpers/currentColor';
 
 const Privacy = () => {
-  const t = useTranslations("Privacy");
+  const t = useTranslations('Privacy');
   const currentColor = CurrentColor();
 
   return (
     <div>
       <Section title={t('page')} color={currentColor} />
 
-      <div className="bg-white py-32 px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl text-base leading-7 text-gray-700">
-          <p className="mt-6 text-xl leading-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit sagittis est, id feugiat enim dictum nec. Morbi auctor risus bibendum, mattis ipsum eu, vehicula metus. Sed cursus id magna et eleifend. Sed congue tristique odio. Maecenas dignissim nibh mauris. Phasellus quis dolor a odio scelerisque placerat vitae eu magna. Suspendisse dictum posuere quam, ac accumsan mauris ultrices ac. Quisque ac nunc massa. Duis eleifend mauris ut metus interdum, vitae ultricies purus vehicula. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas imperdiet ligula a justo vestibulum accumsan. Nunc hendrerit tortor non euismod luctus. In rutrum gravida nunc at convallis. In leo dui, tincidunt et porttitor vel, mattis vitae metus. Proin ultrices congue elit semper bibendum.
+      <div className="bg-white py-16 px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl text-xl leading-8 text-customGray space-y-4">
+          <div>
+            Los datos de "CTickets" serán tratados por Arturo Villalpando
+            Sánchez, con domicilio en calle José Sergio Báez, Fracc. Villas del
+            Sol en la ciudad de Zacatecas, Zacatecas, México con Código Postal
+            98067, quién en adelante será el responsable del uso y protección de
+            sus datos personales, y al respecto le informamos lo siguiente:
+          </div>
+          <div className="space-y-2">
+            <div className="text-4xl font-extrabold py-5">
+              ¿Para qué fines utilizaremos sus datos personales?
+            </div>
+            <p>
+              Los datos personales que recabamos de usted, los utilizaremos para
+              las siguientes finalidades dependiendo del servicio que se
+              solicite:
+            </p>
+            <ul className="pl-14 list-disc">
+              <li>Registro en nuestra página web,</li>
+              <li>Publicar los eventos,</li>
+              <li>Localizar los eventos cercanos,</li>
+              <li>Entrega de entradas a los eventos,</li>
+              <li>Apartado de boletos,</li>
+              <li>Transferencia de boletos,</li>
+              <li>Reembolso de boletos.</li>
+              <li>Realizar cobros,</li>
+              <li>Elaboración de la factura, </li>
+              <li>Atender solicitudes de información,</li>
+              <li>Dar cumplimiento a relaciones jurídicas contraídas,</li>
+              <li>Permitir la interacción con aplicaciones de terceros,</li>
+              <li>Detectar posibles fraudes o usos no autorizados,</li>
+              <li>Dar respuesta a requerimientos de autoridades.</li>
+            </ul>
+            <p>
+              De manera adicional, utilizaremos su información personal para las
+              siguientes finalidades secundarias que no son necesarias para el
+              servicio solicitado, pero que nos permiten y facilitan brindarle
+              una mejor atención:
+            </p>
+            <ul className="pl-14 list-disc">
+              <li>Recomendaciones para el usuario,</li>
+              <li>Mercadotecnia o publicitaria,</li>
+              <li>Prospección comercial,</li>
+              <li>Mejorar el funcionamiento de nuestros servicios.</li>
+            </ul>
+            <p>
+              En caso de que no desee que sus datos personales sean tratados
+              para estos fines secundarios, desde este momento usted nos puede
+              comunicar lo anterior mediante un mensaje al correo electrónico
+              privacity@ctickets.app manifestando la negativa para el
+              tratamiento de sus datos personales para finalidades secundarias.
+            </p>
+            <p>
+              La negativa para el uso de sus datos personales para estas
+              finalidades no podrá ser un motivo para que le neguemos los
+              servicios y productos que solicita o contrata con nosotros.
+            </p>
+          </div>
 
-            In accumsan sagittis metus, sed scelerisque ante aliquam id. In congue nibh in convallis finibus. Mauris consectetur, odio sit amet placerat mattis, nisi lacus pulvinar leo, eget rutrum augue nunc eget dolor. Integer vehicula finibus diam non condimentum. Curabitur in dui in mi dapibus suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nullam convallis, tellus eget cursus commodo, arcu lectus pulvinar odio, et fermentum libero ante placerat tellus.
+          <div className="space-y-2">
+            <div className="text-4xl font-extrabold py-5">
+              ¿Qué datos personales utilizaremos para estos fines?
+            </div>
+            <p>
+              Para llevar a cabo las finalidades descritas en el presente aviso
+              de privacidad, utilizaremos los siguientes datos personales:
+            </p>
+            <ul className="pl-14 list-disc">
+              <li>Datos de identificación,</li>
+              <li>Datos de contacto.</li>
+            </ul>
+          </div>
 
-            Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut bibendum, purus fringilla facilisis congue, quam metus tempus orci, at laoreet lacus nisi non nisi. Aliquam hendrerit nunc sit amet rhoncus placerat. Quisque vulputate ultricies ligula, at condimentum tellus accumsan nec. Praesent eget dictum neque. Ut convallis convallis purus, nec tristique nulla vehicula ut. Mauris maximus metus vitae nunc tristique pulvinar. Donec ut auctor libero. Proin eleifend erat vitae cursus ultrices. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sollicitudin venenatis augue quis elementum. Curabitur dignissim nec mauris quis aliquam. Vivamus ipsum libero, volutpat id placerat id, posuere convallis nisi. Sed maximus malesuada nisl, a lobortis ligula dictum sed. Pellentesque in pretium augue. Fusce dolor mauris, vestibulum vitae nisl vel, feugiat ultricies mauris.
+          <div className="space-y-2">
+            <div className="text-4xl font-extrabold py-5">
+              ¿Cómo puede acceder, rectificar o cancelar sus datos personales, u
+              oponerse a su uso?
+            </div>
+            <p>
+              Usted tiene derecho a conocer qué datos personales tenemos de
+              usted, para qué los utilizamos y las condiciones del uso que les
+              damos (Acceso). Asimismo, es su derecho solicitar la corrección de
+              su información personal en caso de que esté desactualizada, sea
+              inexacta o incompleta (Rectificación); que la eliminemos de
+              nuestros registros o bases de datos cuando considere que la misma
+              no está siendo utilizada adecuadamente (Cancelación); así como
+              oponerse al uso de sus datos personales para fines específicos
+              (Oposición). Estos derechos se conocen como derechos ARCO.
+            </p>
+            <p>
+              Para el ejercicio de cualquiera de los derechos ARCO, usted deberá
+              presentar la solicitud respectiva mediante un mensaje al correo
+              electrónico privacity@ctickets.app manifestando su deseo para
+              ejercer los derechos de acceso, rectificación, cancelación y/u
+              oposición (ARCO).
+            </p>
+            <p>
+              Los datos de contacto de la persona que está a cargo de dar
+              trámite a las solicitudes de derechos ARCO, son los siguientes:
+            </p>
+            <ul className="pl-14 list-disc">
+              <li>Correo electrónico: privacity@ctickets.app</li>
+            </ul>
+          </div>
 
-            Suspendisse venenatis rhoncus imperdiet. Cras tristique, libero eu facilisis sodales, nisi sem sollicitudin dui, vitae blandit nisi libero a risus. Etiam non ligula arcu. Pellentesque id metus risus. Donec id dui at diam commodo ullamcorper. Ut ut egestas nulla, fringilla pulvinar risus. Morbi tempus justo ac tortor volutpat consectetur.
+          <div className="space-y-2">
+            <div className="text-4xl font-extrabold py-5">
+              Usted puede revocar su consentimiento para el uso de sus datos
+              personales
+            </div>
+            <p>
+              Usted puede revocar el consentimiento que, en su caso, nos haya
+              otorgado para el tratamiento de sus datos personales. Sin embargo,
+              es importante que tenga en cuenta que no en todos los casos
+              podremos atender su solicitud o concluir el uso de forma
+              inmediata, ya que es posible que por alguna obligación legal
+              requiramos seguir tratando sus datos personales. Asimismo, usted
+              deberá considerar que, para ciertos fines, la revocación de su
+              consentimiento implicará que no le podamos seguir prestando el
+              servicio que nos solicitó, o la conclusión de su relación con
+              nosotros.
+            </p>
+            <p>
+              Para revocar su consentimiento deberá presentar su solicitud
+              mediante un mensaje al correo electrónico privacity@ctickets.app
+              manifestando su deseo para la revocación de su consentimiento.
+            </p>
+          </div>
 
-            Fusce iaculis auctor cursus. Mauris dapibus, urna at maximus elementum, arcu nisi mattis felis, sit amet volutpat ex dolor at mi. Vestibulum commodo mattis ligula, at semper nisl suscipit vitae. Phasellus ac odio turpis. Suspendisse blandit sodales aliquam. Sed ac enim sit amet urna laoreet malesuada. Vestibulum dignissim pulvinar porttitor. Morbi accumsan bibendum arcu in pellentesque.
+          <div className="space-y-2">
+            <div className="text-4xl font-extrabold py-5">
+              ¿Cómo puede limitar el uso o divulgación de su información
+              personal?
+            </div>
+            <p>
+              Con objeto de que usted pueda limitar el uso y divulgación de su
+              información personal, puede enviar un correo electrónico a
+              privacity@ctickets.app solicitando limitar el uso y divulgación de
+              los datos personales.
+            </p>
+          </div>
 
-            Nam interdum sapien vitae consequat commodo. Suspendisse potenti. Aliquam condimentum sit amet leo sit amet laoreet. Cras nec orci leo. Pellentesque et posuere enim, ac finibus purus. Vivamus lacinia mauris sit amet quam lobortis mattis. Vivamus nulla turpis, aliquam vel quam a, molestie tristique eros. Nunc porta nisl at sapien congue auctor.
+          <div className="space-y-2">
+            <div className="text-4xl font-extrabold py-5">
+              ¿Cómo puede conocer los cambios en este aviso de privacidad?
+            </div>
+            <p>
+              El presente aviso de privacidad puede sufrir modificaciones,
+              cambios o actualizaciones derivadas de nuevos requerimientos
+              legales; de nuestras propias necesidades por los productos o
+              servicios que ofrecemos; de nuestras prácticas de privacidad; de
+              cambios en nuestro modelo de negocio, o por otras causas.
+            </p>
+            <p>
+              Nos comprometemos a mantenerlo informado sobre los cambios que
+              pueda sufrir el presente aviso de privacidad, a través de la
+              página de internet: https://ctickets.app/es/landing/privacy.
+            </p>
+          </div>
 
-            Donec quis diam dictum, mattis arcu ac, sodales enim. Cras at ultricies mi, sit amet aliquam nibh. Integer vitae cursus mauris, nec molestie enim. Vivamus a nisl tempus, consequat lorem vel, bibendum libero. In pharetra ex in semper tempor. Etiam lacus enim, tempus vitae laoreet vel, maximus ut lorem. Cras consequat placerat luctus. Integer in purus pellentesque, malesuada odio ut, bibendum dolor.
-          </p>
+          <div className="py-5 text-right">
+            Última actualización: Abril de 2023.
+          </div>
         </div>
       </div>
     </div>

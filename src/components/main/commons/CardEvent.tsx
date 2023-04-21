@@ -20,6 +20,7 @@ import {
 } from '@/hooks/user/user_favorites';
 import { useUserAttends } from '@/hooks/user/user_attends';
 import { useUsers } from '@/hooks/user/user';
+import { MapPinIcon } from '@heroicons/react/24/outline';
 
 export type props = {
   className?: string;
@@ -90,7 +91,7 @@ const CardEvent: React.FC<props> = ({
   return (
     <div
       className={classNames(
-        'card rounded-xl relative shadow-xl overflow-hidden',
+        'card relative shadow-xl overflow-hidden rounded-sm',
         layout == 'column' ? 'flex' : 'block',
         className
       )}
@@ -141,14 +142,14 @@ const CardEvent: React.FC<props> = ({
 
         <span
           className={classNames(
-            'w-full',
+            'w-full rounded-b-[2rem] border-x-customForm shadow-lg',
             layout == 'column' ? 'flex h-full items-center' : 'block'
           )}
         >
           <Link href={`/event/${slug}?id=${id}`} className="block p-5">
             <span
               title={name}
-              className="block text-lg font-semibold text-black break-words truncate w-"
+              className="block text-lg font-semibold text-black break-words truncate w- capitalize"
             >
               {name}
             </span>
@@ -158,19 +159,19 @@ const CardEvent: React.FC<props> = ({
                 layout == 'column' ? 'flex gap-3' : 'block'
               )}
             >
-              <span className="block text-customGray">
+              <span className="block text-base font-light text-customGray">
                 {format(parseDate(startDate), 'EEEE dd MMMM yyyy', {
                   locale: locale == 'en' ? enUS : es,
                 })}
               </span>
-              <span className="flex gap-2 text-customGray">
+              <span className="flex gap-2 text-base font-light text-customGray">
                 {format(parseDate(startDate), 'HH:mm')} <span>-</span>{' '}
                 {format(parseDate(endDate), 'HH:mm')}
               </span>
             </span>
 
-            <p className="flex items-center gap-2 font-semibold text-black break-words">
-              <Icon name="map-pin" />
+            <p className="flex items-center gap-2 text-customGray text-base leading-tight break-words">
+              <MapPinIcon name="location" className="w-5 h-5" />
               {location}
             </p>
           </Link>

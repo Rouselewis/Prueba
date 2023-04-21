@@ -140,7 +140,7 @@ const Program = ({ categories }) => {
         /> */}
 
         <CardAdvertisment
-          image="/images/advertisements/anunciate_aqui.png"
+          image="/images/advertisements/anunciate-1320x250.png"
           size="large"
         />
       </div>
