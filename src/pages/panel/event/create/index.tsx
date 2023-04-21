@@ -199,6 +199,9 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
           ],
         },
       },
+      event_dates: {
+        schedules: [] as any,
+      },
       date_type: 'define',
     },
     resolver: yupResolver(currentValidationSchema),
@@ -304,6 +307,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
         newFormData.append('flyer', flyer);
 
         await createNewEvent(newFormData as any);
+
         toast.success('Event created');
       }
     } catch (error) {
@@ -346,8 +350,8 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
           },
           info: {
             age_limit: 0,
-            duration:
-              eventScheduleTimeTable?.schedule_id?.event_id?.info?.duration as any,
+            duration: eventScheduleTimeTable?.schedule_id?.event_id?.info
+              ?.duration as any,
             content:
               eventScheduleTimeTable?.schedule_id?.event_id?.info?.content,
           },
