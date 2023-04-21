@@ -2,9 +2,6 @@
 import { Fragment, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Menu, Transition } from '@headlessui/react';
-// Sign In
-import { useAuthLogin, useAuthWithProvider } from '@/hooks/use_handle_auth';
-import { SignIn } from '@/interfaces/auth';
 // Forms
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
