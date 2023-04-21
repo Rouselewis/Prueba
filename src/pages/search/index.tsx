@@ -151,7 +151,7 @@ const Search = ({ categories }) => {
                     endDate: item?.end_at,
                     location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
                     color: item.schedule_id.event_id.category_id.color,
-                    id: item?._id,
+                    id: item?.schedule_id?.event_id?._id,
                   }))
                 )}
                 {...useFormReturn}
@@ -185,7 +185,7 @@ const Search = ({ categories }) => {
                   endDate: item?.end_at,
                   location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
                   color: item.schedule_id.event_id.category_id.color,
-                  id: item?._id,
+                  id: item?.schedule_id?.event_id?._id,
                 }))
               )}
               {...useFormReturn}

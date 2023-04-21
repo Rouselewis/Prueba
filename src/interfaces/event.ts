@@ -26,10 +26,7 @@ import {
 export interface Event {
   _id: string;
   user_id: string;
-  supplier_id?: {
-    id: string;
-    collection: string;
-  } | null;
+  supplier_id?: EventSupplier | null;
   category_id: EventCategory;
   subcategory_id: string | null;
   special_category_id?: string | null;

@@ -55,11 +55,11 @@ const CardEvent: React.FC<props> = ({
   const locale = useLocale();
   const { pathname } = useRouter();
   const favorite = favorites
-    ?.filter((item) => item.user_id.id === user._id)
+    ?.filter((item) => item.user_id.id === user.id)
     .find((item) => item.events_likes.find((event) => event.id == id));
 
   const attend = favorites
-    ?.filter((item) => item.user_id.id == user._id)
+    ?.filter((item) => item.user_id.id == user.id)
     .find((item) => item.events_attends.find((attend) => attend.id == id));
   // console.log(favorites?.filter((item) => item.user_id.id == user._id));
   const handleAddFavorite = (e) => {
@@ -117,7 +117,7 @@ const CardEvent: React.FC<props> = ({
       )}
       <Link
         href={`/${
-          pathname.includes('event') ? 'event' : 'program'
+          pathname.includes('search') ? 'event' : 'program'
         }/${slug}?_id=${id}`}
         className={classNames(
           'relative block',
@@ -149,7 +149,12 @@ const CardEvent: React.FC<props> = ({
             layout == 'column' ? 'flex h-full items-center' : 'block'
           )}
         >
-          <Link href={`/event/${slug}?id=${id}`} className="block p-5">
+          <Link
+            href={`/${
+              pathname.includes('search') ? 'event' : 'program'
+            }/${slug}?_id=${id}`}
+            className="block p-5"
+          >
             <span
               title={name}
               className="block text-lg font-semibold text-black break-words truncate w-"

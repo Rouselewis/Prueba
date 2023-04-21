@@ -16,17 +16,12 @@ const Template: StoryFn<props> = (args) => (
 
 export const Default: StoryFn<props> = Template.bind({});
 Default.args = {
-  cost: faker.datatype.number({ min: 300, max: 3000 }),
+  cost: [
+    faker.datatype.number({ min: 300, max: 3000 }),
+    faker.datatype.number({ min: 300, max: 3000 }),
+  ],
   endDate: faker.date.future(),
   startDate: faker.date.past(),
-  endTime: `${faker.datatype.number({
-    min: 1,
-    max: 12,
-  })}:${faker.datatype.number({ min: 1, max: 60 })}`,
-  startTime: `${faker.datatype.number({
-    min: 1,
-    max: 12,
-  })}:${faker.datatype.number({ min: 1, max: 60 })}`,
   id: faker.datatype.uuid(),
   location: faker.address.streetAddress(),
   name: faker.name.jobTitle(),
