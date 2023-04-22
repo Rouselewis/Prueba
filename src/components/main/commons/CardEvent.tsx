@@ -125,7 +125,7 @@ const CardEvent: React.FC<props> = ({
           layout == 'grid' ? 'aspect-[4/3]' : 'aspect-square w-72 '
         )}
       >
-        <Image src={image} alt="" fill className="object-cover" />
+        <img src={image} alt="" className="object-cover" />
         {isAuthenticated && (
           <WillAttend
             onClick={handleAddAttend}

@@ -451,7 +451,8 @@
     "event": {
       "event": "Events",
       "discount": "Discount",
-      "special": "Special Category"
+      "special": "Special Category",
+      "section": "Event Section"
     },
     "ticket": {
       "ticket": "Tickets",

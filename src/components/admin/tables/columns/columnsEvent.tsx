@@ -2,9 +2,13 @@ import { useTranslations } from 'next-intl';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Checkbox, Options, SwitchTable } from './components';
 import { CurrentColor } from '@/helpers';
-import { useDeleteEventScheduleTimetable } from '@/hooks/event/event_schedules_timetables';
+import {
+  useDeleteEventScheduleTimetable,
+  useUpdateEventScheduleTimetable,
+} from '@/hooks/event/event_schedules_timetables';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { Controller, useForm } from 'react-hook-form';
 
 export function columnsEvent() {
   const ts = useTranslations('Fsuccess');
@@ -13,6 +17,8 @@ export function columnsEvent() {
   const columnHelper = createColumnHelper<any>();
   const { mutate: deleteEventSecheduleTimetable } =
     useDeleteEventScheduleTimetable();
+  const { mutate: updateEventScheduleTimetable } =
+    useUpdateEventScheduleTimetable();
   const router = useRouter();
 
   const onDelete = async (id) => {
@@ -24,7 +30,13 @@ export function columnsEvent() {
     }
   };
   const onUpdate = (id) => router.push(`/panel/event/create?id=${id}`);
-
+  const toggleStatus = async (id: string, status: boolean) =>
+    await updateEventScheduleTimetable({
+      id,
+      schedule_timetable: {
+        status: !status,
+      },
+    });
   return [
     columnHelper.accessor('select', {
       id: 'select',
@@ -80,10 +92,32 @@ export function columnsEvent() {
       header: () => tcc('event.event.shared'),
       cell: (props) => props.getValue(),
     }),
+
     columnHelper.accessor('status', {
       id: 'status',
       header: () => tcc('status'),
-      cell: (props) => <SwitchTable color={currentColor} />,
+      cell: (props) => {
+        const id = props.row.original.id;
+        const { control, watch } = useForm<{ status: boolean }>();
+        const [status] = watch(['status']);
+
+        return (
+          <Controller
+            control={control}
+            name="status"
+            render={({ field: { onChange, value } }) => (
+              <SwitchTable
+                color={currentColor}
+                status={value}
+                onChange={(v) => {
+                  toggleStatus(id, v);
+                  onChange(v);
+                }}
+              />
+            )}
+          />
+        );
+      },
     }),
     columnHelper.accessor('options', {
       id: 'options',

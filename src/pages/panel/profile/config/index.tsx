@@ -81,6 +81,7 @@ const ProfileConfig = () => {
     // setSubmitted(false);
     // setSubmittedError(true);
     console.log(updatedData);
+    //@ts-ignore
     updateUser(updatedData);
   };
 

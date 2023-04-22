@@ -35,10 +35,13 @@ export const readEventScheduleTimetable = async (id: string) => {
   return data;
 };
 
-export const updateEventScheduleTimetable = async (
-  id: string,
-  schedule_timetable: EventScheduleTimetable
-) => {
+export const updateEventScheduleTimetable = async ({
+  id,
+  schedule_timetable,
+}: {
+  id: string;
+  schedule_timetable: any;
+}) => {
   const { data } = await axios.put(
     `/events/schedules/timetables/${id}`,
     schedule_timetable
