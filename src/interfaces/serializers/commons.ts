@@ -59,6 +59,7 @@ export interface CreateTicket {
   pay_limit: number;
   free_event: boolean;
   charity: boolean;
+  subscription: boolean;
   sell_limit: number;
   currency: string;
   sale_start: Date;
