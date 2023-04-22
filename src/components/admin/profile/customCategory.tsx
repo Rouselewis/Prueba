@@ -10,14 +10,19 @@ export const CustomCategory = ({
   picture,
   color,
   status,
-}: EventCategory) => {
+  onChange,
+}: EventCategory & { onChange: (checked: boolean) => void }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.checked);
+  };
   return (
     <label>
       <div className="relative ">
         <input
-          //   id={_id}
+          id={_id}
           type="checkbox"
-          className="customCheckboxes peer absolute opacity-0 "
+          className="customCheckboxes peer absolute opacity-0"
+          onChange={handleChange}
         />
         <Image
           width={120}
