@@ -21,7 +21,10 @@ export function useUsers() {
 }
 
 export function useUser(user_id: string) {
-  return useQuery([key, user_id], () => readUser(user_id));
+  return useQuery([key, user_id], () => readUser(user_id),
+    {
+      enabled: !!user_id
+    });
 }
 
 export function useMutationUpdateUser() {

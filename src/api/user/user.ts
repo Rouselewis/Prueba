@@ -30,7 +30,7 @@ export const updateUser = async (user: User) => {
     'data enter updateUser from mutation:',
     JSON.stringify(user, null, 2)
   );
-  const { data } = await axios.put(`/users/${user.uid}`, user);
+  const { data } = await axios.put(`/users/${user.id}`, user);
 
   return data;
 };
@@ -45,7 +45,7 @@ export const updateUserWithAvatar = async (data: {
     formData.append('avatar', data.avatar);
   }
   const { data: response } = await axios.put(
-    `/users/${data.user.uid}`,
+    `/users/${data.user.id}`,
     formData,
     {
       headers: {
@@ -56,9 +56,9 @@ export const updateUserWithAvatar = async (data: {
   return response;
 };
 
-export const updateUserWithId = async (user: any, uid: string) => {
+export const updateUserWithId = async (user: any, id: string) => {
   console.log('updateUser from mutation:', user);
-  const { data } = await axios.put(`/users/${uid}`, user);
+  const { data } = await axios.put(`/users/${id}`, user);
 
   return data;
 };
