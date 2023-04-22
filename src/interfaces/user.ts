@@ -13,8 +13,8 @@ import {
 export type Role = 'SUPER_ADMIN' | 'ADMIN' | 'PROMOTER' | 'EDITOR' | 'USER';
 
 export interface User {
-  _id: string,
-  uid: string;
+  _id: string;
+  uid?: string;
   id_token?: string;
   role?: Role | null;
   roles?: string[] | Role[];

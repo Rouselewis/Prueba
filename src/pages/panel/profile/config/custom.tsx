@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { GetStaticPropsContext } from 'next';
 import { useTranslations } from 'next-intl';
+import { useQueryClient } from '@tanstack/react-query';
 // Layout and Header
 import AdminLayout from '@/components/layout/admin';
 import { Heading } from '@/components/headers/admin/heading';
@@ -10,7 +11,9 @@ import { CustomError, CustomCancel, CustomSubmit } from '@/components/forms';
 // Components
 import { CustomCategory } from '@/components/admin/profile/customCategory';
 import { useCategories } from '@/hooks/admin/event/category';
-import { useMe, useUsers } from '@/hooks/user/user';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const ProfileCustom = () => {
   const t = useTranslations('Panel_Profile_Category');
@@ -30,6 +33,15 @@ const ProfileCustom = () => {
 
   // const { data: userData } = useUsers();
   // console.log('userData:', JSON.stringify(userData, null, 2));
+
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(['user']);
+
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
 
   return (
     <>
