@@ -107,7 +107,9 @@
     "add_ticket": "Create Ticket",
     "add_user_app": "Create APP User",
     "add_user_pos": "Create POS User",
-    "add_user_system": "Create System User"
+    "add_user_system": "Create System User",
+    "form_create_template": "Create Template",
+    "form_load_template": "Load Template"
   },
   "Landing_Comment_Table": "/////////////////////////////////////// Tables",
   "table": {
@@ -219,6 +221,7 @@
         "available": "Available",
         "sold": "Sold",
         "attendance": "Attendance",
+        "cost": "Cost",
         "earns": "Earns",
         "phase": "Phase",
         "start_at": "Start At",
@@ -968,5 +971,12 @@
         "error": "Error while tag is updated!"
       }
     }
+  },
+  "Panel_Ticket_Comment": "//////////////////////////////////////// Panel Ticket Comment",
+  "Panel_Ticket": {
+    "ticket": "Ticket",
+    "commission": "Commissions of months without interest (these commissions will be added two the fees):",
+    "for": "for",
+    "template": "Template"
   }
 }

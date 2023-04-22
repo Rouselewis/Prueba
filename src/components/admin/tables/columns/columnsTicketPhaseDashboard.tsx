@@ -1,17 +1,17 @@
 import Link from 'next/link';
-import { useTranslations } from "next-intl";
+import { useTranslations } from 'next-intl';
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, Options, SwitchTable } from "./components";
+import { Checkbox, Options, SwitchTable } from './components';
 // Helpers
 import { CurrentColor } from '@/helpers';
 
 export function columnsTicketPhaseDashboard() {
-  const tcc = useTranslations("table_columns");
+  const tcc = useTranslations('table_columns');
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
-  
-  return ([
+
+  return [
     columnHelper.accessor('select', {
       id: 'select',
       header: ({ table }) => (
@@ -39,46 +39,49 @@ export function columnsTicketPhaseDashboard() {
     columnHelper.accessor('phase', {
       id: 'phase',
       header: () => tcc('dashboard.ticket.phase'),
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('start_at', {
       id: 'start_at',
       header: () => tcc('dashboard.ticket.start_at'),
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('end_at', {
       id: 'end_at',
       header: () => tcc('dashboard.ticket.end_at'),
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('available', {
       id: 'available',
       header: () => tcc('dashboard.ticket.available'),
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('sold', {
       id: 'sold',
       header: () => tcc('dashboard.ticket.sold'),
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
+    }),
+    columnHelper.accessor('cost', {
+      id: 'cost',
+      header: () => tcc('dashboard.ticket.cost'),
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('earns', {
       id: 'earns',
       header: () => tcc('dashboard.ticket.earns'),
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('status', {
       id: 'status',
       header: () => tcc('status'),
-      cell: props => (
-        <SwitchTable color={currentColor} />
-      ),
+      cell: (props) => <SwitchTable color={currentColor} />,
     }),
     columnHelper.accessor('options', {
       id: 'options',
       header: () => tcc('option'),
-      cell: props => (
+      cell: (props) => (
         <Options id={props.row.original.id} color={currentColor} />
       ),
-    })
-  ]);
+    }),
+  ];
 }
