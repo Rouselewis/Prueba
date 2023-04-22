@@ -460,6 +460,9 @@
       "ticket": "Tickets",
       "list": "List",
       "refund": "Refund",
+      "subscription": {
+        "subscription": "Subscription"
+      },
       "user": {
         "user": "Users",
         "app": "Application",
@@ -662,6 +665,7 @@
     "field_pay_limit": "Pay Limit (Days)",
     "field_free_event": "Free Event",
     "field_charity": "Charity",
+    "field_subscription": "Subscription",
     "field_sell_limit": "Sell Limit per Person",
     "field_sale_start": "Sale Start",
     "field_pre_sale_start": "Pre-sale Start (optional)",

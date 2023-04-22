@@ -117,6 +117,7 @@ export interface EventSettings {
   tickets?: EventSettingsTicket | null;
   isFree: boolean;
   isCharity: boolean;
+  isSubscription: boolean;
   msi: {
     month: number;
     status: boolean;

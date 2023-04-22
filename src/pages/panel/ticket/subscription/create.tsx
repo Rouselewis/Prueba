@@ -1,11 +1,14 @@
 /** @format */
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { GetStaticPropsContext } from 'next';
 import { useLocale, useTranslations } from 'next-intl';
 import { Switch } from '@headlessui/react';
 // Layout and Header
 import AdminLayout from '@/components/layout/admin';
 import { Heading } from '@/components/headers/admin/heading';
+// Table
+import { ColumnsEventSubscriptionList } from '@/components/admin/tables/columns/columnsEventSubscriptionList';
+import { BasicTable } from '@/components/admin/tables';
 // Forms
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -36,6 +39,26 @@ const EventCreateAdditional = () => {
   const tc = useTranslations('Common_Forms');
   const te = useTranslations('Ferrors');
   const tt = useTranslations('Panel_Ticket');
+
+  const data = useMemo(
+    () => [
+      {
+        id: '1',
+        event: 'Alicia en el país de las maravillas',
+        date: '2022-04-12',
+        time: '08:00 - 14:00',
+      },
+      {
+        id: '2',
+        event: 'Hell & Heaven - Preferente',
+        date: '2022-04-12',
+        time: '08:00 - 14:00',
+      },
+    ],
+    []
+  );
+  const columns = ColumnsEventSubscriptionList();
+
   const transformDate = (originalValue) => {
     if (originalValue === null || originalValue === '') {
       return null;
@@ -191,38 +214,28 @@ const EventCreateAdditional = () => {
                 <CustomError error={errors?.event_id?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel
-                  required
-                  field="date"
-                  name={tc('field_event_date')}
+                <CustomLabel required field="date" name={tc('field_search')} />
+                <input
+                  id="search"
+                  aria-describedby="resale-description"
+                  name="search"
+                  type="text"
+                  autoComplete={tc('field_search')}
+                  placeholder={tc('field_search')}
+                  className={FormStyles('input')}
                 />
-                <select
-                  id="date"
-                  name="date"
-                  className={FormStyles('select')}
-                  defaultValue={''}
-                  {...register('date')}
-                >
-                  <option value="all">{tc('field_date')}</option>
-                </select>
                 <CustomError error={errors?.date?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
-                <CustomLabel
-                  required
-                  field="schedule"
-                  name={tc('field_schedule')}
-                />
-                <select
-                  id="schedule"
-                  name="schedule"
-                  className={FormStyles('select')}
-                  defaultValue={''}
-                  {...register('schedule')}
-                >
-                  <option value="all">{tc('field_schedule')}</option>
-                </select>
+                <div className="text-right pt-6">
+                  <CustomAdd />
+                </div>
                 <CustomError error={errors?.schedule?.message} />
+              </div>
+            </div>
+            <div className="mt-6 grid grid-cols-12 gap-6 mb-6">
+              <div className="col-span-12">
+                <BasicTable columns={columns} defaultData={data} />
               </div>
             </div>
             <div className="mt-6 grid grid-cols-12 gap-6">
@@ -358,81 +371,6 @@ const EventCreateAdditional = () => {
                   {...register('pay_limit')}
                 />
                 <CustomError error={errors?.pay_limit?.message} />
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-12 gap-6">
-              <div className="col-span-12 sm:col-span-6 lg:col-span-4">
-                <CustomLabel field="free_event" name={tc('field_free_event')} />
-                <Switch.Group as="div" className="flex items-center">
-                  <Switch
-                    checked={watch('free_event')}
-                    onChange={(e) => setValue('free_event', e)}
-                    className={classNames(
-                      watch('free_event')
-                        ? `bg-${currentColor}`
-                        : `bg-gray-200`,
-                      `relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-${currentColor} focus:ring-offset-2`
-                    )}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={classNames(
-                        watch('free_event') ? 'translate-x-5' : 'translate-x-0',
-                        'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-                      )}
-                    />
-                  </Switch>
-                </Switch.Group>
-              </div>
-              <div className="col-span-12 sm:col-span-6 lg:col-span-4">
-                <CustomLabel field="charity" name={tc('field_charity')} />
-                <Switch.Group as="div" className="flex items-center">
-                  <Switch
-                    checked={watch('charity')}
-                    onChange={(e) => setValue('charity', e)}
-                    className={classNames(
-                      watch('charity') ? `bg-${currentColor}` : `bg-gray-200`,
-                      `relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-${currentColor} focus:ring-offset-2`
-                    )}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={classNames(
-                        watch('charity') ? 'translate-x-5' : 'translate-x-0',
-                        'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-                      )}
-                    />
-                  </Switch>
-                </Switch.Group>
-              </div>
-              <div className="col-span-12 sm:col-span-6 lg:col-span-4">
-                <CustomLabel
-                  field="subscription"
-                  name={tc('field_subscription')}
-                />
-                <Switch.Group as="div" className="flex items-center">
-                  <Switch
-                    checked={watch('subscription')}
-                    onChange={(e) => setValue('subscription', e)}
-                    className={classNames(
-                      watch('subscription')
-                        ? `bg-${currentColor}`
-                        : `bg-gray-200`,
-                      `relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-${currentColor} focus:ring-offset-2`
-                    )}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={classNames(
-                        watch('subscription')
-                          ? 'translate-x-5'
-                          : 'translate-x-0',
-                        'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-                      )}
-                    />
-                  </Switch>
-                </Switch.Group>
               </div>
             </div>
             <div className="mt-6 grid grid-cols-12 gap-6">
@@ -661,21 +599,6 @@ const EventCreateAdditional = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-12 gap-6">
-              <div className="col-span-12 text-customGray text-xl">
-                {tt('template')}
-              </div>
-              <div className="col-span-12 sm:col-span-2">
-                <CustomLoadTemplate />
-              </div>
-              <div className="col-span-12 sm:col-span-2">
-                <CustomCreateTemplate />
-              </div>
-              <div className="col-span-12">
-                Show the template selected image and name
               </div>
             </div>
 
