@@ -13,7 +13,6 @@ type CustomAppProps = AppProps & { Component: CustomNextComponent };
 // React Query
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { AuthProvider } from '@/context/auth/auth_provider';
 import { SessionProvider } from 'next-auth/react';
 // React Query Config
 const queryClient = new QueryClient({
@@ -46,25 +45,23 @@ export default function App({ Component, pageProps }: CustomAppProps) {
           <GoogleReCaptchaProvider
             reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
           >
-            <AuthProvider>
-              <Head>
-                <title>CTickets</title>
-                <meta
-                  name="viewport"
-                  content="initial-scale=1, width=device-width"
-                />
-              </Head>
-              <Layout>
-                <Wrapper
-                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-                  libraries={['places']}
-                >
-                  <ToastContainer />
-                  <Component {...pageProps} />
-                </Wrapper>
-              </Layout>
-              <ReactQueryDevtools initialIsOpen={true} />
-            </AuthProvider>
+            <Head>
+              <title>CTickets</title>
+              <meta
+                name="viewport"
+                content="initial-scale=1, width=device-width"
+              />
+            </Head>
+            <Layout>
+              <Wrapper
+                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+                libraries={['places']}
+              >
+                <ToastContainer />
+                <Component {...pageProps} />
+              </Wrapper>
+            </Layout>
+            <ReactQueryDevtools initialIsOpen={true} />
           </GoogleReCaptchaProvider>
         </QueryClientProvider>
       </SessionProvider>

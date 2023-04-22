@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
 import parseDate from '@/helpers/parseDate';
 import { useRouter } from 'next/router';
-import { useUserAuthObserver } from '@/hooks/auth';
+import { useSession } from 'next-auth/react';
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -43,7 +43,7 @@ const SidebarEvent: React.FC<props> = ({
 }) => {
   const t = useTranslations('Sidebar_Event');
   const currentColor = CurrentColor();
-  const { isAuthenticated } = useUserAuthObserver();
+  const { data: session } = useSession();
   const router = useRouter();
   const locale = useLocale();
   return (
@@ -56,11 +56,9 @@ const SidebarEvent: React.FC<props> = ({
               {category}
             </span>
             <span className="block text-2xl font-semibold">{name}</span>
-            {isAuthenticated && (
-              <WillAttend className="mt-3 hidden md:inline-flex" />
-            )}
+            {session && <WillAttend className="mt-3 hidden md:inline-flex" />}
           </p>
-          {isAuthenticated && (
+          {session && (
             <Button
               color="white"
               shape="pill"
@@ -138,7 +136,7 @@ const SidebarEvent: React.FC<props> = ({
             </li>
           </ul>
 
-          {isAuthenticated && (
+          {session && (
             <Button
               fullWidth
               className="mt-24"
