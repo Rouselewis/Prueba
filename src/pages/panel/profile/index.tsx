@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import AdminLayout from '@/components/layout/admin';
 import { Heading } from '@/components/headers/admin/heading';
 // Forms
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
@@ -19,9 +19,8 @@ import {
 // Interface
 import { User } from '@/interfaces/user';
 // Helpers
-import { CurrentColor, FormStyles } from '@/helpers';
-import { useQueryClient } from '@tanstack/react-query';
-import { useUpdateUserWithAvatar } from '@/hooks/user/user';
+import { FormStyles } from '@/helpers';
+import { useUser, useUpdateUserWithAvatar } from '@/hooks/user/user';
 // import { updateUser } from '@/api/user/user';
 // Toastify
 import { toast } from 'react-toastify';
@@ -61,11 +60,10 @@ const validationSchema = yup.object().shape({
 });
 
 const Profile = () => {
-  // const currentColor = CurrentColor();
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // const { data: session, status } = useSession();
-  // const route = useRouter();
+  const { data: session, status } = useSession();
+  const { data: user } = useUser(session?.user?.id as string);
 
   const t = useTranslations('Panel_SideBar');
   const tc = useTranslations('Common_Forms');
@@ -80,9 +78,6 @@ const Profile = () => {
     { value: 'Male', name: 'Male' },
     { value: 'Female', name: 'Female' },
   ];
-
-  const queryClient = useQueryClient();
-  const user: User = queryClient.getQueryData(['user']);
 
   const {
     register,
@@ -104,7 +99,6 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    queryClient.invalidateQueries(['user']);
     if (user) {
       setValue('firstname', user?.firstname);
       setValue('surname', user?.surname);
@@ -133,12 +127,13 @@ const Profile = () => {
   const onSubmitHandler = async (data: any) => {
     console.log(JSON.stringify(data, null, 2));
     console.log(selectedImage);
+    console.log(session.user.id);
     const formattedBirthday = data.birthday ? new Date(data.birthday) : null;
 
     const updatedData = {
       ...data,
       birthday: formattedBirthday,
-      _id: user?._id,
+      id: session.user.id,
       verified: true,
       status: true,
     };
