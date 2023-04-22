@@ -9,6 +9,7 @@ import MainLayout from '@/components/layout/main';
 import ListCardEvent from '@/components/main/commons/ListCardEvent';
 import ListCardEventRecommendation from '@/components/main/commons/ListCardEventRecommendation';
 import CardEventDetails from '@/components/main/event/CardEventDetails';
+import CardEventInfo from '@/components/main/event/CardEventInfo';
 import CardEventLocation from '@/components/main/event/CardEventLocation';
 import SidebarEvent from '@/components/main/event/SidebarEvent';
 import { useEventCategory } from '@/hooks/event/event_category';
@@ -27,7 +28,6 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from '@/lib/axios';
-import CardEventInfo from '@/components/main/event/CardEventInfo';
 
 const EventDetailed = () => {
   const useFormReturn = useForm();
@@ -98,6 +98,7 @@ const EventDetailed = () => {
           services={info?.services}
         />
       </div>
+      {/*
       <CardEventLocation
         location={`${eventSchedule?.schedule_id?.venue_id?.address?.address}, ${eventSchedule?.schedule_id?.venue_id?.address?.address2}`}
         origin={{
@@ -111,53 +112,7 @@ const EventDetailed = () => {
         tags={eventSchedule?.schedule_id?.event_id?.tags?.map(
           (tag) => tag?.tag
         )}
-      />
-      <ListCardEvent
-        loading={isLoading}
-        layout="swiper"
-        setCurrentPage={() => {}}
-        setPageSize={() => {}}
-        totalDocs={eventsSchedules?.total}
-        title={t('home.new_events')}
-        items={eventsSchedules?.items?.map((item) => ({
-          // image: item.schedule_id.event_id.images.picture,
-          image: 'https://loremflickr.com/640/480/cats',
-          name:
-            item?.schedule_id?.event_id?.content?.find(
-              (obj) => obj.lang == locale
-            )?.name ||
-            item?.schedule_id?.event_id?.content?.find(
-              (obj) => obj.lang == 'es'
-            )?.name,
-          startDate: item?.start_at,
-          endDate: item?.end_at,
-          location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
-          color: item.schedule_id.event_id.category_id.color,
-          id: item?._id,
-        }))}
-        {...useFormReturn}
-      />
-      <ListCardEventRecommendation
-        loading={isLoading}
-        items={eventsSchedules?.items?.map((item) => ({
-          // image: item.schedule_id.event_id.images.picture,
-          image: 'https://loremflickr.com/640/480/cats',
-          name:
-            item.schedule_id.event_id.content.find((obj) => obj.lang == locale)
-              ?.name ||
-            item.schedule_id.event_id.content.find((obj) => obj.lang == 'es')
-              ?.name,
-          startDate: item.start_at,
-          endDate: item.end_at,
-          location: `${item.schedule_id.venue_id.address.country.long_name}, ${item.schedule_id.venue_id.address.city} ${item.schedule_id.venue_id.address.address}`,
-          color: item.schedule_id.event_id.category_id.color,
-          id: item._id,
-          category_id: item.schedule_id.event_id.category_id._id,
-        }))}
-        setCurrentPage={() => {}}
-        setPageSize={() => {}}
-        totalDocs={eventsSchedules?.total}
-      />
+        />*/}
     </div>
   );
 };
