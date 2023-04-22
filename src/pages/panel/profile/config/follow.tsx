@@ -21,6 +21,9 @@ import { FormStyles } from '@/helpers';
 import { CustomTagProfile } from '@/components/commons/customTagProfile';
 import { getEventsTags } from '@/api/event/event_tags';
 import { useUserFavorites } from '@/hooks/user/user_favorites';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const tags = [
   {
@@ -92,6 +95,12 @@ const ProfileFollow = () => {
     { page: ts('profile.config.config'), href: '/panel/profile/config' },
     { page: ts('profile.config.follow'), href: '' },
   ];
+
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
 
   const { data } = useUserFavorites();
   console.log('eventsTags:', JSON.stringify(data, null, 2));

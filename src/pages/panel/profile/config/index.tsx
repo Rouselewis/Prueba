@@ -21,6 +21,8 @@ import { classNames, CurrentColor, FormStyles } from '@/helpers';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMutationUpdateUser } from '@/hooks/user/user';
 import { UserSettings } from '@/interfaces/serializers/user';
+// Session
+import { useSession } from 'next-auth/react';
 
 const validationSchema = yup.object().shape({
   lang: yup.string(),
@@ -42,6 +44,12 @@ const ProfileConfig = () => {
     { page: t('profile.config.config'), href: '' },
   ];
 
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
+
   const queryClient = useQueryClient();
   const userData = queryClient.getQueryData(['user']);
   const user = userData?.[0]?.user;
@@ -55,7 +63,6 @@ const ProfileConfig = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -77,7 +84,7 @@ const ProfileConfig = () => {
       receive_mail: data?.receive_mail,
       receive_notifications: data?.receive_notifications,
     };
-    const updatedData = { settings: settings, uid: user?.uid };
+    const updatedData = { settings: settings, _id: user?._id };
     // setSubmitted(false);
     // setSubmittedError(true);
     console.log(updatedData);
