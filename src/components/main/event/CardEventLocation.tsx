@@ -4,6 +4,7 @@ import { Map, Title, Button, Icon } from '@/components/commons';
 import { useTranslations } from 'next-intl';
 import { CurrentColor } from '@/helpers';
 import { CustomTag } from '@/components/commons/customTag';
+import { MapPinIcon } from '@heroicons/react/24/outline';
 export type props = {
   className?: string;
   location: string;
@@ -69,9 +70,14 @@ const CardEventLocation: React.FC<props> = ({
   }
 
   return (
-    <div className={classNames('flex flex-col space-y-5', className)}>
+    <div className={classNames('flex flex-col space-y-5 mt-6', className)}>
       <div className="flex items-center justify-between">
-        <Title level="h6">{t('location_map')}</Title>
+        <div className="flex items-center">
+          <MapPinIcon className={`w-5 h-5 text-${currentColor}`} />
+          <Title className="px-2 pt-1" level="h6">
+            {t('location_map')}
+          </Title>
+        </div>
         <Button
           iconLeft={<Icon name="routes-solid" />}
           onClick={handleTraceRoute}

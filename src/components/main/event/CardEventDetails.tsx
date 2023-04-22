@@ -16,24 +16,8 @@ export type props = {
   className?: string;
   id: string;
   image: string;
-  details: string;
-  restrictions: string;
-  general: string;
-  observations: string;
-  services: string;
-  access: string;
 };
-const CardEventDetails: React.FC<props> = ({
-  className,
-  access,
-  details,
-  general,
-  image,
-  observations,
-  restrictions,
-  services,
-  id,
-}) => {
+const CardEventDetails: React.FC<props> = ({ className, image, id }) => {
   const handleShare = (text: string) => {
     if (navigator.share) {
       navigator.share({
@@ -48,98 +32,37 @@ const CardEventDetails: React.FC<props> = ({
   const currentColor = CurrentColor();
   return (
     <div className={classNames('', className)}>
-      <div className="relative w-auto overflow-hidden rounded-md h-72 md:h-96">
-        <Image src={image} alt="" className="object-cover" fill />
+      <div className="aspect-w-4 aspect-h-3 overflow-hidden rounded-lg flex justify-center">
+        <img src={image} alt={image} className="object-cover object-center" />
       </div>
-
-      <div className="flex flex-col my-5">
-        <div className="flex gap-10 ml-auto text-gray-500">
-          <span className={`text-${currentColor}`}>{t('shared_event')}</span>
-          <div className="flex gap-2">
-            <FacebookOutlined
-              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
-              onClick={() => handleShare('Facebook')}
-            />
-            <Instagram
-              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
-              onClick={() => handleShare('Instagram')}
-            />
-            <Twitter
-              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
-              onClick={() => handleShare('Twitter')}
-            />
-            <WhatsApp
-              className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
-              onClick={() => handleShare('WhatsApp')}
-            />
-            <Icon
-              name="telegram"
-              className={`w-6 h-6 text-gray-400 cursor-pointer hover:text-${currentColor}`}
-              onClick={() => handleShare('Telegram')}
-            />
-          </div>
+      <div className="pt-2 border-gray-200 flex justify-end">
+        <span className={`px-4 pt-2 text-${currentColor}`}>
+          {t('shared_event')}
+        </span>
+        <div className="flex items-center space-x-3">
+          <FacebookOutlined
+            className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
+            onClick={() => handleShare('Facebook')}
+          />
+          <Instagram
+            className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
+            onClick={() => handleShare('Instagram')}
+          />
+          <Twitter
+            className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
+            onClick={() => handleShare('Twitter')}
+          />
+          <WhatsApp
+            className={`text-gray-400 cursor-pointer hover:text-${currentColor}`}
+            onClick={() => handleShare('WhatsApp')}
+          />
+          <Icon
+            name="telegram"
+            className={`w-6 h-6 text-gray-400 cursor-pointer hover:text-${currentColor}`}
+            onClick={() => handleShare('Telegram')}
+          />
         </div>
       </div>
-
-      <Tab.Group>
-        <Tab.List className="flex items-end">
-          <Tab
-            className={({ selected }) =>
-              classNames(
-                'px-5 py-3 border-b focus:ring-0 focus:outline-none',
-                selected
-                  ? 'border-customGreen text-customGreen'
-                  : 'border-gray-200'
-              )
-            }
-          >
-            {t('description')}
-          </Tab>
-          <Tab
-            className={({ selected }) =>
-              classNames(
-                'px-5 py-3 border-b focus:ring-0 focus:outline-none',
-                selected
-                  ? 'border-customGreen text-customGreen'
-                  : 'border-gray-200'
-              )
-            }
-          >
-            {t('information')}
-          </Tab>
-          <div className="flex-1 border-b border-gray-200"></div>
-        </Tab.List>
-        <Tab.Panels className="mt-5">
-          <Tab.Panel>
-            <p>{details} </p>
-          </Tab.Panel>
-
-          <Tab.Panel>
-            <ul className="mt-10 space-y-4">
-              <li className="flex gap-4 text-sm">
-                <span className="font-semibold">{t('restrictions')}</span>{' '}
-                <span>{restrictions}</span>
-              </li>
-              <li className="flex gap-4 text-sm">
-                <span className="font-semibold">{t('general')}</span>{' '}
-                <span>{general}</span>
-              </li>
-              <li className="flex gap-4 text-sm">
-                <span className="font-semibold">{t('observations')}</span>{' '}
-                <span>{observations}</span>
-              </li>
-              <li className="flex gap-4 text-sm">
-                <span className="font-semibold">{t('services')}</span>{' '}
-                <span>{services}</span>
-              </li>
-              <li className="flex gap-4 text-sm">
-                <span className="font-semibold">{t('limited_access')}</span>{' '}
-                <span>{access}</span>
-              </li>
-            </ul>
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
     </div>
   );
 };
