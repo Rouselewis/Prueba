@@ -8,8 +8,6 @@ import {
   Login,
   UserMenu,
 } from '@/components/layout/content/header/toolbar/index';
-// User validation
-import { useUserAuthObserver } from '@/hooks/auth';
 // Helpers
 import { CurrentColor, FormStyles } from '@/helpers';
 // Icons
@@ -21,7 +19,6 @@ import {
 
 export const ToolBar = () => {
   const { data: session } = useSession();
-  const { user: existUser, queryClient, isLoading } = useUserAuthObserver();
   const t = useTranslations('Header_Tool');
   const tc = useTranslations('Common_Forms');
   const currentColor = CurrentColor();

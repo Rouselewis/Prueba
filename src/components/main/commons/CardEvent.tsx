@@ -12,7 +12,7 @@ import { readEventCategory } from '@/api/event/event_category';
 import Link from 'next/link';
 import { EventCategory } from '@/interfaces/event';
 import { readEventVenue } from '@/api/event/event_venue';
-import { useUserAuthObserver } from '@/hooks/auth';
+import { useSession } from 'next-auth/react';
 import {
   useMutationAddFavorite,
   useMutationRemoveFavorite,
@@ -49,18 +49,18 @@ const CardEvent: React.FC<props> = ({
   color,
   id,
 }) => {
-  const { isAuthenticated, user } = useUserAuthObserver();
+  const { data: session } = useSession();
   const { data: favorites } = useUserFavorites();
   const { mutate: addFavorite } = useMutationAddFavorite();
   const { mutate: removeFavorite } = useMutationRemoveFavorite();
   const locale = useLocale();
   const { pathname } = useRouter();
   const favorite = favorites
-    ?.filter((item) => item?.user_id?.id === user?._id)
+    ?.filter((item) => item?.user_id?.id === session.user?.id)
     .find((item) => item?.events_likes?.find((event) => event?.id == id));
 
   const attend = favorites
-    ?.filter((item) => item?.user_id?.id == user?._id)
+    ?.filter((item) => item?.user_id?.id == session.user?.id)
     .find((item) => item?.events_attends?.find((attend) => attend?.id == id));
 
   const handleAddFavorite = (e) => {
@@ -98,7 +98,7 @@ const CardEvent: React.FC<props> = ({
         className
       )}
     >
-      {isAuthenticated && (
+      {session && (
         <Button
           onClick={(e) => handleAddFavorite(e)}
           className={classNames(
@@ -125,8 +125,8 @@ const CardEvent: React.FC<props> = ({
           layout == 'grid' ? 'aspect-[4/3]' : 'aspect-square w-72 '
         )}
       >
-        <img src={image} alt="" className="object-cover" />
-        {isAuthenticated && (
+        <Image src={image} alt="" fill className="object-cover" />
+        {session && (
           <WillAttend
             onClick={handleAddAttend}
             changeColor={Boolean(attend)}

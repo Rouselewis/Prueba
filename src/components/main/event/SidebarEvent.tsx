@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
 import parseDate from '@/helpers/parseDate';
 import { useRouter } from 'next/router';
-import { useUserAuthObserver } from '@/hooks/auth';
+import { useSession } from 'next-auth/react';
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -43,36 +43,33 @@ const SidebarEvent: React.FC<props> = ({
 }) => {
   const t = useTranslations('Sidebar_Event');
   const currentColor = CurrentColor();
-  const { isAuthenticated } = useUserAuthObserver();
+  const { data: session } = useSession();
   const router = useRouter();
   const locale = useLocale();
   return (
-    <aside className={classNames('flex flex-col', className)}>
-      <div className="shadow-xl rounded-xl overflow-hidden">
+    <aside className={classNames('', className)}>
+      <div className="flex flex-col">
         <div className="h-6" style={{ backgroundColor: color }} />
-        <div className="px-10 flex justify-between items-center gap-10 py-5">
-          <p>
-            <span className="md:hidden text-gray-500 uppercase">
-              {category}
-            </span>
-            <span className="block text-2xl font-semibold">{name}</span>
-            {isAuthenticated && (
-              <WillAttend className="mt-3 hidden md:inline-flex" />
-            )}
-          </p>
-          {isAuthenticated && (
-            <Button
-              color="white"
-              shape="pill"
-              iconLeft={
-                willAttend ? (
-                  <Icon name="heart-solid" className="text-customYellow" />
-                ) : (
-                  <Icon name="heart-outline" className="text-customGray" />
-                )
-              }
-            />
-          )}
+        <div className="px-10 flex-col items-center gap-10 py-5">
+          <span className="block text-2xl font-semibold">{name}</span>
+          <div className="px-10 flex justify-between items-center gap-10 py-5">
+            <div>
+              {session && (
+                <Button
+                  color="white"
+                  shape="pill"
+                  iconLeft={
+                    willAttend ? (
+                      <Icon name="heart-solid" className="text-customYellow" />
+                    ) : (
+                      <Icon name="heart-outline" className="text-customGray" />
+                    )
+                  }
+                />
+              )}
+            </div>
+            <div>{session && <WillAttend className="mt-3 inline-flex" />}</div>
+          </div>
         </div>
         <hr className="border-gray-200 h-[1px]" />
         <div className="px-10 py-5">
@@ -138,7 +135,7 @@ const SidebarEvent: React.FC<props> = ({
             </li>
           </ul>
 
-          {isAuthenticated && (
+          {session && (
             <Button
               fullWidth
               className="mt-24"
@@ -162,7 +159,7 @@ const SidebarEvent: React.FC<props> = ({
           </div>
         </div>
       </div>
-      <div className="inline-block mt-10 mx-auto">
+      <div className="flex justify-center py-6">
         <span className="font-semibold">{t('supplier')}</span> {supplier}
       </div>
     </aside>

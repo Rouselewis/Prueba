@@ -2,11 +2,11 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, Options, SwitchTable } from './components';
+import { Checkbox, Options, Status } from './components';
 // Helpers
 import { CurrentColor } from '@/helpers';
 
-export function columnsTicketPhaseDashboard() {
+export function ColumnsTicketSubscriptionList() {
   const tcc = useTranslations('table_columns');
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
@@ -36,45 +36,15 @@ export function columnsTicketPhaseDashboard() {
         </div>
       ),
     }),
-    columnHelper.accessor('phase', {
-      id: 'phase',
-      header: () => tcc('dashboard.ticket.phase'),
-      cell: (props) => props.getValue(),
-    }),
-    columnHelper.accessor('start_at', {
-      id: 'start_at',
-      header: () => tcc('dashboard.ticket.start_at'),
-      cell: (props) => props.getValue(),
-    }),
-    columnHelper.accessor('end_at', {
-      id: 'end_at',
-      header: () => tcc('dashboard.ticket.end_at'),
-      cell: (props) => props.getValue(),
-    }),
-    columnHelper.accessor('available', {
-      id: 'available',
-      header: () => tcc('dashboard.ticket.available'),
-      cell: (props) => props.getValue(),
-    }),
-    columnHelper.accessor('sold', {
-      id: 'sold',
-      header: () => tcc('dashboard.ticket.sold'),
-      cell: (props) => props.getValue(),
-    }),
-    columnHelper.accessor('cost', {
-      id: 'cost',
-      header: () => tcc('dashboard.ticket.cost'),
-      cell: (props) => props.getValue(),
-    }),
-    columnHelper.accessor('earns', {
-      id: 'earns',
-      header: () => tcc('dashboard.ticket.earns'),
+    columnHelper.accessor('event', {
+      id: 'event',
+      header: () => tcc('ticket.list.event'),
       cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('status', {
       id: 'status',
       header: () => tcc('status'),
-      cell: (props) => <SwitchTable color={currentColor} />,
+      cell: (props) => <Status text={props.getValue()} />,
     }),
     columnHelper.accessor('options', {
       id: 'options',

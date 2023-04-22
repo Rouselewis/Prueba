@@ -107,7 +107,9 @@
     "add_ticket": "Create Ticket",
     "add_user_app": "Create APP User",
     "add_user_pos": "Create POS User",
-    "add_user_system": "Create System User"
+    "add_user_system": "Create System User",
+    "form_create_template": "Create Template",
+    "form_load_template": "Load Template"
   },
   "Landing_Comment_Table": "/////////////////////////////////////// Tables",
   "table": {
@@ -219,6 +221,7 @@
         "available": "Available",
         "sold": "Sold",
         "attendance": "Attendance",
+        "cost": "Cost",
         "earns": "Earns",
         "phase": "Phase",
         "start_at": "Start At",
@@ -458,6 +461,9 @@
       "ticket": "Tickets",
       "list": "List",
       "refund": "Refund",
+      "subscription": {
+        "subscription": "Subscription"
+      },
       "user": {
         "user": "Users",
         "app": "Application",
@@ -660,6 +666,7 @@
     "field_pay_limit": "Pay Limit (Days)",
     "field_free_event": "Free Event",
     "field_charity": "Charity",
+    "field_subscription": "Subscription",
     "field_sell_limit": "Sell Limit per Person",
     "field_sale_start": "Sale Start",
     "field_pre_sale_start": "Pre-sale Start (optional)",
@@ -969,5 +976,19 @@
         "error": "Error while tag is updated!"
       }
     }
+  },
+  "Panel_Ticket_Comment": "//////////////////////////////////////// Panel Ticket Comment",
+  "Panel_Ticket": {
+    "ticket": "Ticket",
+    "commission": "Commissions of months without interest (these commissions will be added two the fees):",
+    "for": "for",
+    "template": "Template"
+  },
+  "Panel_Section_Organisms_Comment": "//////////////////////////////////////// Panel Section Comment",
+  "ListCardEventTemplate": {
+    "title": "Select template type",
+    "stadium": "Stadium",
+    "concert": "Concert",
+    "forum": "Forum"
   }
 }

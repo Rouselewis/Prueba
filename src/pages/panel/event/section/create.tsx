@@ -28,7 +28,7 @@ const EventPanel = () => {
       <div>
         <Heading breadcrumb={breadcrumb} buttonBread={buttonBread} />
       </div>
-      <div>
+      <div className="flex flex-1 pt-6">
         <TextField placeholder="" {...register('name')} />
       </div>
     </>

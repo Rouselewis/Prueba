@@ -25,7 +25,7 @@ const Panel = () => {
       </div>
       <div className="flex flex-1 pt-6 justify-center">
         <div className="max-w-[90%] overflow-hidden">
-          <PosDashboard />
+          <TicketDashboard />
         </div>
       </div>
     </>
