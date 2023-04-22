@@ -26,7 +26,7 @@ export const UserMenu = () => {
       <Menu as="div" className="relative flex-shrink-0">
         <div className="mr-2">
           <Menu.Button className="flex px-2 rounded-full text-sm text-white focus:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-sky-900">
-            <span className="pr-2">{session?.user?.name}</span>
+            <span className="pr-2">Ivan Ruíz</span>
             <span className="sr-only">Open user menu</span>
             <ChevronDownIcon className="w-4 h4" />
           </Menu.Button>

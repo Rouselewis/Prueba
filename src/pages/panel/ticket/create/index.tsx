@@ -26,11 +26,16 @@ import { Address, CreateTicket } from '@/interfaces/serializers/commons';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { useEvents, useMutationUpdateEvent } from '@/hooks/event/event';
 import { toast } from 'react-toastify';
+import {
+  CustomCreateTemplate,
+  CustomLoadTemplate,
+} from '@/components/forms/buttons';
 
 const EventCreateAdditional = () => {
   const t = useTranslations('Panel_SideBar');
   const tc = useTranslations('Common_Forms');
   const te = useTranslations('Ferrors');
+  const tt = useTranslations('Panel_Ticket');
   const transformDate = (originalValue) => {
     if (originalValue === null || originalValue === '') {
       return null;
@@ -140,7 +145,7 @@ const EventCreateAdditional = () => {
   const locale = useLocale();
   const { data: events } = useEvents();
   const breadcrumb = [
-    { page: t('event.event'), href: '' },
+    { page: t('ticket.ticket'), href: '/panel/ticket/create' },
     { page: t('actions.create'), href: '' },
   ];
   const handleClickDateInput = (element_id: string) => {
@@ -189,29 +194,15 @@ const EventCreateAdditional = () => {
                   field="date"
                   name={tc('field_event_date')}
                 />
-                <div className="relative rounded-md shadow-sm">
-                  <input
-                    type="date"
-                    name="date"
-                    id="date"
-                    autoComplete={tc('field_event_date')}
-                    placeholder={tc('field_event_date')}
-                    className={classNames(
-                      FormStyles('input'),
-                      '[&::-webkit-calendar-picker-indicator]:hidden'
-                    )}
-                    {...register('date', {
-                      valueAsDate: true,
-                    })}
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <CalendarIcon
-                      onClick={() => handleClickDateInput('date')}
-                      className="h-5 w-5 text-gray-400"
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
+                <select
+                  id="date"
+                  name="date"
+                  className={FormStyles('select')}
+                  defaultValue={''}
+                  {...register('date')}
+                >
+                  <option value="all">{tc('field_date')}</option>
+                </select>
                 <CustomError error={errors?.date?.message} />
               </div>
               <div className="col-span-12 sm:col-span-6 lg:col-span-6">
@@ -231,16 +222,9 @@ const EventCreateAdditional = () => {
                 </select>
                 <CustomError error={errors?.schedule?.message} />
               </div>
-              <div className="col-span-12">
-                <span className="text-customRed">Nota:</span> Si dejas "Todas"
-                seleccionado en el campo de fechas u horas, está configuración
-                se aplicará al evento en general, es decir a todas las fechas y
-                horas.
-              </div>
             </div>
-
             <div className="mt-6 grid grid-cols-12 gap-6">
-              <div className="col-span-12">Tickets</div>
+              <div className="col-span-12">{tt('ticket')}</div>
               <div className="col-span-12 sm:col-span-4">
                 <div className="relative flex items-start">
                   <div className="flex h-6 items-center">
@@ -419,7 +403,6 @@ const EventCreateAdditional = () => {
                 </Switch.Group>
               </div>
             </div>
-
             <div className="mt-6 grid grid-cols-12 gap-6">
               <div className="col-span-12 sm:col-span-2 lg:col-span-3">
                 <CustomLabel
@@ -630,23 +613,35 @@ const EventCreateAdditional = () => {
                   <div className="flex rounded-2xl shadow-xl p-2">
                     <div className="sm:shrink">
                       <p className="text-lg font-semibold tracking-tight text-gray-900">
-                        Commissions of months without interest (these
-                        commissions will be added two the fees):
+                        {tt('commission')}
                       </p>
                       <div className="flex justify-between">
                         <p className="mt-2 text-base leading-7 text-gray-600">
-                          5% for 3
+                          5% {tt('for')} 3
                         </p>
                         <p className="mt-2 text-base leading-7 text-gray-600">
-                          7.5% for 6
+                          7.5% {tt('for')} 6
                         </p>
                         <p className="mt-2 text-base leading-7 text-gray-600">
-                          10% for 9
+                          10% {tt('for')} 9
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-12 gap-6">
+              <div className="col-span-12">{tt('template')}</div>
+              <div className="col-span-12 sm:col-span-2">
+                <CustomLoadTemplate />
+              </div>
+              <div className="col-span-12 sm:col-span-2">
+                <CustomCreateTemplate />
+              </div>
+              <div className="col-span-12">
+                Show the template selected image and name
               </div>
             </div>
 
