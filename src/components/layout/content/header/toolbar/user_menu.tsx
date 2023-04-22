@@ -1,8 +1,6 @@
 /** @format */
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-// Auth
-import { useUserAuthObserver } from '@/hooks/auth';
 // Helpers
 import { classNames } from '@/helpers';
 // Icons
@@ -11,7 +9,6 @@ import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 
 export const UserMenu = () => {
-  const { user: existUser, queryClient, isLoading } = useUserAuthObserver();
   const { data: session } = useSession();
 
   const userNavigation = [
