@@ -21,7 +21,6 @@ import { User } from '@/interfaces/user';
 // Helpers
 import { FormStyles } from '@/helpers';
 import { useUser, useUpdateUserWithAvatar } from '@/hooks/user/user';
-// import { updateUser } from '@/api/user/user';
 // Toastify
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -64,6 +63,8 @@ const Profile = () => {
 
   const { data: session, status } = useSession();
   const { data: user } = useUser(session?.user?.id as string);
+
+  console.log('user:', user);
 
   const t = useTranslations('Panel_SideBar');
   const tc = useTranslations('Common_Forms');
@@ -258,16 +259,16 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="mt-6 flex-grow lg:mt-0 lg:ml-6 lg:flex-shrink-0 lg:flex-grow-0">
+              <div className="mt-6 flex-grow lg:mt-0 lg:ml-6 lg:flex-shrink-0 lg:flex-grow-0 hover:cursor-pointer hover:opacity-90">
                 <CustomLabel field="avatar" name={tc('field_photo')} />
                 <div className="relative hidden overflow-hidden rounded-full lg:block hover:cursor-pointer hover:opacity-90">
                   <img
                     className="relative h-40 w-40 rounded-full"
                     src={
                       selectedImage ||
-                      'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=320&h=320&q=80'
+                      '/images/assets/profile/empty_avatar1.jpg'
                     }
-                    alt=""
+                    alt="avatar"
                   />
                   <label
                     htmlFor="avatar"
