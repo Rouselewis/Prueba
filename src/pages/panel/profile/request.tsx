@@ -30,18 +30,13 @@ const validationSchema = yup.object().shape({
     .required('Front ID is required')
     .test(
       'front_id-upload',
-      'File format should be jpeg, jpg, png, or gif, and size should not exceed 10MB',
+      'File format should be jpeg, jpg, png, and size should not exceed 10MB',
       (value) => {
         if (!value) {
           return false;
         } else {
           const fileSizeValid = value[0]?.size <= 10000000; // 10MB in bytes
-          const supportedFormats = [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/gif',
-          ];
+          const supportedFormats = ['image/jpeg', 'image/jpg', 'image/png'];
           const fileFormatValid = supportedFormats.includes(value[0].type);
           return fileSizeValid && fileFormatValid;
         }
@@ -52,18 +47,13 @@ const validationSchema = yup.object().shape({
     .required('Back ID is required')
     .test(
       'back_id-upload',
-      'File format should be jpeg, jpg, png, or gif, and size should not exceed 10MB',
+      'File format should be jpeg, jpg, png, and size should not exceed 10MB',
       (value) => {
         if (!value) {
           return false;
         } else {
           const fileSizeValid = value[0]?.size <= 10000000; // 10MB in bytes
-          const supportedFormats = [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/gif',
-          ];
+          const supportedFormats = ['image/jpeg', 'image/jpg', 'image/png'];
           const fileFormatValid = supportedFormats.includes(value[0].type);
           return fileSizeValid && fileFormatValid;
         }
@@ -74,18 +64,13 @@ const validationSchema = yup.object().shape({
     .required('Selfie is required')
     .test(
       'selfie-upload',
-      'File format should be jpeg, jpg, png, or gif, and size should not exceed 10MB',
+      'File format should be jpeg, jpg, png, and size should not exceed 10MB',
       (value) => {
         if (!value) {
           return false;
         } else {
           const fileSizeValid = value[0]?.size <= 10000000; // 10MB in bytes
-          const supportedFormats = [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/gif',
-          ];
+          const supportedFormats = ['image/jpeg', 'image/jpg', 'image/png'];
           const fileFormatValid = supportedFormats.includes(value[0].type);
           return fileSizeValid && fileFormatValid;
         }
@@ -231,33 +216,21 @@ const ProfileRequest = () => {
                 />
                 <div className="mt-2 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                   <div className="space-y-1 text-center">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
                     <div className="flex text-sm text-gray-600">
                       <label
                         htmlFor="front_id-upload"
                         className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                       >
                         <span>{tc('field_upload_file')}</span>
-                        {selectedFrontId ? (
-                          <img
-                            className="h-40 w-40 object-cover mb-4"
-                            src={selectedFrontId}
-                            alt="Back ID Preview"
-                          />
-                        ) : null}
+                        <img
+                          className="h-fit w-full max-h-40 object-cover mb-4 rounded-md"
+                          src={
+                            selectedFrontId
+                              ? selectedFrontId
+                              : '/images/assets/profile/front_card_id.jpg'
+                          }
+                          alt="Back ID Preview"
+                        />
                         <input
                           id="front_id-upload"
                           name="front_id-upload"
@@ -266,7 +239,6 @@ const ProfileRequest = () => {
                           onChange={handleFrontIdChange}
                         />
                       </label>
-                      <p className="pl-1">{t('text_drag_n_drop')}</p>
                     </div>
                     <p className="text-xs text-gray-500">
                       PNG, JPG, GIF {t('text_up_to')} 10MB
@@ -282,34 +254,21 @@ const ProfileRequest = () => {
                 />
                 <div className="mt-2 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                   <div className="space-y-1 text-center">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
                     <div className="flex text-sm text-gray-600">
                       <label
                         htmlFor="back_id-upload"
                         className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                       >
                         <span>{tc('field_upload_file')}</span>
-                        {selectedBackId ? (
-                          <img
-                            className="h-40 w-40 object-cover mb-4"
-                            src={selectedBackId}
-                            alt="Back ID Preview"
-                          />
-                        ) : null}
-
+                        <img
+                          className="h-fit w-full max-h-40 object-cover mb-4 rounded-md"
+                          src={
+                            selectedBackId
+                              ? selectedBackId
+                              : '/images/assets/profile/back_card_id.jpg'
+                          }
+                          alt="Back ID Preview"
+                        />
                         <input
                           id="back_id-upload"
                           name="back_id-upload"
@@ -318,7 +277,6 @@ const ProfileRequest = () => {
                           onChange={handleBackIdChange}
                         />
                       </label>
-                      <p className="pl-1">{t('text_drag_n_drop')}</p>
                     </div>
                     <p className="text-xs text-gray-500">
                       PNG, JPG, GIF {t('text_up_to')} 10MB
@@ -334,7 +292,7 @@ const ProfileRequest = () => {
                 />
                 <div className="mt-2 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                   <div className="space-y-1 text-center">
-                    <svg
+                    {/* <svg
                       className="mx-auto h-12 w-12 text-gray-400"
                       stroke="currentColor"
                       fill="none"
@@ -347,20 +305,22 @@ const ProfileRequest = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
-                    </svg>
+                    </svg> */}
                     <div className="flex text-sm text-gray-600">
                       <label
                         htmlFor="selfie-upload"
                         className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                       >
                         <span>{tc('field_upload_file')}</span>
-                        {selectedSelfie ? (
-                          <img
-                            className="h-40 w-40 object-cover mb-4"
-                            src={selectedSelfie}
-                            alt="Back ID Preview"
-                          />
-                        ) : null}
+                        <img
+                          className="h-fit w-full max-h-40 object-cover mb-4 text-center rounded-md"
+                          src={
+                            selectedSelfie
+                              ? selectedSelfie
+                              : '/images/assets/profile/empty_avatar.jpg'
+                          }
+                          alt="Back ID Preview"
+                        />
                         <input
                           id="selfie-upload"
                           name="selfie-upload"
@@ -369,7 +329,7 @@ const ProfileRequest = () => {
                           onChange={handleSelfieChange}
                         />
                       </label>
-                      <p className="pl-1">{t('text_drag_n_drop')}</p>
+                      {/* <p className="pl-1">{t('text_drag_n_drop')}</p> */}
                     </div>
                     <p className="text-xs text-gray-500">
                       PNG, JPG, GIF {t('text_up_to')} 10MB

@@ -27,8 +27,6 @@ const ProfileCustom = () => {
 
   if (isLoading) return <div>Loading...</div>;
   if (!categories) return <div>No categories found</div>;
-  // const { data: meData } = useMe();
-  // console.log('meData:', JSON.stringify(meData, null, 2));
 
   // const { data: userData } = useUsers();
   // console.log('userData:', JSON.stringify(userData, null, 2));
