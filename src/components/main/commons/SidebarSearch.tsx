@@ -59,10 +59,10 @@ const SidebarSearch: React.FC<props> = ({
   ].concat(categoriesArray);
   useEffect(() => {
     if (dateRange?.[0]) {
-      setValue('initial_date', format(new Date(dateRange?.[0]), 'dd/mm/yyyy'));
+      setValue('initial_date', format(new Date(dateRange?.[0]), 'dd/MM/yyyy'));
     }
     if (dateRange?.[1]) {
-      setValue('finish_date', format(new Date(dateRange?.[1]), 'dd/mm/yyyy'));
+      setValue('finish_date', format(new Date(dateRange?.[1]), 'dd/MM/yyyy'));
     }
   }, [dateRange?.[0], dateRange?.[1]]);
   useEffect(() => {
@@ -117,7 +117,11 @@ const SidebarSearch: React.FC<props> = ({
           address,
         };
       } else {
-        delete query?.address;
+        console.log('checking ', query?.address);
+        const { address, ...rest } = query;
+        updatedQuery = {
+          ...rest,
+        };
       }
 
       push(
@@ -145,7 +149,7 @@ const SidebarSearch: React.FC<props> = ({
     <div className={classNames('relative h-max', className)}>
       <div
         className={classNames(
-          'flex h-full flex-col overflow-y-auto bg-white py-6 shadow-xl',
+          'flex h-full flex-col overflow-y-auto overflow-x-visible bg-white py-6 shadow-xl',
           !close && 'rounded-xl'
         )}
       >
@@ -161,24 +165,28 @@ const SidebarSearch: React.FC<props> = ({
               />
             )}
           </div>
-          <div className="mt-5 space-y-2">
-            <Title level="h5">{t('category')}</Title>
-            <hr className="border-gray-200" />
-          </div>
+          {pathname.includes('search') && (
+            <>
+              <div className="mt-5 space-y-2">
+                <Title level="h5">{t('category')}</Title>
+                <hr className="border-gray-200" />
+              </div>
 
-          <Select options={categoriesOptions} {...register('category')} />
+              <Select options={categoriesOptions} {...register('category')} />
 
-          <Select
-            label={t('sub_category')}
-            options={subCategoriesOptions}
-            {...register('sub_category')}
-          />
+              <Select
+                label={t('sub_category')}
+                options={subCategoriesOptions}
+                {...register('sub_category')}
+              />
 
-          <Select
-            label={t('sub_sub_category')}
-            options={subsubCategoriesOptions}
-            {...register('sub_sub_category')}
-          />
+              <Select
+                label={t('sub_sub_category')}
+                options={subsubCategoriesOptions}
+                {...register('sub_sub_category')}
+              />
+            </>
+          )}
 
           <div className="mt-5 space-y-2">
             <Title level="h5">{t('dates')}</Title>

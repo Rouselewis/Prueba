@@ -371,7 +371,20 @@
     "forgot": "Forgot password?",
     "signin": "Sign in",
     "signup": "Sign Up",
-    "continue": "Or continue with"
+    "continue": "Or continue with",
+    "firstname": "First name",
+    "surname": "Surname",
+    "password": "Password",
+    "repeat": "Repeat password",
+    "remember": "Remember",
+    "send_link": "Send confirmation link",
+    "back": "Back to Sign In",
+    "email": "Email",
+    "birthday": "Birthday",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "sex": "Sex"
   },
   "Panel_Comment": "/////////////////////////////////////// Panel Section",
   "Panel": {
@@ -673,7 +686,8 @@
     "field_enable_months": "Enable months without interest",
     "field_three_months": "3 Months",
     "field_six_months": "6 Months",
-    "field_nine_months": "9 Months"
+    "field_nine_months": "9 Months",
+    "field_date": "Date"
   },
   "Public_Comment": "/////////////////////////////////////// Public Comment",
   "Public": {
@@ -719,7 +733,8 @@
   "Ferrors": {
     "required": "Required",
     "select_one_day_at_least": "Select one day of the week at least",
-    "url": "Invalid url"
+    "url": "Invalid url",
+    "passwords_not_match": "Passwords does not match"
   },
   "Fsuccess": {
     "schedule_added": "Schedule added",
@@ -727,7 +742,9 @@
     "url": "Invalid url",
     "signin_succesfully": "Sign in succesfully",
     "deleted": "Deleted",
-    "updated": "Updated"
+    "updated": "Updated",
+    "ticket_added": "Ticket added",
+    "venue_added": "Event Venue added"
   },
   "Main_Comment_Molecules": "/////////////////////////////////////// Molecules",
   "Card_Event_Queue": {
