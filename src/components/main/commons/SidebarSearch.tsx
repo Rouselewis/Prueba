@@ -117,8 +117,7 @@ const SidebarSearch: React.FC<props> = ({
           address,
         };
       } else {
-        console.log('checking ', query?.address);
-        const { address, ...rest } = query;
+        const { address, ...rest } = updatedQuery;
         updatedQuery = {
           ...rest,
         };

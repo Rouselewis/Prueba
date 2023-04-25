@@ -41,6 +41,7 @@ const Search = ({ categories }) => {
     isLoading,
     refetch,
   } = useInfinteEventSchedulesTimetables({
+    address: queryObj?.address,
     category: queryObj?.category,
     sub_category: queryObj?.sub_category,
     sub_subcategory: queryObj?.sub_sub_category,
@@ -67,6 +68,7 @@ const Search = ({ categories }) => {
     queryObj?.finish_date,
     queryObj?.page,
     queryObj?.size,
+    queryObj?.address,
   ]);
 
   return (
