@@ -15,13 +15,14 @@ import Hero from '@/components/main/commons/Hero';
 import { getEventsVenues } from '@/api/event/event_venue';
 import { useEvents } from '@/hooks/event/event';
 import { useCategories } from '@/hooks/event/event_category';
+import { useEventScheduleTimetables } from '@/hooks/event/event_schedules_timetables';
 
 const Home = () => {
   const t = useTranslations('Public');
   const locale = useLocale();
   const useFormReturn = useForm();
+  const events = useEventScheduleTimetables();
   const categories = useCategories();
-  const events = useEvents();
 
   return (
     <div className="-mt-8 mb-44">
@@ -40,6 +41,7 @@ const Home = () => {
             name: item.category.find((obj) => obj.lang == locale)?.name,
             color: item.color,
             image: item.picture,
+            id: item._id,
           }))}
           layout="swiper"
           size="small"
@@ -53,18 +55,23 @@ const Home = () => {
           layout="swiper"
           setCurrentPage={() => {}}
           setPageSize={() => {}}
-          totalDocs={10}
+          totalDocs={events.data?.total}
           title={t('home.featured_events')}
           items={events?.data?.items?.map((item) => ({
+            // image: item.schedule_id.event_id.images.picture.web,
             image: 'https://loremflickr.com/640/480/cats',
             name:
-              item.content.find((obj) => obj.lang == locale)?.name ||
-              item.content.find((obj) => obj.lang == 'es')?.name,
-            startDate: item.created_at as unknown as Date,
-            endDate: new Date(),
-            location: 'Location',
-            color: item.category_id?.color,
-            id: item._id,
+              item?.schedule_id?.event_id?.content?.find(
+                (obj) => obj.lang == locale
+              )?.name ||
+              item?.schedule_id?.event_id?.content?.find(
+                (obj) => obj.lang == 'es'
+              )?.name,
+            startDate: item?.start_at,
+            endDate: item?.end_at,
+            location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
+            color: item.schedule_id.event_id.category_id.color,
+            id: item?.schedule_id?.event_id?._id,
           }))}
           {...useFormReturn}
         />
@@ -74,18 +81,23 @@ const Home = () => {
           layout="swiper"
           setCurrentPage={() => {}}
           setPageSize={() => {}}
-          totalDocs={10}
+          totalDocs={events.data?.total}
           title={t('home.new_events')}
           items={events?.data?.items?.map((item) => ({
+            // image: item.schedule_id.event_id.images.picture.web,
             image: 'https://loremflickr.com/640/480/cats',
             name:
-              item.content.find((obj) => obj.lang == locale)?.name ||
-              item.content.find((obj) => obj.lang == 'es')?.name,
-            startDate: item.created_at as unknown as Date,
-            endDate: new Date(),
-            location: 'Location',
-            color: item.category_id?.color,
-            id: item._id,
+              item?.schedule_id?.event_id?.content?.find(
+                (obj) => obj.lang == locale
+              )?.name ||
+              item?.schedule_id?.event_id?.content?.find(
+                (obj) => obj.lang == 'es'
+              )?.name,
+            startDate: item?.start_at,
+            endDate: item?.end_at,
+            location: `${item?.schedule_id?.venue_id?.address.country?.long_name}, ${item?.schedule_id?.venue_id?.address?.city} ${item?.schedule_id?.venue_id?.address?.address}`,
+            color: item.schedule_id.event_id.category_id.color,
+            id: item?.schedule_id?.event_id?._id,
           }))}
           {...useFormReturn}
         />

@@ -529,6 +529,19 @@
     "forgot": "¿Olvidaste la contraseña?",
     "signin": "Iniciar Sesión",
     "signup": "Registrarse",
-    "continue": "O continúa con"
+    "continue": "O continúa con",
+    "firstname": "Primer nombre",
+    "surname": "Apellido",
+    "password": "Contraseña",
+    "repeat": "Repetir contraseña",
+    "remember": "Recordar",
+    "send_link": "Enviar link de confirmación",
+    "back": "Volver a Iniciar Sesión",
+    "email": "Email",
+    "birthday": "Cumpleaños",
+    "male": "Hombre",
+    "female": "Mujer",
+    "other": "Otro",
+    "sex": "Sexo"
   }
 }

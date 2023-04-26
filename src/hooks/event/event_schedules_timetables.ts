@@ -39,12 +39,30 @@ export function useInfinteEventSchedulesTimetables(
 
 export function useEventScheduleTimetable(
   event_schedule_timetable_id: string,
-  options?: UseQueryOptions
+  options?: UseQueryOptions<any>
 ) {
   return useQuery<EventScheduleTimetable>(
     [key, event_schedule_timetable_id],
-    () => readEventScheduleTimetable(event_schedule_timetable_id)
+    () => readEventScheduleTimetable(event_schedule_timetable_id),
+    options
   );
+}
+
+export function useUpdateEventScheduleTimetable() {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading, isError, isSuccess } = useMutation(
+    updateEventScheduleTimetable,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData([key], (prev: any) => prev.concat(data));
+      },
+      onSettled: () => {
+        queryClient.refetchQueries();
+      },
+    }
+  );
+  return { mutate, isLoading, isError, isSuccess };
 }
 
 export function useDeleteEventScheduleTimetable() {
@@ -58,7 +76,6 @@ export function useDeleteEventScheduleTimetable() {
       },
       onSettled: () => {
         queryClient.refetchQueries();
-        // or you can use queryClient.refetchQueries('todos');
       },
     }
   );

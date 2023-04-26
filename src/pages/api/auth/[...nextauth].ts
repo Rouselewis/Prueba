@@ -43,6 +43,7 @@ export default NextAuth({
           const authResponse = await signIn({ email, password });
           console.log('authResponse', authResponse);
           const user = authResponse.user;
+          console.log('user', user);
           return {
             id: user._id,
             email: user.email,

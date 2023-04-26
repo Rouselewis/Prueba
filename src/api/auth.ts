@@ -1,6 +1,6 @@
 import axios from '@/lib/axios';
 import { User, Role } from '@/interfaces/user';
-import { SignIn, AuthResponse } from '@/interfaces/auth';
+import { SignIn, AuthResponse, SignUp } from '@/interfaces/auth';
 
 type UserLogin = { uid: string; id_token: string };
 
@@ -18,5 +18,10 @@ export const userRegister = async (user: User) => {
 
 export const signIn = async (args: SignIn): Promise<AuthResponse> => {
   const { data } = await axios.post<AuthResponse>('/auths/signin', args);
+  return data;
+};
+
+export const signUp = async (args: SignUp) => {
+  const { data } = await axios.post('/auths/signup', args);
   return data;
 };

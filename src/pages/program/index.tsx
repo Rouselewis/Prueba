@@ -36,28 +36,6 @@ const Program = ({ categories }) => {
 
   const specialCategories = useEventsSpecialsCategories();
   const [filteredResults, setFilteredResults] = useState([]);
-  // const filteredResults =
-  //   queryObj?.initial_date || queryObj?.finish_date || queryObj?.address
-  //     ? specialCategories.data?.items?.filter((item) => {
-  //         if (queryObj?.initial_date && queryObj?.finish_date) {
-  //           console.log('filtering by date');
-  //           const finalDate = new Date(item.final_date);
-  //           const initialDate = new Date(item.initial_date);
-  //           return (
-  //             initialDate >= new Date(queryObj?.initial_date as string) &&
-  //             finalDate <= new Date(queryObj?.finish_date as string)
-  //           );
-  //         }
-
-  //         if (queryObj?.query) {
-  //           console.log('filtering by query');
-  //           const category =
-  //             item?.category?.find((obj) => obj.lang == locale)?.name ||
-  //             item?.category?.find((obj) => obj.lang == 'es')?.name;
-  //           return category.includes(queryObj?.query as string);
-  //         }
-  //       })
-  //     : specialCategories.data?.items;
   useEffect(() => {
     const newFilteredResults = specialCategories.data?.items?.filter((item) => {
       if (queryObj?.initial_date && queryObj?.finish_date) {
@@ -68,9 +46,7 @@ const Program = ({ categories }) => {
           initialDate >= new Date(queryObj?.initial_date as string) &&
           finalDate <= new Date(queryObj?.finish_date as string)
         );
-      }
-
-      if (queryObj?.query) {
+      } else if (queryObj?.query) {
         console.log('filtering by query');
         const category =
           item?.category?.find((obj) => obj.lang == locale)?.name ||
@@ -78,20 +54,30 @@ const Program = ({ categories }) => {
         return category
           .toLowerCase()
           .includes((queryObj?.query as string).toLowerCase());
-      }
-
-      if (queryObj?.address) {
+      } else if (queryObj?.address) {
         console.log('filtering by address');
         const address =
-          `${item.location.city}, ${item.location.state.long_name} ${item.location.country.long_name}`.toLowerCase();
+          `${item.location.city}, ${item.location.state.long_name} ${item.location.country.long_name}`
+            .normalize('NFD') // remove accent marks
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase() // convert to lowercase
+            .replace(/[^a-z0-9\s]/g, '') // remove non-alphanumeric characters
+            .replace(/\s+/g, ' ') // replace multiple spaces with a single space
+            .trim();
+        console.log('address ', address);
         return address.includes((queryObj?.address as string).toLowerCase());
       }
-
       return true; // include all items by default
     });
 
     setFilteredResults(newFilteredResults);
-  }, [queryObj]);
+  }, [
+    queryObj?.query,
+    queryObj?.address,
+    queryObj?.initial_date,
+    queryObj?.finish_date,
+    specialCategories.isLoading,
+  ]);
   const category = categories?.find((item) => item._id == queryObj?.category);
   return (
     <div className="mb-44 -mt-8">
@@ -151,7 +137,8 @@ const Program = ({ categories }) => {
                 : t('home.new_events')
             }
             items={filteredResults?.map((item) => ({
-              image: item.event_img,
+              // image: item.event_img,
+              image: 'https://loremflickr.com/640/480/cats',
               name:
                 item.category.find((obj) => obj.lang == locale)?.name ||
                 item.category.find((obj) => obj.lang == 'es')?.name,
@@ -176,7 +163,8 @@ const Program = ({ categories }) => {
           totalDocs={specialCategories.data?.total}
           title={t('commons.recommended_events')}
           items={specialCategories?.data?.items?.map((item) => ({
-            image: item.event_img,
+            // image: item.event_img,
+            image: 'https://loremflickr.com/640/480/cats',
             name:
               item.category.find((obj) => obj.lang == locale)?.name ||
               item.category.find((obj) => obj.lang == 'es')?.name,

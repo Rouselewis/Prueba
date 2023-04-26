@@ -96,7 +96,7 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
       ],
     },
   });
-
+  const ts = useTranslations('Fsuccess');
   const {
     fields: schedulesDays,
     append: addDay,
@@ -124,70 +124,77 @@ const EventCreateAdditional = ({ categoriesVenues }) => {
     setMarkerPosition(latLng);
   };
   const onSubmit = (data: Address) => {
-    createEventVenue({
-      category_id: filteredCategories.find((item) => item.category == data.type)
-        ._id,
-      name: data.venue,
-      address: {
-        latitude: data.latitude,
-        longitude: data.longitude,
-        address: data.address,
-        address2: data.address2,
-        city: data.city,
-        state: {
-          // @ts-ignore
-          long_name: data.state,
-          short_name: data.short_state,
-        },
-        country: {
-          // @ts-ignore
-          long_name: data.country,
-          short_name: data.short_country,
-        },
-        zipcode: data.zipcode,
-      },
-      info: {
-        quota: data.quota,
-        url: data.url,
-        social_media: {
-          facebook: data.facebook,
-          instagram: data.instagram,
-          twitter: data.twitter,
-        },
-        parking: {
-          currency: data.currency,
-          cost: data.cost,
-        },
-        box_office: {
-          number: `${data.box_office}`,
-          // @ts-ignore
-          schedule: data.day.map((item) => {
-            const [startHours, startMinutes] = item.start_at.split(':');
-            const [endHours, endMinutes] = item.end_at.split(':');
-            const startDate = new Date();
-            const endDate = new Date();
-            startDate.setHours(parseInt(startHours));
-            startDate.setMinutes(parseInt(startMinutes));
-            endDate.setHours(parseInt(endHours));
-            endDate.setMinutes(parseInt(endMinutes));
-            return {
-              day: item.day,
-              end_at: endDate,
-              start_at: startDate,
-            };
-          }),
-          payment: {
-            cash: data.cash,
-            card: data.credit,
-            debit: data.debit,
+    try {
+      createEventVenue({
+        category_id: filteredCategories.find(
+          (item) => item.category == data.type
+        )._id,
+        name: data.venue,
+        address: {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          address: data.address,
+          address2: data.address2,
+          city: data.city,
+          state: {
+            // @ts-ignore
+            long_name: data.state,
+            short_name: data.short_state,
           },
+          country: {
+            // @ts-ignore
+            long_name: data.country,
+            short_name: data.short_country,
+          },
+          zipcode: data.zipcode,
         },
-        accessible_seats: data.accessible,
-        generic_rules: data.generic_rules,
-        children_rules: data.children_rules,
-      },
-    });
-    reset();
+        info: {
+          quota: data.quota,
+          url: data.url,
+          social_media: {
+            facebook: data.facebook,
+            instagram: data.instagram,
+            twitter: data.twitter,
+          },
+          parking: {
+            currency: data.currency,
+            cost: data.cost,
+          },
+          box_office: {
+            number: `${data.box_office}`,
+            // @ts-ignore
+            schedule: data.day.map((item) => {
+              const [startHours, startMinutes] = item.start_at.split(':');
+              const [endHours, endMinutes] = item.end_at.split(':');
+              const startDate = new Date();
+              const endDate = new Date();
+              startDate.setHours(parseInt(startHours));
+              startDate.setMinutes(parseInt(startMinutes));
+              endDate.setHours(parseInt(endHours));
+              endDate.setMinutes(parseInt(endMinutes));
+              return {
+                day: item.day,
+                end_at: endDate,
+                start_at: startDate,
+              };
+            }),
+            payment: {
+              cash: data.cash,
+              card: data.credit,
+              debit: data.debit,
+            },
+          },
+          accessible_seats: data.accessible,
+          generic_rules: data.generic_rules,
+          children_rules: data.children_rules,
+        },
+      });
+      if (error) throw new Error(error as string);
+      toast.success(ts('venue_added'));
+      reset();
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
   return (
     <>

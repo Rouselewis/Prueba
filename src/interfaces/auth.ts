@@ -9,6 +9,11 @@ export interface SignIn {
 export interface SignUp {
   email: string;
   password: string;
+  birthday: Date;
+  sex: string;
+  avatar: string;
+  firstname: string;
+  surname: string;
 }
 
 export interface AuthResponse {

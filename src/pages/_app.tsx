@@ -42,27 +42,23 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     <NextIntlProvider messages={pageProps.messages}>
       <SessionProvider session={pageProps.session}>
         <QueryClientProvider client={queryClient}>
-          <GoogleReCaptchaProvider
-            reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
-          >
-            <Head>
-              <title>CTickets</title>
-              <meta
-                name="viewport"
-                content="initial-scale=1, width=device-width"
-              />
-            </Head>
-            <Layout>
-              <Wrapper
-                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-                libraries={['places']}
-              >
-                <ToastContainer />
-                <Component {...pageProps} />
-              </Wrapper>
-            </Layout>
-            <ReactQueryDevtools initialIsOpen={true} />
-          </GoogleReCaptchaProvider>
+          <Head>
+            <title>CTickets</title>
+            <meta
+              name="viewport"
+              content="initial-scale=1, width=device-width"
+            />
+          </Head>
+          <Layout>
+            <Wrapper
+              apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+              libraries={['places']}
+            >
+              <ToastContainer />
+              <Component {...pageProps} />
+            </Wrapper>
+          </Layout>
+          <ReactQueryDevtools initialIsOpen={true} />
         </QueryClientProvider>
       </SessionProvider>
     </NextIntlProvider>
