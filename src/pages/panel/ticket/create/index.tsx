@@ -35,6 +35,7 @@ const EventCreateAdditional = () => {
   const t = useTranslations('Panel_SideBar');
   const tc = useTranslations('Common_Forms');
   const te = useTranslations('Ferrors');
+  const ts = useTranslations('Fsuccess');
   const tt = useTranslations('Panel_Ticket');
   const transformDate = (originalValue) => {
     if (originalValue === null || originalValue === '') {
@@ -46,7 +47,8 @@ const EventCreateAdditional = () => {
   const validationSchema = yup.object().shape({
     currency: yup.string().required(te('required')),
     event_id: yup.string().required(te('required')),
-    date: yup.date().required(te('required')).transform(transformDate),
+    date: yup.string().required(te('required')),
+    // .transform(transformDate)
     schedule: yup.string().required(te('required')),
     resale: yup.boolean(),
     starting_date: yup
@@ -87,7 +89,7 @@ const EventCreateAdditional = () => {
     nine_months: yup.boolean(),
   });
   const currentColor = CurrentColor();
-  const { mutate: updateEvent, isLoading, error } = useMutationUpdateEvent();
+  const { mutate: updateEvent, error } = useMutationUpdateEvent();
   const {
     register,
     setValue,
@@ -104,44 +106,51 @@ const EventCreateAdditional = () => {
     },
   });
   const onSubmit = (data: CreateTicket) => {
-    updateEvent({
-      _id: data.event_id,
-      settings: {
-        isFree: data.free_event,
-        isCharity: data.charity,
-        isSubscription: data.subscription,
-        currency: data.currency,
-        tickets: {
-          resale: {
-            enable: data.resale,
-            start_at: data.starting_date,
-            end_at: data.ending_date,
+    try {
+      updateEvent({
+        _id: data.event_id,
+        settings: {
+          isFree: data.free_event,
+          isCharity: data.charity,
+          isSubscription: data.subscription,
+          currency: data.currency,
+          tickets: {
+            resale: {
+              enable: data.resale,
+              start_at: data.starting_date,
+              end_at: data.ending_date,
+            },
+            reserve: {
+              enable: data.reserve,
+              cost_percentage: data.cost_percentage,
+              days_limit: data.pay_limit,
+            },
+            sell_limit: data.sell_limit,
+            pre_sell_start_at: data.pre_sale_start,
+            sell_start_at: data.sale_start,
           },
-          reserve: {
-            enable: data.reserve,
-            cost_percentage: data.cost_percentage,
-            days_limit: data.pay_limit,
-          },
-          sell_limit: data.sell_limit,
-          pre_sell_start_at: data.pre_sale_start,
-          sell_start_at: data.sale_start,
+          msi: [
+            {
+              month: 3,
+              status: data.three_months,
+            },
+            {
+              month: 6,
+              status: data.six_months,
+            },
+            {
+              month: 9,
+              status: data.nine_months,
+            },
+          ],
         },
-        msi: [
-          {
-            month: 3,
-            status: data.three_months,
-          },
-          {
-            month: 6,
-            status: data.six_months,
-          },
-          {
-            month: 9,
-            status: data.nine_months,
-          },
-        ],
-      },
-    });
+      });
+      if (error) throw new Error(error as string);
+      toast.success(ts('ticket_addded'));
+      reset();
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   const locale = useLocale();
@@ -200,7 +209,7 @@ const EventCreateAdditional = () => {
                   id="date"
                   name="date"
                   className={FormStyles('select')}
-                  defaultValue={''}
+                  defaultValue={'all'}
                   {...register('date')}
                 >
                   <option value="all">{tc('field_date')}</option>

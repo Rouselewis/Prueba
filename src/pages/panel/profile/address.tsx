@@ -144,8 +144,8 @@ const ProfileAddress = () => {
               onPlaceSelected={onPlaceSelected}
               markerPosition={markerPosition}
             />
-            <div className="pt-6 divide-y divide-gray-200">
-              <div className="flex justify-end px-4 py-4 mt-4 gap-x-3 sm:px-6">
+            <div className="divide-y divide-gray-200 pt-6">
+              <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                 <CustomCancel />
                 <CustomSubmit />
               </div>

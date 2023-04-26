@@ -3,12 +3,13 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   i18n: {
-    locales: ["es", "en"],
-    defaultLocale: "es",
+    locales: ['es', 'en'],
+    defaultLocale: 'es',
   },
   images: {
-    domains: ["loremflickr.com", "ctickets.app"]
-  }
-}
+    domains: ['loremflickr.com', 'ctickets.app'],
+  },
+  staticPageGenerationTimeout: 1000,
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

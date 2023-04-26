@@ -458,7 +458,14 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const categories = await getEventsCategories();
   const specialCategories = await getEventsSpecialsCategories();
   const suppliers = await getEventsSuppliers();
-
+  console.log(
+    'categories',
+    categories,
+    'suppliers',
+    suppliers,
+    'special_categories',
+    specialCategories
+  );
   return {
     props: {
       messages: (await import(`@/messages/${locale}.json`)).default,
