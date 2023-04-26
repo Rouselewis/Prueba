@@ -18,6 +18,11 @@ import {
 import { Address } from '@/interfaces/serializers/commons';
 import { useMutationUpdateUser } from '@/hooks/user/user';
 import { useQueryClient } from '@tanstack/react-query';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { User } from '@/interfaces/user';
+import { toast } from 'react-toastify';
 
 const validationSchema = yup.object().shape({
   // addressname: yup.string().required("Address name is required"),
@@ -43,9 +48,14 @@ const ProfileAddress = () => {
     { page: t('profile.address'), href: '' },
   ];
 
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
+
   const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData(['user']);
-  const user = userData?.[0]?.user;
+  const user: User = queryClient.getQueryData(['user']);
 
   const {
     register,
@@ -62,8 +72,14 @@ const ProfileAddress = () => {
       setValue('address', user?.address?.address);
       setValue('address2', user?.address?.address2);
       setValue('zipcode', user?.address?.zipcode);
-      setValue('country', user?.address?.country?.long_name);
-      setValue('state', user?.address?.state?.long_name);
+      setValue('country', {
+        long_name: user?.address?.country?.long_name,
+        short_name: user?.address?.country?.short_name,
+      });
+      setValue('state', {
+        long_name: user?.address?.state?.long_name,
+        short_name: user?.address?.state?.short_name,
+      });
       setValue('city', user?.address?.city);
     }
   }, [user]);
@@ -90,10 +106,17 @@ const ProfileAddress = () => {
       },
       zipcode: data.zipcode,
     };
-    const updatedUser = { address: address, uid: user?.uid };
+    const updatedUser = { address: address, _id: user?._id };
+
     console.log('UPDATED ADDRESS:', updatedUser);
-    //@ts-ignore
-    updateUser(updatedUser);
+    updateUser(updatedUser, {
+      onSuccess: () => {
+        toast.success('success');
+      },
+      onError: (error: Error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   const onPlaceSelected = (address, latLng) => {
@@ -121,8 +144,8 @@ const ProfileAddress = () => {
               onPlaceSelected={onPlaceSelected}
               markerPosition={markerPosition}
             />
-            <div className="pt-6 divide-y divide-gray-200">
-              <div className="flex justify-end px-4 py-4 mt-4 gap-x-3 sm:px-6">
+            <div className="divide-y divide-gray-200 pt-6">
+              <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                 <CustomCancel />
                 <CustomSubmit />
               </div>
