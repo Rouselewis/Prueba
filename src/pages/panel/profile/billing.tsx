@@ -21,6 +21,10 @@ import { updateUser } from '@/api/user/user';
 import { useMutationUpdateUser } from '@/hooks/user/user';
 import { useQueryClient } from '@tanstack/react-query';
 import { User } from '@/interfaces/user';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 const validationSchema = yup.object().shape({
   business_name: yup.string().required('Business name is required'),
@@ -38,9 +42,14 @@ const ProfileBilling = () => {
     { page: t('profile.billing'), href: '' },
   ];
 
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
+
   const queryClient = useQueryClient();
-  const userData = queryClient.getQueryData(['user']);
-  const user: User = userData?.[0]?.user;
+  const user: User = queryClient.getQueryData(['user']);
 
   const { mutate: updateUser, isError, error } = useMutationUpdateUser();
   if (isError)
@@ -51,7 +60,6 @@ const ProfileBilling = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -65,19 +73,23 @@ const ProfileBilling = () => {
     }
   }, [user]);
 
-  const onSubmitHandler = (data: Tax) => {
+  const onSubmitHandler = (data: any) => {
     console.log('DATA BILLING:', JSON.stringify(data, null, 2));
-    const tax_data = {
+    const tax_data: Tax = {
       business_name: data.business_name,
       rfc: data.rfc,
       zipcode: data.zipcode,
       cfdi: data.cfdi,
     };
-    const updatedData = { tax_data: tax_data, uid: user?.uid };
-    // setSubmitted(false);
-    // setSubmittedError(true);
-    //@ts-ignore
-    updateUser(updatedData);
+    const updatedData = { _id: user._id, tax_data: tax_data };
+    updateUser(updatedData, {
+      onSuccess: () => {
+        toast.success('success');
+      },
+      onError: (error: Error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -152,8 +164,8 @@ const ProfileBilling = () => {
               </div>
             </div>
             {/* Buttons section */}
-            <div className="divide-y divide-gray-200 pt-6">
-              <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
+            <div className="pt-6 divide-y divide-gray-200">
+              <div className="flex justify-end px-4 py-4 mt-4 gap-x-3 sm:px-6">
                 <CustomCancel />
                 <CustomSubmit />
               </div>

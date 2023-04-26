@@ -1,33 +1,51 @@
-import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import AdminLayout from "@/components/layout/admin";
-import { CardForm } from "@/components/admin/profile/cardForm";
+import { GetStaticPropsContext } from 'next';
+import { useTranslations } from 'next-intl';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import AdminLayout from '@/components/layout/admin';
+import { CardForm } from '@/components/admin/profile/cardForm';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { Heading } from '@/components/headers/admin/heading';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY);
-console.log(process.env.NEXT_PUBLIC_STRIPE_API_KEY)
+console.log(process.env.NEXT_PUBLIC_STRIPE_API_KEY);
 
 const CardCreate = () => {
-    const t = useTranslations("Panel_Profile_Card");
+  const t = useTranslations('Panel_SideBar');
+  const breadcrumb = [
+    { page: t('user'), href: '/panel/profile/card' },
+    { page: t('profile.card.create'), href: '' },
+  ];
 
-    return (
-        <div>
-            <h1>{t("add_card")}</h1>
-            <Elements stripe={stripePromise} >
-                <CardForm />
-            </Elements>
-        </div>
-    );
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
+
+  return (
+    <div>
+      {/* Breadcrumb section */}
+      <div>
+        <Heading breadcrumb={breadcrumb} />
+      </div>
+      <h1>{t('add_card')}</h1>
+      <Elements stripe={stripePromise}>
+        <CardForm />
+      </Elements>
+    </div>
+  );
 };
 
 CardCreate.Layout = AdminLayout;
 export default CardCreate;
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
-    return {
-        props: {
-            messages: (await import(`@/messages/${locale}.json`)).default,
-        },
-    };
+  return {
+    props: {
+      messages: (await import(`@/messages/${locale}.json`)).default,
+    },
+  };
 }

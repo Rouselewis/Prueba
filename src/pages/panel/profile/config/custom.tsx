@@ -1,7 +1,8 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticPropsContext } from 'next';
 import { useTranslations } from 'next-intl';
+import { useQueryClient } from '@tanstack/react-query';
 // Layout and Header
 import AdminLayout from '@/components/layout/admin';
 import { Heading } from '@/components/headers/admin/heading';
@@ -10,9 +11,10 @@ import { CustomError, CustomCancel, CustomSubmit } from '@/components/forms';
 // Components
 import { CustomCategory } from '@/components/admin/profile/customCategory';
 import { useCategories } from '@/hooks/admin/event/category';
-import { useMe, useUsers } from '@/hooks/user/user';
 
 const ProfileCustom = () => {
+  const [checkedCategories, setCheckedCategories] = useState([]);
+
   const t = useTranslations('Panel_Profile_Category');
   const ts = useTranslations('Panel_SideBar');
 
@@ -22,14 +24,23 @@ const ProfileCustom = () => {
     { page: ts('profile.config.custom'), href: '' },
   ];
   const { isLoading, data: categories } = useCategories();
+
   if (isLoading) return <div>Loading...</div>;
   if (!categories) return <div>No categories found</div>;
 
-  // const { data: meData } = useMe();
-  // console.log('meData:', JSON.stringify(meData, null, 2));
-
   // const { data: userData } = useUsers();
   // console.log('userData:', JSON.stringify(userData, null, 2));
+
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(['user']);
+
+  const handleCategoryChange = (checked, categoryId) => {
+    if (checked) {
+      setCheckedCategories([...checkedCategories, categoryId]);
+    } else {
+      setCheckedCategories(checkedCategories.filter((id) => id !== categoryId));
+    }
+  };
 
   return (
     <>
@@ -61,6 +72,9 @@ const ProfileCustom = () => {
                           picture={category?.picture}
                           color={category?.color}
                           status={category?.status}
+                          onChange={(checked) =>
+                            handleCategoryChange(checked, category?._id)
+                          }
                         />
                       </div>
                     ))}

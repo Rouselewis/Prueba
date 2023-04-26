@@ -10,6 +10,9 @@ import { CustomCard } from '@/components/admin/profile/customCard';
 import { useUserCard } from '@/hooks/user/user_card';
 import { useQueryClient } from '@tanstack/react-query';
 import { User } from '@/interfaces/user';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const ProfileCard = () => {
   const t = useTranslations('Panel_Profile_Card');
@@ -24,6 +27,12 @@ const ProfileCard = () => {
     text: tb('new_card'),
     href: '/panel/profile/card/create',
   };
+
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
 
   const queryClient = useQueryClient();
   // const userData = queryClient.getQueryData(["user"])
@@ -40,31 +49,6 @@ const ProfileCard = () => {
     queryClient.invalidateQueries(['user', 'get card']);
   }
   console.log(JSON.stringify(userCradsData?.data, null, 1));
-
-  //create client secret
-  // useEffect(() => {
-  //     if (user?.payment_data?.stripe === null) {
-  //         const { mutate: updateUser, isError, error, isSuccess } = useMutationUpdateUser();
-  //         if (isError) console.log("useMutationUpdateUser ERROR", (error as Error)?.message)
-  //         // if (isSuccess) queryClient.invalidateQueries(["user"])
-
-  //         const addStripeToUser = (stripeSecret: string) => {
-  //             const payment_data = {
-  //                 stripe: stripeSecret,
-  //             };
-  //             const updatedUser: User = { ...user, payment_data: payment_data };
-  //             updateUser(updatedUser);
-  //         };
-  //         const { data: stripeData, } = useCreateUserCard()
-  //         setStripeSecret(stripeData?.client_secret)
-  //         addStripeToUser(stripeSecret)
-
-  //     } else {
-  //         setStripeSecret(user?.payment_data?.stripe)
-  //     }
-  // }, [])
-
-  // const paymentMethods = userCradsData?.data
 
   return (
     <div>
@@ -94,18 +78,6 @@ const ProfileCard = () => {
                         />
                       </div>
                     ))}
-                  {/* <CustomCard id="1" name="Hector Ruiz" type="debit" number="4242" expMonth="03" expYear="2024" /> */}
-                  {/* <pre>{JSON.stringify(userCradsData.data, null, 1)}</pre>
-                                    {
-                                        <>
-                                            <p>{userCradsData.data[0]?.id}</p>
-                                            <p>{userCradsData.data[0]?.billing_details?.name}</p>
-                                            <p>{userCradsData.data[0]?.type}</p>
-                                            <p>{userCradsData.data[0]?.card?.last4}</p>
-                                            <p>{userCradsData.data[0].card?.exp_month}</p>
-                                            <p>{userCradsData.data[0].card?.exp_year}</p>
-                                        </>
-                                    } */}
                 </div>
               </div>
             </div>

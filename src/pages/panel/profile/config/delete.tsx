@@ -11,6 +11,9 @@ import { CustomDelete } from '@/components/forms';
 import { FormStyles } from '@/helpers';
 import { useQueryClient } from '@tanstack/react-query';
 import { useDeleteUser } from '@/hooks/user/user';
+// Session
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const ProfileDelete = () => {
   const t = useTranslations('Panel_Profile_Delete');
@@ -22,6 +25,12 @@ const ProfileDelete = () => {
     { page: ts('profile.config.config'), href: '/panel/profile/config' },
     { page: ts('profile.config.delete'), href: '' },
   ];
+
+  const { data: session, status } = useSession();
+  const route = useRouter();
+  if (status !== 'authenticated') {
+    route.push('/');
+  }
 
   const queryClient = useQueryClient();
   const userData = queryClient.getQueryData(['user']);
