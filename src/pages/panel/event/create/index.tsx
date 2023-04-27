@@ -83,7 +83,7 @@ type FormData = {
     }[];
   };
   picture_web: File;
-  app_web: File;
+  picture_app: File;
   flyer: File;
   lang: string;
   address: string;
@@ -149,9 +149,10 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
           content: yup.array(
             yup.object({
               lang: yup.string(),
-              general: yup.string(),
-              observations: yup.string(),
-              access_limit: yup.string(),
+              general: yup.string().required(te('required')),
+              services: yup.string().required(te('required')),
+              observations: yup.string().required(te('required')),
+              access_limit: yup.string().required(te('required')),
             })
           ),
         }),
@@ -258,7 +259,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
       event_aditional,
       event_dates,
       picture_web,
-      app_web,
+      picture_app,
       flyer,
     } = formData;
     const event_direction = {
@@ -289,7 +290,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
     console.log('form data', {
       event_request,
       picture_web,
-      app_web,
+      picture_app,
       flyer,
     });
     try {
@@ -303,7 +304,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
         const newFormData = new FormData();
         newFormData.append('event_request', JSON.stringify(event_request));
         newFormData.append('picture_web', picture_web);
-        newFormData.append('app_web', app_web);
+        newFormData.append('picture_app', picture_app);
         newFormData.append('flyer', flyer);
 
         await createNewEvent(newFormData as any);
@@ -380,7 +381,7 @@ const EventCreate = ({ categories, specialCategories, suppliers }: Props) => {
           ],
         },
         picture_web: null,
-        app_web: null,
+        picture_app: null,
         flyer: null,
         lang: 'es',
         address:
@@ -457,7 +458,14 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const categories = await getEventsCategories();
   const specialCategories = await getEventsSpecialsCategories();
   const suppliers = await getEventsSuppliers();
-
+  console.log(
+    'categories',
+    categories,
+    'suppliers',
+    suppliers,
+    'special_categories',
+    specialCategories
+  );
   return {
     props: {
       messages: (await import(`@/messages/${locale}.json`)).default,

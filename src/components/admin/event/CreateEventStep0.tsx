@@ -206,12 +206,10 @@ const CreateEventStep0 = ({
             field="event_image_app-upload"
             name={tc('field_event_image_app')}
           />
-          <CardUpload
-            className="mt-2"
-            name="app_web"
-            control={control}
-          />
-          {errors?.app_web && <CustomError error={errors?.app_web?.message} />}
+          <CardUpload className="mt-2" name="app_web" control={control} />
+          {errors?.picture_app && (
+            <CustomError error={errors?.picture_app?.message} />
+          )}
         </div>
 
         <div className="col-span-12 sm:col-span-6 lg:col-span-4">

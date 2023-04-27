@@ -26,6 +26,42 @@
   .btn-primary-ghost {
     @apply shadow-sm text-primary-500 hover:bg-primary-600 hover:text-white;
   }
+  .btn-neutral {
+    @apply text-black bg-gray-100 shadow-sm;
+  }
+  .btn-neutral-outline {
+    @apply text-black bg-white border border-gray-300 shadow-sm dark:text-white hover:bg-gray-300 hover:text-white;
+  }
+  .btn-neutral-ghost {
+    @apply text-black shadow-sm dark:text-white hover:bg-gray-200/50;
+  }
+  .btn-success {
+    @apply text-white bg-green-500 shadow-sm hover:bg-opacity-80;
+  }
+  .btn-success-outline {
+    @apply text-green-500 border-2 border-green-500 shadow-sm hover:bg-green-500 hover:text-white;
+  }
+  .btn-success-ghost {
+    @apply text-green-500 shadow-sm hover:bg-green-500 hover:text-white;
+  }
+  .btn-warm {
+    @apply text-white bg-yellow-500 shadow-sm hover:bg-opacity-80;
+  }
+  .btn-warm-outline {
+    @apply text-yellow-500 border-2 border-yellow-500 shadow-sm hover:bg-yellow-500 hover:text-white;
+  }
+  .btn-warm-ghost {
+    @apply text-yellow-500 shadow-sm hover:bg-yellow-500 hover:text-white;
+  }
+  .btn-danger {
+    @apply text-white bg-red-500 shadow-sm hover:bg-opacity-80;
+  }
+  .btn-danger-outline {
+    @apply text-red-500 border-2 border-red-500 shadow-sm hover:bg-red-500 hover:text-white;
+  }
+  .btn-danger-ghost {
+    @apply text-red-500 shadow-sm hover:bg-red-500 hover:text-white;
+  }
   .btn-black {
     @apply text-white bg-black shadow-sm hover:opacity-80;
   }
@@ -57,7 +93,7 @@
     @apply w-4 h-4 text-primary-500 focus:ring-primary-500;
   }
   .select-primary {
-    @apply block px-3 py-2 text-sm font-medium transition bg-white border border-gray-700 rounded-lg placeholder:text-gray-500 focus:ring-1 ;
+    @apply block px-3 py-2 text-sm font-medium transition bg-white border border-gray-700 rounded-lg placeholder:text-gray-500 focus:ring-1;
   }
   .input-label {
     @apply text-sm font-medium text-gray-900;
@@ -66,5 +102,5 @@
 
 .swiper-slide {
   height: auto;
-  padding-bottom:20px;
+  padding-bottom: 20px;
 }

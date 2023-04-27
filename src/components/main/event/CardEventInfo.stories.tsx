@@ -4,7 +4,7 @@ import CardEventInfo, { props } from './CardEventInfo';
 import { faker } from '@faker-js/faker';
 
 export default {
-  title: 'Organisms/CardEventDetails',
+  title: 'Organisms/CardEventInfo',
   component: CardEventInfo,
 } as Meta;
 

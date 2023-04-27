@@ -18,7 +18,7 @@ import {
 import { useFieldArray, useForm, UseFormReturn } from 'react-hook-form';
 import FacebookOutlined from '@mui/icons-material/FacebookOutlined';
 import Google from '@mui/icons-material/Google';
-import { Apple } from '@mui/icons-material';
+import Apple from '@mui/icons-material/Apple';
 import { signIn } from 'next-auth/react';
 import { toast } from 'react-toastify';
 import { useSignUp } from '@/hooks/auth';
