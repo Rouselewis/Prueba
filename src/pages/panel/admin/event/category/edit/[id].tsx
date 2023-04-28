@@ -1,6 +1,6 @@
 /** @format */
-import React, { useState, useRef,useEffect, useCallback} from 'react';
-import { GetStaticPropsContext } from "next";
+import React, { useState,  useCallback} from 'react';
+import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color'
 // Helpers
@@ -10,7 +10,6 @@ import AdminLayout from "@/components/layout/admin";
 import { Heading } from '@/components/headers/admin/heading';
 // Forms
 import { useForm, SubmitHandler } from "react-hook-form";
-import { TrashIcon } from "@heroicons/react/24/solid";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CustomCancel, CustomLabel, CustomSubmit } from '@/components/forms';
@@ -19,10 +18,10 @@ import { EventCategory } from '@/interfaces/event';
 //icon
 import {ArrowPathIcon} from '@heroicons/react/24/outline';
 /*Hooks */
-import {useMutationCreateEventCategory, useCategories} from '@/hooks/event/event_category';
+import {useUpdateEventCategory, useReadEventCategory} from '@/hooks/event/event_category';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
-import { type } from 'os';
+import { useRouter } from 'next/router';
 
 type formInterface={
 event_category:EventCategory;
@@ -35,7 +34,12 @@ const EventCreateCategory = () => {
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
 
-const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<formInterface >();
+    const{query,push}=useRouter()
+    const{dataQuery}=useReadEventCategory(`${query.id}`)
+    console.log(dataQuery)
+
+    
+    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<formInterface >();
 
     //drop file
     const [upload, setUpload ]=useState('');
@@ -72,9 +76,9 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/category' },
         { page: t('admin.event.category'), href: '/panel/admin/event/category' },
-        { page: t('actions.create'), href: '' }
+        { page: t('actions.edit'), href: '' }
     ];
-    const {mutate, isLoading, isError, isSuccess}= useMutationCreateEventCategory()
+    const {mutate, isLoading, isError, isSuccess}= useUpdateEventCategory()
 
     
 
@@ -88,9 +92,9 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
 
 /*submit form*/ 
     const onSubmit:SubmitHandler<formInterface >= (data:formInterface )=>{
-        
+    const dataUpdate={id:`${query.id}`,category: data }
     
-      mutate(data)
+      mutate(dataUpdate)
     };
    
     
@@ -181,7 +185,7 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit />
+                                <CustomSubmit onClick={()=>isSuccess?push('/en/panel/admin/event/subcategory'):console.log('no Actualizado')}/>
                             </div>
                         </div>
                     </form>
@@ -193,6 +197,13 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
 
 EventCreateCategory.Layout = AdminLayout;
 export default EventCreateCategory;
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
     return {

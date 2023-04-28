@@ -4,9 +4,25 @@ import { geocodeAddress } from "@/lib/googleMaps";
 import debounce from "lodash.debounce";
 import { useGoogleMapsAPIKey } from "@/hooks/useGoogleMapsApi";
 
-const { apiKey } = useGoogleMapsAPIKey();
+import { BookmarkIcon} from '@heroicons/react/24/solid';
+import { IconButtonTypeMap } from "@mui/material";
+import { Icon } from "next/dist/lib/metadata/types/metadata-types";
 
-const Map = ({ searchAddress, center, markerPosition }) => {
+const { apiKey } = useGoogleMapsAPIKey();
+type MapInterface ={
+    searchAddress:string;
+    center:{lat:number,lng:number};
+    markerPosition:{lat:number,lng:number};
+    handleMapClick:(e:any)=>void;
+}
+
+
+
+const Map: React.FC<MapInterface>= ({ 
+    searchAddress, 
+    center,
+    markerPosition ,
+    handleMapClick}) => {
     const [map, setMap] = useState(null);
     const [position, setPosition] = useState(center);
 
@@ -22,8 +38,9 @@ const Map = ({ searchAddress, center, markerPosition }) => {
         }, 500),
         []
     );
-
+    
     useEffect(() => {
+        
         if (typeof window === "undefined" || typeof window.google === "undefined") {
             return;
         }
@@ -48,16 +65,21 @@ const Map = ({ searchAddress, center, markerPosition }) => {
         googleMapsApiKey: apiKey,
         libraries: ["places"],
     });
-
+    
+    
     return (
         <>
             {isLoaded && <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "450px" }}
+                mapContainerStyle={{ width: "100%", height: "100%" }}
                 center={position}
-                zoom={17}
+                zoom={8}
                 onLoad={onLoad}
+                onClick={handleMapClick}
             >
                 {markerPosition && <Marker position={markerPosition} onLoad={onMarkerLoad} />}
+
+            
+                
             </GoogleMap>}
         </>
     );

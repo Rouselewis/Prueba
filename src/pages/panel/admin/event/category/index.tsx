@@ -10,7 +10,8 @@ import { columnsEventCategory } from '@/components/admin/tables/columns/columnsE
 import { Heading } from '@/components/headers/admin/heading';
 // Import Interface
 import { EventCategory as EventCategoryInterface } from '@/interfaces/event';
-import { useCategories, useDeleteEventCategory,useUpdateEventCategory} from '@/hooks/admin/event/category';
+import { useCategories, useDeleteEventCategory,useUpdateEventCategory} from '@/hooks/event/event_category';
+
 
 export interface dataTable {
     id: string, 
@@ -21,19 +22,25 @@ export interface dataTable {
 
 const  EventCategory = () => {
     const locale = useLocale();
-    const {data,isLoading}= useCategories();
+    const {data, isLoading}= useCategories();
     
-    let dataTableE = [];
+    let dataTableE=[]
+    if(isLoading){
+        null
+    }else{
     data?.map((item) => {
         let dataIn = {
-            id: item.id,
+            id: item._id,
             icon: item.picture,
             category: item.category.find((obj) => obj.lang == locale)?.name,
             status: item.status
         }
-        dataTableE.push(dataIn)
+        dataTableE.push(dataIn)  
     })
-    console.log(dataTableE)
+    
+    }
+    
+    
 
     const ts = useTranslations("Panel_SideBar");
     const tb = useTranslations("btn");
@@ -45,7 +52,7 @@ const  EventCategory = () => {
     ]
     const buttonBread =  { text: tb('add_event_category'), href: '/panel/admin/event/category/create' }
     
-    
+   
     const columns = columnsEventCategory();
    
     return (

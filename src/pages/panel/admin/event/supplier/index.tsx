@@ -1,17 +1,25 @@
 /** @format */
 import { useEffect, useMemo, useState } from 'react';
 import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
+import { useTranslations,useLocale  } from "next-intl";
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { BasicTable } from '@/components/admin/tables';
 import { columnsEventSupplier } from '@/components/admin/tables/columns/columnsEventSupplier';
+//hooks
+import {useEventSuppliers,
+    useEventSupplier,
+    useUpdateEventSupplier,
+    useDeleteEventSupplier} from '@/hooks/event/event_supplier';
 // Components
 import { Heading } from '@/components/headers/admin/heading';
+
 // Import Interface
 import { EventSupplier as EventSupplierInterface } from '@/interfaces/event';
 
 const EventSupplier = () => {
+    const locale = useLocale();
+    
     const ts = useTranslations("Panel_SideBar");
     const tb = useTranslations("btn");
 
@@ -22,10 +30,20 @@ const EventSupplier = () => {
     ]
     const buttonBread =  { text: tb('add_event_supplier'), href: '/panel/admin/event/supplier/create' }
 
-    const data = useMemo(() => [
-        { id: '1', category: "Name", url: 'https://url.com', status: true },
-        { id: '2', category: "Name2", url: 'https://url.com', status: true },
-    ], []);
+    const {isError,isLoading,data}=useEventSuppliers()
+    console.log('EventSupplier',data)
+    let dataTableE = [];
+    data?.map((item) => {
+        let dataIn = {
+            id:item._id,
+            name: item.name,
+            url: item.url,
+            data: item.data,
+            status:item.status
+        }
+        dataTableE.push(dataIn)
+    })
+    
     const columns = columnsEventSupplier();
    
     return (
@@ -41,7 +59,7 @@ const EventSupplier = () => {
                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
                                     <div className="min-w-full divide-y divide-gray-300">
-                                        <BasicTable columns={columns} defaultData={data} />
+                                        <BasicTable columns={columns} defaultData={dataTableE} />
                                     </div>
                                 </div>
                             </div>

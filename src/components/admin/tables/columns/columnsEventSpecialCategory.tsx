@@ -1,15 +1,17 @@
 import { useTranslations } from "next-intl";
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, Options, SwitchTable } from "./components";
+import { Checkbox, Options, SwitchTable ,SwitchEvent,OptionsEvent} from "./components";
 // Helpers
 import { CurrentColor } from '@/helpers';
+import { useDeleteEventSpecialCategory} from '@/hooks/event/event_special_category';
 
 export function columnsEventSpecialCategory() {
   const tcc = useTranslations("table_columns");
 
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
+  const{mutate,isLoading,isError}=useDeleteEventSpecialCategory()
 
   return ([
     columnHelper.accessor('select', {
@@ -55,14 +57,18 @@ export function columnsEventSpecialCategory() {
       id: 'status',
       header: () => tcc('status'),
       cell: props => (
-        <SwitchTable color={currentColor} />
+        <SwitchEvent 
+        color={currentColor} 
+        id={props.row.original.id} 
+        status={props.row.original.status} 
+        changeStatus={mutate} />
       ),
     }),
     columnHelper.accessor('options', {
       id: 'options',
       header: () => tcc('option'),
       cell: props => (
-        <Options id={props.row.original.id} color={currentColor} />
+        <OptionsEvent id={props.row.original.id} color={currentColor} deleteCategory={mutate}/>
       ),
     })
   ]);

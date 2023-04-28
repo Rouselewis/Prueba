@@ -1,6 +1,6 @@
 /** @format */
 import { useState } from 'react';
-import { GetStaticPropsContext } from "next";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color'
 // Layout and Header
@@ -14,7 +14,7 @@ import { CustomCancel, CustomLabel, CustomSubmit } from '@/components/forms';
 import { FormStyles } from '@/helpers';
 import { LinkIcon } from '@heroicons/react/24/solid';
 import { EventSupplier } from '@/interfaces/event';
-import { useCreateEventSupplier } from '@/hooks/event/event_supplier';
+import { useUpdateEventSupplier,useReadEventSupplier } from '@/hooks/event/event_supplier';
 import { useRouter } from 'next/router';
 
 const EventCreateSuplier = () => {
@@ -25,11 +25,13 @@ const EventCreateSuplier = () => {
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/supplier' },
         { page: t('admin.event.supplier'), href: '/panel/admin/event/supplier' },
-        { page: t('actions.create'), href: '' }
+        { page: t('actions.edit'), href: '' }
     ]
-    const {query,push}=useRouter()
+    const {query,push }=useRouter()
 
-    const{mutate,isError,isSuccess}=useCreateEventSupplier()
+    const{mutate,
+        isError,
+        isSuccess}=useUpdateEventSupplier()
     const { 
         register,
         handleSubmit,
@@ -44,9 +46,8 @@ const EventCreateSuplier = () => {
         setInitColor(color.hex)
         setValue('color', initColor )
     }
-
     const onSubmit:SubmitHandler<EventSupplier>= (data:EventSupplier )=>{
-        mutate(data)
+        mutate({id:`${query.id}`,supplier:data})
       };
     return (
         <>
@@ -137,7 +138,7 @@ const EventCreateSuplier = () => {
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit onClick={()=>isSuccess?push('/en/panel/admin/event/supplier'):console.log('error')}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>
@@ -149,6 +150,13 @@ const EventCreateSuplier = () => {
 
 EventCreateSuplier.Layout = AdminLayout;
 export default EventCreateSuplier;
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
     return {

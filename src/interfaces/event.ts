@@ -26,11 +26,13 @@ import {
 export interface Event {
   _id: string;
   user_id: string;
-  supplier_id?: EventSupplier | null;
+  supplier_id?: {
+    id: string;
+    collection: string;
+  } | null;
   category_id: EventCategory;
-  subcategory_id: EventCategory;
-  sub_subcategory_id: EventCategory;
-  special_category_id?: EventCategory;
+  subcategory_id: string | null;
+  special_category_id?: string | null;
   tags: EventTag[];
   content: Content[];
   info: EventInfo;
@@ -41,84 +43,9 @@ export interface Event {
   status?: boolean;
   created_at: string;
 }
-
-export interface EventNew {
-  event_request: {
-    event_general: {
-      supplier_id: string;
-      category_id: string;
-      sub_category_id: string;
-      sub_sub_cateogry_id: string;
-      tags: string[];
-      content: {
-        name: string;
-        description: string;
-        lang: string;
-      }[];
-    };
-    event_aditional: {
-      social_media: {
-        facebook: string;
-        instagram: string;
-        twitter: string;
-      };
-      info: {
-        age_limit: number;
-        duration: string;
-        content: {
-          lang: string;
-          general: string;
-          observations: string;
-          services: string;
-          restrictions: string;
-          access_limit: string;
-        }[];
-      };
-    };
-    event_dates: {
-      dates: {
-        range: {
-          start_at: Date;
-          end_at: Date;
-        };
-      };
-      schedules: {
-        start_at: Date;
-        end_at: Date;
-        costs: {
-          cost: number;
-          lower: number;
-          high: number;
-        };
-        urls: {
-          ticket: string;
-          streaming: string;
-        };
-      }[];
-    };
-    event_direction: {
-      venue_name: string;
-      address: {
-        latitude: string;
-        longitude: string;
-        address: string;
-        address2: string;
-        city: string;
-        state: {
-          long_name: string;
-          short_name: string;
-        };
-        country: {
-          long_name: string;
-          short_name: string;
-        };
-        zipcode: string;
-      };
-    };
-  };
-  picture_web: File;
-  app_web: File;
-  flyer: File;
+export interface formInterface {
+event_category:EventCategory;
+picture:File;
 }
 export interface EventCategory {
   _id: string;
@@ -235,8 +162,8 @@ export interface EventSpecialCategory {
   _id: string;
   user_id: string;
   category: Content[];
-  header_img: string;
-  event_img: string;
+  header_img: string | ArrayBuffer;
+  event_img: string | ArrayBuffer;
   color: string;
   status?: boolean;
   initial_date: string;
@@ -258,18 +185,46 @@ export interface EventSpecialCategory {
   description: string;
 }
 
+export interface createEventSpecialCategory {
+  
+  user_id: string;
+  category: Content[];
+  header_img: string | ArrayBuffer;
+  event_img: string | ArrayBuffer;
+  color: string;
+  initial_date: string;
+  final_date: string;
+  location: {
+    latitude: string;
+    longitude: string;
+    city: string;
+    state: {
+      long_name: string;
+      short_name: string;
+    };
+    country: {
+      long_name: string;
+      short_name: string;
+    };
+  };
+  description: string;
+}
+
+
 export interface EventSubcategory {
-  category_id: string;
+  category_id: {id:string, collection: string};
   subcategory: BasicTranslate[];
   status?: boolean;
 }
 
 export interface EventSubsubcategory {
-  category_id: string;
-  subcategory_id: string;
-  subsubcategory: BasicTranslate[];
+  category_id: {};
+  subcategory_id: {};
+  sub_subcategory: string;
+  picture:string;
   status?: boolean;
 }
+
 
 export interface EventSupplier {
   _id: string;
@@ -301,4 +256,8 @@ export interface EventVenueCategory {
   category: BasicTranslate[];
   status?: boolean;
   _id: string;
+}
+export interface interfaceEventVenueCategory {
+  category: BasicTranslate[];
+ 
 }

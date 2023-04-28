@@ -1,7 +1,7 @@
 /** @format */
 import { useCallback, useState } from 'react';
-import { GetStaticPropsContext } from "next";
-import { useTranslations, useLocale} from "next-intl";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
+import { useLocale, useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color'
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
@@ -13,18 +13,18 @@ import * as yup from "yup";
 import { CustomCancel, CustomLabel, CustomSubmit } from '@/components/forms';
 import { FormStyles } from '@/helpers';
 import { InputLang } from '@/components/forms/lang';
-import {useSubCategories} from '@/hooks/event/event_subcategory';
-import { useCategories} from '@/hooks/event/event_category';
-import { useCreateEventSubSubcategory} from '@/hooks/event/event_sub_subcategory';
-import { EventSubsubcategory} from '@/interfaces/event';
-import { useDropzone } from 'react-dropzone';
+import {ImageURL} from '@/helpers/imageURL';
 import Image from 'next/image';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import {ImageURL} from '@/helpers/imageURL';
-import {toast, ToastContainer}from 'react-toastify';
+import { EventSubsubcategory } from '@/interfaces/event';
+import { useCategories } from '@/hooks/event/event_category';
+import { useSubCategories } from '@/hooks/event/event_subcategory';
+import { useDropzone } from 'react-dropzone';
+import { useUpdateEventCategory,useReadEventSubSubcategory} from '@/hooks/event/event_sub_subcategory';
+import { useRouter } from 'next/router';
+import {toast, ToastContainer}from 'react-toastify'
 
-
-const EventCreateSubsubcategory = () => {
+const EventCreateSubsubcategory = () =>  {
     const t = useTranslations("Panel_SideBar");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
@@ -35,6 +35,7 @@ const EventCreateSubsubcategory = () => {
         { page: t('admin.event.subsubcategory'), href: '/panel/admin/event/subsubcategory' },
         { page: t('actions.create'), href: '' }
     ]
+    
     const toastSuccess=()=>{
         toast.success('Event sub-sub-Category updated :)',{
             data:{
@@ -52,21 +53,20 @@ const EventCreateSubsubcategory = () => {
             }
         } )
     }
+
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
-    const{ mutate,isSuccess}=useCreateEventSubSubcategory()
+    const{ mutate,isSuccess}=useUpdateEventCategory()
+    const {query,push}=useRouter()
     const locale = useLocale();
-    
       //drop file
       const [upload, setUpload ]=useState('');
-      
-      const [imageUpload, setImageUpload ]=useState<File>();
       const[url,setUrl]=useState('');
-     
+     const [uploadImg,setuploadImg]=useState<File>()
   
       const onDrop=useCallback((acceptedFile)=>{
       const file= acceptedFile[0]
           setUpload(file.name)
-          setImageUpload(file)
+          setuploadImg(file)
           setValue('picture', ImageURL(file.name))
           const link= URL.createObjectURL(file)
           setUrl(link)
@@ -78,10 +78,10 @@ const EventCreateSubsubcategory = () => {
   
   //input file config
       
-      const handleSelectFile=(e)=>{
+      const handleSelectFile=(e:any)=>{
               const file=e.target.files[0]
               setUpload(file.name)
-             setImageUpload(file)
+              setuploadImg(file)
               setValue('picture', ImageURL(file.name))
               const link= URL.createObjectURL(file)
               setUrl(link)
@@ -151,23 +151,19 @@ const EventCreateSubsubcategory = () => {
             
         })
         setValue('category_id',subcategorySelectId[0]?.id)
-        const subcategory_id={
-            _id: subcategorySelect[0].subId,
-            category_id: subcategorySelectId[0]?.id
-        }
+        const subcategory_id=subcategorySelect[0].subId
         setValue('subcategory_id',subcategory_id)
-        
+
 
     }
-    
+    console.log(getValues())
 
     const onSubmit:SubmitHandler<EventSubsubcategory>= (data:EventSubsubcategory)=>{
-        const dataForm= new FormData
-        dataForm.append('event_sub_subcategory',JSON.stringify(data))
-        
-        dataForm.append('picture' , imageUpload )
-      
-      mutate(dataForm)
+     const Formdata= new FormData
+        Formdata.append('event_sub_subcategory', JSON.stringify(data))
+        Formdata.append('picture', uploadImg)
+     
+      mutate({updateCategory_id:`${query.id}`,eventSubSubCategory:Formdata})
     };
 
     return (
@@ -264,7 +260,7 @@ const EventCreateSubsubcategory = () => {
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit onClick={()=>isSuccess?toastSuccess:toastError( errors )}/>
+                                <CustomSubmit onClick={()=>isSuccess?toastSuccess:toastError(errors)}/>
                             </div>
                         </div>
                     </form>
@@ -276,6 +272,13 @@ const EventCreateSubsubcategory = () => {
 
 EventCreateSubsubcategory.Layout = AdminLayout;
 export default EventCreateSubsubcategory;
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
     return {

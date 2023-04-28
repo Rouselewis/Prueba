@@ -1,23 +1,22 @@
-import { useTranslations } from "next-intl";
+import { useTranslations } from 'next-intl';
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, Icon, OptionsEvent, SwitchEvent } from "./components";
+import { Checkbox, OptionsEvent, SwitchEvent } from './components';
 // Helpers
 import { CurrentColor } from '@/helpers';
-//hooks
+import { useDeleteEventVenueCategory} from '@/hooks/event/event_venue_category';
 
-import {useDeleteEventCategory}from '@/hooks/event/event_category'
-
-export function columnsEventCategory(category?: string) {
-
-const { mutate,isLoading,isError,isSuccess}=useDeleteEventCategory()
-
-  const tcc = useTranslations("table_columns");
+export function columnsCategory(category: string) {
+  const tcc = useTranslations('table_columns');
 
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
+  const {mutate,
+    isLoading,
+    isError,
+    isSuccess,}= useDeleteEventVenueCategory()  
 
-  return ([
+  return [
     columnHelper.accessor('select', {
       id: 'select',
       header: ({ table }) => (
@@ -42,36 +41,26 @@ const { mutate,isLoading,isError,isSuccess}=useDeleteEventCategory()
         </div>
       ),
     }),
-    columnHelper.accessor('icon', {
-      id: 'icon',
-      header: () => tcc('admin.event.icon'),
-      cell: props => (
-        <Icon imageSrc={props.getValue()} />
-      ),
-    }),
     columnHelper.accessor('category', {
       id: 'category',
       header: () => category,
-      cell: props => props.getValue()
+      cell: (props) => props.getValue(),
     }),
     columnHelper.accessor('status', {
       id: 'status',
       header: () => tcc('status'),
-      cell: props => {
-        return(
-        <SwitchEvent 
-        color={currentColor}
-        id={props.row.original.id} 
-        status={props.row.original.status} 
-        changeStatus={mutate}/>
-      )},
+      cell: (props) => <SwitchEvent 
+      color={currentColor} 
+      status={props.row.original.status}  
+      id={props.row.original.id} 
+      changeStatus={mutate}/>,
     }),
     columnHelper.accessor('options', {
       id: 'options',
       header: () => tcc('option'),
-      cell: props => (
+      cell: (props) => (
         <OptionsEvent id={props.row.original.id} color={currentColor} deleteCategory={mutate}/>
       ),
-    })
-  ]);
+    }),
+  ];
 }

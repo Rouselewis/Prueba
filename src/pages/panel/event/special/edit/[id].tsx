@@ -1,6 +1,6 @@
 /** @format */
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { GetStaticPropsContext } from "next";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color'
 // Layout and Header
@@ -24,6 +24,7 @@ import Dropzone from 'react-dropzone';
 import Image from 'next/image';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { useMe } from '@/hooks/user/user';
+import { useRouter } from 'next/router';
 
 
 type locationTypes={
@@ -36,16 +37,18 @@ const EventCreateSpecialCategory = () => {
     const t = useTranslations("Panel_SideBar");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
+    
 
     const breadcrumb = [
         { page: t('admin.admin'), href: '/panel/event' },
         { page: t('event.event'), href: '/panel/event/special' },
         { page: t('event.special'), href: '/panel/event/special' },
-        { page: t('actions.create'), href: '' }
+        { page: t('actions.edit'), href: '' }
     ]
 
-    const {mutate, isLoading, isError, isSuccess}= useCreateEventSpecialCategory()
+    const {mutate, isLoading, isError, isSuccess}= useUpdateEventSpecialCategory()
     const user=useMe()
+    const{query}=useRouter()
     
     const methods = useForm<createEventSpecialCategory>();
  //input file config   
@@ -148,7 +151,7 @@ const EventCreateSpecialCategory = () => {
         DataForm.append("event_special_category", JSON.stringify(data))
         DataForm.append("header_img", Header_event)
         DataForm.append("event_img", Event_img)
-        mutate(DataForm)
+        mutate({id:`${query.id}`,SpecialCategory:DataForm})
     };
    
     
@@ -306,15 +309,14 @@ console.log('value',methods.getValues())
                               
                             </div>
                             <div className="col-span-12 sm:col-span-12 md:col-span-12 lg:col-span-12 gap-6 flex flex-row lg:mb-16 mb-6">
-                                <div className="w-full ">
+                                <div>
                                     <CustomLabel field="initial_date" name={tc('field_initial_date')}/>
                                     <input type='date' onChange={dateInit} min={'2023-04-26'} max={'2026-04-26'} placeholder='Selecciona Fecha inicial'  className={FormStyles('input')} />
                                 </div>
-                                <div className="w-full ">
+                                <div>
                                     <CustomLabel field="final_date" name={tc('field_final_date')}/>
                                     <input type='date' onChange={dateEnd} min={'2023-04-26'} max={'2026-04-26'} placeholder='Selecciona Fecha final'  className={FormStyles('input')} />
                                 </div>
-                            
                             </div>
                             <div className="col-span-12 sm:col-span-4 md:col-span-4 lg:col-span-4">
                                 <div>
@@ -394,6 +396,13 @@ console.log('value',methods.getValues())
 
 EventCreateSpecialCategory.Layout = AdminLayout;
 export default EventCreateSpecialCategory;
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
     return {

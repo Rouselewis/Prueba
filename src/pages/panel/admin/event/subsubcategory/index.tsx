@@ -1,17 +1,21 @@
 /** @format */
 import { useEffect, useMemo, useState } from 'react';
 import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale  } from "next-intl";
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { BasicTable } from '@/components/admin/tables';
-import { columnsEventCategory } from '@/components/admin/tables/columns/columnsEventCategory';
+import { columnsCategory} from '@/components/admin/tables/columns/columnsSubSubCategory';
 // Components
 import { Heading } from '@/components/headers/admin/heading';
 // Import Interface
+import {useSubsubCategories,useDeleteEventSubSubCategory} from '@/hooks/event/event_sub_subcategory';
 import { EventSubsubcategory as EventSubsubcategoryInterface } from '@/interfaces/event';
 
+
 const EventSubsubcategory = () => {
+    const locale = useLocale();
+
     const ts = useTranslations("Panel_SideBar");
     const tb = useTranslations("btn");
 
@@ -22,11 +26,21 @@ const EventSubsubcategory = () => {
     ]
     const buttonBread =  { text: tb('add_event_subsubcategory'), href: '/panel/admin/event/subsubcategory/create' }
 
-    const data = useMemo(() => [
-        { id: '1', icon: '/images/events/category/arts.png', category: 'Arts', status: true },
-        { id: '2', icon: '/images/events/category/dance.png', category: 'Dance', status: true },
-    ], []);
-    const columns = columnsEventCategory();
+    const {isError,isLoading,data}=useSubsubCategories()
+    console.log('subsubcategory',data)
+    let dataTableE = [];
+    data?.map((item) => {
+        let dataIn = {
+            id:item._id,
+            category_id: item.category_id,
+            subcategory_id: item.subcategory_id,
+            category: item.sub_subcategory,
+            icon: item.picture,
+            status:item.status
+            }
+        dataTableE.push(dataIn)
+    })
+    const columns = columnsCategory( ts('admin.event.subsubcategory'));
    
     return (
         <>
@@ -41,7 +55,7 @@ const EventSubsubcategory = () => {
                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
                                     <div className="min-w-full divide-y divide-gray-300">
-                                        <BasicTable columns={columns} defaultData={data} />
+                                        <BasicTable columns={columns} defaultData={dataTableE} />
                                     </div>
                                 </div>
                             </div>

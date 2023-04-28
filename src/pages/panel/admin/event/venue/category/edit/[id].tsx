@@ -1,7 +1,7 @@
 /** @format */
 import { useState } from 'react';
-import { GetStaticPropsContext } from "next";
-import { useTranslations } from "next-intl";
+import { GetStaticPaths, GetStaticPropsContext } from "next";
+import { useLocale, useTranslations } from "next-intl";
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { Heading } from '@/components/headers/admin/heading';
@@ -12,21 +12,24 @@ import * as yup from "yup";
 import { CustomCancel, CustomSubmit } from '@/components/forms';
 import { InputLang } from '@/components/forms/lang';
 import {  interfaceEventVenueCategory } from '@/interfaces/event';
-import { useUpdateEventVenueCategory,useReadEventVenueCategory,useCreateEventVenueCategory} from '@/hooks/event/event_venue_category';
+import { useUpdateEventVenueCategory,useReadEventVenueCategory} from '@/hooks/event/event_venue_category';
 import { useRouter } from 'next/router';
 
 const EventCreateVenueCategory = () => {
     const t = useTranslations("Panel_SideBar");
-
+    const locale = useLocale();
+    const{push,query}=useRouter()
+    const name=useReadEventVenueCategory(`${query.id}`)?.data?.category?.find((obj) => obj.lang == locale)?.name
+    
     const breadcrumb = [
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/venue' },
         { page: t('admin.event.venue'), href: '/panel/admin/event/venue' },
         { page: t('admin.event.category'), href: '/panel/admin/event/venue/category' },
-        { page: t('actions.create'), href: '' }
+        { page: t('actions.edit')+` / ${name}`, href: '' }
     ]
-    const {mutate,isLoading,isError,isSuccess}=useCreateEventVenueCategory()
-    const{push}=useRouter()
+    const {mutate,isLoading,isError,isSuccess}= useUpdateEventVenueCategory()
+    
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm< interfaceEventVenueCategory>();
     
     const[category,setCategory]=useState( [{lang:'es', name:''},{lang:'en', name:''}])
@@ -35,7 +38,7 @@ const EventCreateVenueCategory = () => {
     const onSubmit:SubmitHandler< interfaceEventVenueCategory>= (data: interfaceEventVenueCategory)=>{
         
     
-      mutate(data)
+      mutate({ updateCategory_id: `${query.id}`, eventCategory: data })
     };
 
     /*Lang*/
@@ -87,6 +90,13 @@ const EventCreateVenueCategory = () => {
 
 EventCreateVenueCategory.Layout = AdminLayout;
 export default EventCreateVenueCategory;
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
     return {

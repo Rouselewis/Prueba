@@ -7,33 +7,79 @@ import {
   deleteEventCategory,
 } from '@/api/event/event_category';
 import { WithDocs } from '@/interfaces/serializers/commons';
-import { EventCategory } from '@/interfaces/event';
+import { EventCategory ,formInterface} from '@/interfaces/event';
 
 const key = 'event_category';
 
-export function useCategories() {
-  return useQuery([key], getEventsCategories);
+
+
+export function  useCategories() {
+  const {data, isLoading}=useQuery([key], ()=>getEventsCategories());
+  return {data, isLoading}
 }
 
 export function useMutationCreateEventCategory() {
   const queryClient = useQueryClient();
 
-  return useMutation(createEventCategory, {
-    onSuccess: (event_category) => {
-      queryClient.setQueryData([key], (prevEventCategory: any) =>
-        prevEventCategory.concat(event_category)
+ const {mutate, isLoading, isError, isSuccess}= useMutation(async (category:formInterface)=> await createEventCategory(category), {
+    onSuccess: (data, event_category) => {
+      console.log('dataCreate', data)
+      queryClient.setQueryData([key], (prevEvent:any) =>{
+        console.log('prev', prevEvent)
+        return prevEvent?.push(data)}
       );
-      queryClient.invalidateQueries([key]);
     },
-  });
+  }); 
+  return {mutate, isLoading, isError, isSuccess}
 }
 
-export function useEventCategories() {
-  return useQuery<EventCategory[]>([key], getEventsCategories);
+      
+
+/*Read category*/
+export  function useReadEventCategory(category_id: string) {
+  const {data,isLoading,isError}=useQuery([key], ()=> readEventCategory(category_id));
+ 
+  return data
 }
 
-export function useEventCategory(category_id: string) {
-  return useQuery<EventCategory>([key, category_id], () =>
-    readEventCategory(category_id)
-  );
+/*update category*/
+export function useUpdateEventCategory(  ) {
+
+  const queryClient=useQueryClient();
+  
+
+  const {mutate, isLoading, isError, isSuccess}= useMutation(async (values:{id:string,category:formInterface})=>{
+        
+         
+      return await updateEventCategory(values.id, values.category )},{onSuccess: (data,value)=>{
+          queryClient.setQueryData([key], (prev:any)=>prev.map((item)=>{
+             return item._id===value.id? value.category:item
+          }))
+      }}
+  )
+return {mutate, isLoading, isError, isSuccess};
 }
+/*delete category*/
+export function useDeleteEventCategory( ) {
+
+  const queryClient=useQueryClient();
+  
+
+  const {mutate, isLoading, isError, isSuccess}= useMutation((id:string)=>{
+        return deleteEventCategory(id)},{onSuccess: (data,categoryDel)=>{
+         return queryClient.setQueryData([key], (prev:any)=>{
+             prev.map((dat)=>{
+              if(dat._id===categoryDel){
+               return dat.status=!dat.status
+              }else{
+                return dat
+              }
+            })
+         return prev
+        })
+      }}
+  )
+return {mutate, isLoading, isError, isSuccess};
+}
+
+
