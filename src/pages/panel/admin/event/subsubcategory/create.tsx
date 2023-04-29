@@ -1,4 +1,5 @@
 /** @format */
+import "react-toastify/dist/ReactToastify.css";
 import { useCallback, useState } from 'react';
 import { GetStaticPropsContext } from "next";
 import { useTranslations, useLocale} from "next-intl";
@@ -35,25 +36,30 @@ const EventCreateSubsubcategory = () => {
         { page: t('admin.event.subsubcategory'), href: '/panel/admin/event/subsubcategory' },
         { page: t('actions.create'), href: '' }
     ]
-    const toastSuccess=()=>{
+    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
+    const{ mutate,isSuccess}=useCreateEventSubSubcategory()
+
+    const toastMsj=()=>{
+    if(true){
+           
         toast.success('Event sub-sub-Category updated :)',{
+            position:toast.POSITION.TOP_RIGHT,
             data:{
                 tittle:'success update',
                 text:'This is a success message '
             }
-        } )
-    }
-    const toastError=(e)=>{
-        console.log(e)
+        } ) 
+    }else{
         toast.error(' Error, NO updated :(',{
+            position:toast.POSITION.TOP_RIGHT,
             data:{
                 tittle:'error update',
                 text:'This is a error message  ' 
             }
         } )
+    
     }
-    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
-    const{ mutate,isSuccess}=useCreateEventSubSubcategory()
+    }
     const locale = useLocale();
     
       //drop file
@@ -264,7 +270,7 @@ const EventCreateSubsubcategory = () => {
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit onClick={()=>isSuccess?toastSuccess:toastError( errors )}/>
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>

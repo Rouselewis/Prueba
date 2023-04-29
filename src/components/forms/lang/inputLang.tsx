@@ -4,7 +4,7 @@ import { CustomLabel } from '@/components/forms';
 // Helpers
 import { FormStyles } from '@/helpers';
 // ICons
-import { TrashIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon} from '@heroicons/react/24/solid';
 import { EventCategory } from '@/interfaces/event';
 
 import { useForm, SubmitHandler, UseFormRegister } from 'react-hook-form';
@@ -12,9 +12,15 @@ import { useForm, SubmitHandler, UseFormRegister } from 'react-hook-form';
 export const InputLang = ({
   lang,
   onChange,
+  index,
+  onClick,
+  key
 }: {
   lang?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  key?:number;
+  onClick?:React.MouseEventHandler;
+  index?:number;
 }) => {
   const t = useTranslations('Common_Forms');
 
@@ -26,7 +32,7 @@ export const InputLang = ({
           <input
             onChange={onChange}
             type="text"
-            id="name"
+            id={lang}
             autoComplete={t('field_name')}
             placeholder={t('field_name')}
             className={FormStyles('input')}
@@ -34,10 +40,14 @@ export const InputLang = ({
           <div className="absolute -top-5 w-fit bg-white px-2 py-1 text-xl font-black uppercase text-customShadow">
             {lang}
           </div>
-          <TrashIcon
+          {index > 0? < XMarkIcon
+            onClick={onClick}
             name="delete"
-            className="w-4 h-4 absolute right-0 top-[18%] hidden px-[6%] text-customRed"
-          />
+            width='1.5rem'
+            height='1.5rem'
+            className="absolute right-[5%] top-[10%] text-gray-500 hover:text-red-400"
+          />:null}
+          
         </div>
       </div>
     </div>

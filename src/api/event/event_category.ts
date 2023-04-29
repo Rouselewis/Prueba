@@ -1,13 +1,12 @@
 import axios from '@/lib/axios';
 import { EventCategory,formInterface } from '@/interfaces/event';
-import  multer from 'multer'
 
 export const getEventsCategories = async () => {
     const { data } = await axios.get(`/events/categories/`);
     return data;
 };
 
-export const createEventCategory = async (category:formInterface) => {
+export const createEventCategory = async (category:FormData) => {
     
     const { data } = await axios.post(`/events/categories/`,category, {
        
@@ -26,7 +25,7 @@ export const readEventCategory = async (id: string) => {
     return data;
 }
 
-export const updateEventCategory = async (id: string, category: formInterface) => {
+export const updateEventCategory = async (id: string, category: FormData) => {
     const { data } = await axios.put(`/events/categories/${id}`, category);
 
     return data;

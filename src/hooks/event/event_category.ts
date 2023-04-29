@@ -21,7 +21,7 @@ export function  useCategories() {
 export function useMutationCreateEventCategory() {
   const queryClient = useQueryClient();
 
- const {mutate, isLoading, isError, isSuccess}= useMutation(async (category:formInterface)=> await createEventCategory(category), {
+ const {mutate, isLoading, isError, isSuccess}= useMutation(async (category:FormData)=> await createEventCategory(category), {
     onSuccess: (data, event_category) => {
       console.log('dataCreate', data)
       queryClient.setQueryData([key], (prevEvent:any) =>{
@@ -48,7 +48,7 @@ export function useUpdateEventCategory(  ) {
   const queryClient=useQueryClient();
   
 
-  const {mutate, isLoading, isError, isSuccess}= useMutation(async (values:{id:string,category:formInterface})=>{
+  const {mutate, isLoading, isError, isSuccess}= useMutation(async (values:{id:string,category:FormData})=>{
         
          
       return await updateEventCategory(values.id, values.category )},{onSuccess: (data,value)=>{

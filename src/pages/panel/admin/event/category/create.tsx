@@ -7,7 +7,7 @@ import { SketchPicker } from 'react-color'
 import { FormStyles } from "@/helpers";
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
-import { Heading } from '@/components/headers/admin/heading';
+import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 // Forms
 import { useForm, SubmitHandler } from "react-hook-form";
 import { TrashIcon } from "@heroicons/react/24/solid";
@@ -23,6 +23,8 @@ import {useMutationCreateEventCategory, useCategories} from '@/hooks/event/event
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { type } from 'os';
+import { toast, ToastContainer } from 'react-toastify';
+import { ImageURL } from '@/helpers/imageURL';
 
 type formInterface={
 event_category:EventCategory;
@@ -34,19 +36,44 @@ const EventCreateCategory = () => {
     const tf = useTranslations("Common_Forms");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
+    
 
-const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<formInterface >();
+const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventCategory>();
+const {mutate, isLoading, isError, isSuccess}= useMutationCreateEventCategory()
+
+    const toastMsj=()=>{
+    if( isSuccess){
+           
+        toast.success('Event sub-sub-Category updated :)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success update',
+                text:'This is a success message '
+            }
+        } ) 
+    }else{
+        toast.error(' Error, NO updated :(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error update',
+                text:'This is a error message  ' 
+            }
+        } )
+    
+    }
+    }
 
     //drop file
     const [upload, setUpload ]=useState('');
     const[url,setUrl]=useState('')
+    const [fileUpload,SetFileUpload]=useState()
    
 
     const onDrop=useCallback((acceptedFile)=>{
     const file= acceptedFile[0]
         setUpload(file.name)
-        setValue('picture', file)
-        setValue('event_category.picture', file.name)
+        SetFileUpload(file)
+        setValue('picture', ImageURL(file.name))
         const link= URL.createObjectURL(file)
         setUrl(link)
       
@@ -60,8 +87,8 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
     const handleSelectFile=(e)=>{
             const file=e.target.files[0]
             setUpload(file.name)
-            setValue('picture', file)
-            setValue('event_category.picture', file.name)
+            SetFileUpload(file)
+            setValue('picture', ImageURL(file.name))
             const link= URL.createObjectURL(file)
             setUrl(link)
     }
@@ -74,7 +101,7 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
         { page: t('admin.event.category'), href: '/panel/admin/event/category' },
         { page: t('actions.create'), href: '' }
     ];
-    const {mutate, isLoading, isError, isSuccess}= useMutationCreateEventCategory()
+    
 
     
 
@@ -83,48 +110,67 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
     const [initColor, setInitColor]=useState<string>('#ffffff');
     const  onChangeColor=(color:any)=>{ 
         setInitColor(color.hex)
-        setValue('event_category.color', initColor )
+        setValue('color', initColor )
     }
 
 /*submit form*/ 
-    const onSubmit:SubmitHandler<formInterface >= (data:formInterface )=>{
-        
+    const onSubmit:SubmitHandler<EventCategory>= (data:EventCategory)=>{
+        const formData=new FormData
+        formData.append(' event_category',JSON.stringify(data))
+        formData.append(' picture', fileUpload)
+
     
-      mutate(data)
+      mutate(formData)
     };
    
     
     
-    const[category,setCategory]=useState( [{lang:'es', name:''},{lang:'en', name:''}])
+    const[category,setCategory]=useState( [{lang:'en', name:''}])
 
 /*Lang*/
-    const[lang ,setlang]=useState('en')
+    const[lang ,setlang]=useState(['en'])
+    const[SelectValue ,setSelectValue]=useState('en')
 
     const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
     const Lang=e.target.value;
-    setlang(Lang==='en'? 'en': 'es')
-}
+    setSelectValue(Lang)
+    }
+    const onAppend=()=>{
+        if(!(lang.includes(SelectValue))){
+        setlang([...lang, SelectValue])
+        setCategory([...category,{lang:SelectValue, name:''}])
+        }
+    }
+    const onDelete=(exp, index)=>{
+        if(index > 0 ){
+        setlang((e)=>e.filter((f)=>f !== exp))
+        setCategory(category.filter((e)=>e.lang!==exp))
+        }
+    }
 /*Name*/
     const handleName:React.ChangeEventHandler<HTMLInputElement> = (e:any)=>{
     const Name=e.target.value;
-    const cate= [...category]
-    
-    if(lang==='en'){
-        cate[1].name=Name
-        setCategory(cate)
-    }else if(lang==='es'){
-        cate[0].name=Name
-        setCategory(cate)
+    const id=e.target.id;
+    if(category.find((e)=>e.lang===id)){
+
+        category.find((e)=>e.lang===id).name=Name
+        
+    }else{
+        setCategory([...category, {lang:id,name:Name}])
     }
-    setValue('event_category.category', category)
-}
-
-
+    
+   
+    
+   
+} 
+setValue('category', category)
+ console.log(category)
+console.log(getValues())
     return (
         <>
             {/* Breadcrumb section */}
             <div>
-                <Heading breadcrumb={breadcrumb} langBread onChange={LangSelect}/>
+                <HeadingSelect breadcrumb={breadcrumb} langBread onChange={LangSelect} onAppend={onAppend}/>
             </div>
             <div className="flex flex-1 pt-6">
                 <div className="w-screen min-h-0 overflow-hidden">
@@ -173,15 +219,18 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
                                 />
                             </div>
                             
-                            
-                            <InputLang lang={lang} onChange={handleName}/>
+                            {
+                            lang.map((e, index)=>{
+                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
+                            })
+                            }
                         </div>
-
+                        <ToastContainer/>
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit />
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>
