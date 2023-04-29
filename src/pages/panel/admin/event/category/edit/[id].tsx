@@ -22,6 +22,8 @@ import {useUpdateEventCategory, useReadEventCategory} from '@/hooks/event/event_
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { ImageURL } from '@/helpers/imageURL';
+import { ToastContainer, toast } from 'react-toastify';
 
 type formInterface={
 event_category:EventCategory;
@@ -33,24 +35,48 @@ const EventCreateCategory = () => {
     const tf = useTranslations("Common_Forms");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
+    
 
     const{query,push}=useRouter()
     const{dataQuery}=useReadEventCategory(`${query.id}`)
-    console.log(dataQuery)
+    const {mutate, isLoading, isError, isSuccess}= useUpdateEventCategory()
+    
+    const toastMsj=()=>{
+    if( isSuccess){
+           
+        toast.success('Event sub-sub-Category updated :)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success update',
+                text:'This is a success message '
+            }
+        } ) 
+    }else{
+        toast.error(' Error, NO updated :(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error update',
+                text:'This is a error message  ' 
+            }
+        } )
+    
+    }
+    }
 
     
-    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<formInterface >();
+    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventCategory>();
 
     //drop file
     const [upload, setUpload ]=useState('');
     const[url,setUrl]=useState('')
+    const[uploadImg,setUploadImg]=useState<File>()
    
 
     const onDrop=useCallback((acceptedFile)=>{
     const file= acceptedFile[0]
         setUpload(file.name)
-        setValue('picture', file)
-        setValue('event_category.picture', file.name)
+        setUploadImg(file)
+        setValue('picture', ImageURL(file.name))
         const link= URL.createObjectURL(file)
         setUrl(link)
       
@@ -64,8 +90,8 @@ const EventCreateCategory = () => {
     const handleSelectFile=(e)=>{
             const file=e.target.files[0]
             setUpload(file.name)
-            setValue('picture', file)
-            setValue('event_category.picture', file.name)
+            setUploadImg(file)
+            setValue('picture', ImageURL(file.name))
             const link= URL.createObjectURL(file)
             setUrl(link)
     }
@@ -78,7 +104,6 @@ const EventCreateCategory = () => {
         { page: t('admin.event.category'), href: '/panel/admin/event/category' },
         { page: t('actions.edit'), href: '' }
     ];
-    const {mutate, isLoading, isError, isSuccess}= useUpdateEventCategory()
 
     
 
@@ -87,43 +112,60 @@ const EventCreateCategory = () => {
     const [initColor, setInitColor]=useState<string>('#ffffff');
     const  onChangeColor=(color:any)=>{ 
         setInitColor(color.hex)
-        setValue('event_category.color', initColor )
+        setValue('color', initColor )
     }
 
 /*submit form*/ 
-    const onSubmit:SubmitHandler<formInterface >= (data:formInterface )=>{
-    const dataUpdate={id:`${query.id}`,category: data }
+    const onSubmit:SubmitHandler<EventCategory >= (data:EventCategory )=>{
+        const formData=new FormData
+        formData.append('event_category',JSON.stringify(data))
+        formData.append('picture', uploadImg)
+    const dataUpdate={id:`${query.id}`,category: formData }
     
       mutate(dataUpdate)
     };
    
+
     
-    
-    const[category,setCategory]=useState( [{lang:'es', name:''},{lang:'en', name:''}])
+    const[category,setCategory]=useState( [{lang:'en', name:''}])
 
 /*Lang*/
-    const[lang ,setlang]=useState('en')
+    const[lang ,setlang]=useState(['en'])
+    const[SelectValue ,setSelectValue]=useState('en')
 
     const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
     const Lang=e.target.value;
-    setlang(Lang==='en'? 'en': 'es')
-}
+    setSelectValue(Lang)
+    }
+    const onAppend=()=>{
+        if(!(lang.includes(SelectValue))){
+        setlang([...lang, SelectValue])
+        setCategory([...category,{lang:SelectValue, name:''}])
+        }
+    }
+    const onDelete=(exp, index)=>{
+        if(index > 0 ){
+        setlang((e)=>e.filter((f)=>f !== exp))
+        setCategory(category.filter((e)=>e.lang!==exp))
+        }
+    }
 /*Name*/
     const handleName:React.ChangeEventHandler<HTMLInputElement> = (e:any)=>{
     const Name=e.target.value;
-    const cate= [...category]
-    
-    if(lang==='en'){
-        cate[1].name=Name
-        setCategory(cate)
-    }else if(lang==='es'){
-        cate[0].name=Name
-        setCategory(cate)
+    const id=e.target.id;
+    if(category.find((e)=>e.lang===id)){
+
+        category.find((e)=>e.lang===id).name=Name
+        
+    }else{
+        setCategory([...category, {lang:id,name:Name}])
     }
-    setValue('event_category.category', category)
-}
-
-
+    
+   
+    
+   
+} 
+setValue('category', category)
     return (
         <>
             {/* Breadcrumb section */}
@@ -176,16 +218,20 @@ const EventCreateCategory = () => {
                                 color={initColor}
                                 />
                             </div>
-                            
-                            
-                            <InputLang lang={lang} onChange={handleName}/>
+                             {
+                            lang.map((e, index)=>{
+                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
+                            })
+                            }
                         </div>
+                        
+                        <ToastContainer/>
 
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit onClick={()=>isSuccess?push('/en/panel/admin/event/subcategory'):console.log('no Actualizado')}/>
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>

@@ -115,12 +115,13 @@ const {mutate, isLoading, isError, isSuccess}= useMutationCreateEventCategory()
 
 /*submit form*/ 
     const onSubmit:SubmitHandler<EventCategory>= (data:EventCategory)=>{
-        const formData=new FormData
-        formData.append(' event_category',JSON.stringify(data))
-        formData.append(' picture', fileUpload)
-
-    
-      mutate(formData)
+        const form=new FormData
+        form.append("event_category",JSON.stringify(data))
+        form.append("picture",fileUpload)
+           
+        
+       
+      mutate(form)
     };
    
     
@@ -154,18 +155,19 @@ const {mutate, isLoading, isError, isSuccess}= useMutationCreateEventCategory()
     if(category.find((e)=>e.lang===id)){
 
         category.find((e)=>e.lang===id).name=Name
+        setValue('category', category)
         
     }else{
         setCategory([...category, {lang:id,name:Name}])
+        setValue('category', category)
     }
     
    
     
    
 } 
-setValue('category', category)
- console.log(category)
-console.log(getValues())
+
+console.log('values', getValues())
     return (
         <>
             {/* Breadcrumb section */}

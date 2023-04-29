@@ -45,7 +45,7 @@ export const InputLang = ({
             name="delete"
             width='1.5rem'
             height='1.5rem'
-            className="absolute right-[5%] top-[10%] text-gray-500 hover:text-red-400"
+            className="absolute right-[5%] top-[8%] text-gray-500 hover:text-red-400"
           />:null}
           
         </div>

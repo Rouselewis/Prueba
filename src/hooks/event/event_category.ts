@@ -10,6 +10,10 @@ import { WithDocs } from '@/interfaces/serializers/commons';
 import { EventCategory ,formInterface} from '@/interfaces/event';
 
 const key = 'event_category';
+type form={
+    event_category:string;
+    picture: File;
+}
 
 
 
@@ -21,10 +25,10 @@ export function  useCategories() {
 export function useMutationCreateEventCategory() {
   const queryClient = useQueryClient();
 
- const {mutate, isLoading, isError, isSuccess}= useMutation(async (category:FormData)=> await createEventCategory(category), {
+ const {mutate, isLoading, isError, isSuccess}= useMutation((category:FormData)=> createEventCategory(category), {
     onSuccess: (data, event_category) => {
       console.log('dataCreate', data)
-      queryClient.setQueryData([key], (prevEvent:any) =>{
+      return queryClient.setQueryData([key], (prevEvent:any) =>{
         console.log('prev', prevEvent)
         return prevEvent?.push(data)}
       );
