@@ -40,7 +40,7 @@ const EventCreateSubsubcategory = () => {
     const{ mutate,isSuccess}=useCreateEventSubSubcategory()
 
     const toastMsj=()=>{
-    if(true){
+    if(isSuccess){
            
         toast.success('Event sub-sub-Category updated :)',{
             position:toast.POSITION.TOP_RIGHT,
@@ -111,7 +111,7 @@ const EventCreateSubsubcategory = () => {
     }
 //data category
     const category=useCategories();
-    let dataTableE=[]
+    let dataCate=[]
     if(category.isLoading){
         null
     }else{
@@ -122,7 +122,7 @@ const EventCreateSubsubcategory = () => {
             category: item.category?.find((obj) => obj.lang == locale)?.name,
             status: item.status
         }
-        dataTableE.push(dataIn)  
+        dataCate.push(dataIn)  
     })
     }
 //subCategory 
@@ -130,14 +130,14 @@ const EventCreateSubsubcategory = () => {
    
     
     const handleSelected=(e)=>{
-          const id= dataTableE.find((pre)=> pre.category===e.target.value)?.id
+        const id= dataCate.find((pre)=> pre.category===e.target.value)?.id
           
         const subcategorySelect= dataSub.filter((item)=>{
-            console.log(id)
+           
           if(item.id.id===id){
             
             return item
-            }
+        }
           
         })
         setDataSubcategory(subcategorySelect)
@@ -156,12 +156,8 @@ const EventCreateSubsubcategory = () => {
             } 
             
         })
-        setValue('category_id',subcategorySelectId[0]?.id)
-        const subcategory_id={
-            _id: subcategorySelect[0].subId,
-            category_id: subcategorySelectId[0]?.id
-        }
-        setValue('subcategory_id',subcategory_id)
+        setValue('category_id',subcategorySelectId[0]?.id?.id)
+        setValue('subcategory_id',subcategorySelect[0]?.subId)
         
 
     }
@@ -175,6 +171,7 @@ const EventCreateSubsubcategory = () => {
       
       mutate(dataForm)
     };
+    console.log(getValues())
 
     return (
         <>
@@ -196,7 +193,7 @@ const EventCreateSubsubcategory = () => {
                                     defaultValue={''}
                                 >
                                     <option value=''>{tc('field_select_category')}</option>
-                                    {dataTableE.map((item, i)=>{
+                                    {dataCate.map((item, i)=>{
                                       return (<option key={i}> {item.category}</option>) })}
                                 </select>
                             </div>

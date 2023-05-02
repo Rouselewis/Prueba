@@ -1,5 +1,5 @@
 import axios from '@/lib/axios';
-import { CreateEventSubsubcategory } from '@/interfaces/event';
+import { EventSubsubcategory } from '@/interfaces/event';
 
 export const useSubSubcategories = async () => {
   const { data } = await axios.get(`/events/subsubcategories/`);

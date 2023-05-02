@@ -18,7 +18,7 @@ export const readEventSubcategory = async (id: string) => {
     return data;
 }
 
-export const updateEventSubcategory = async (id: string, subcategory: EventSubcategory) => {
+export const updateEventSubcategory = async (id: string, subcategory:FormData) => {
     const { data } = await axios.put(`/events/subcategories/${id}`, subcategory);
 
     return data;

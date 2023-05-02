@@ -16,6 +16,8 @@ import { InputLang } from '@/components/forms/lang';
 import { EventSubcategory } from '@/interfaces/event';
 import { useCategories} from '@/hooks/event/event_category';
 import {useReadEventSubcategory, useUpdateEventSubCategory} from '@/hooks/event/event_subcategory'
+import { ToastContainer, toast } from 'react-toastify';
+import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 
 
 
@@ -32,8 +34,30 @@ const EventCreateSubcategory = () => {
     console.log(dataQuery?.data)
 
     const{mutate, isLoading, isError, isSuccess}=useUpdateEventSubCategory()
-    const { register, handleSubmit,setValue, formState: { errors }, reset } = useForm<EventSubcategory>();
-
+    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventSubcategory>();
+    const toastMsj=()=>{
+    if( isSuccess){
+           
+        toast.success(' created :)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success Update',
+                text:'This is a success message '
+            }
+        } ) 
+    }else if(isError){
+        toast.error(' Error, No Update :(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error Update',
+                text:'This is a error message  ' 
+            }
+        } )
+    
+    }
+    }
+    
+    
     let dataTableE=[]
     data?.map((item) => {
         let dataIn = {
@@ -46,8 +70,7 @@ const EventCreateSubcategory = () => {
 
     const handleSelected=(e)=>{
          const id= dataTableE.find((pre)=> pre.category===e.target.value)?.id
-          setValue('category_id.id', id )
-          setValue('category_id.collection', "events_categories" )
+          setValue('category_id', id )
     }
 
     const breadcrumb = [
@@ -57,44 +80,61 @@ const EventCreateSubcategory = () => {
         { page: t('actions.edit')  , href: '' }
         
     ]
-/*submit*/  
-    const onSubmit:SubmitHandler<EventSubcategory >= (data:EventSubcategory)=>{
-      const updateData={updateSubCategory_id:`${query.id}`,eventSubCategory:data}
-      
-        mutate(updateData)
-    };
 
-
-    const[category,setCategory]=useState( [{lang:'es', name:''},{lang:'en', name:''}])
+  const[category,setCategory]=useState( [{lang:'en', name:''}])
 
 /*Lang*/
-    const[lang ,setlang]=useState(locale)
+    const[lang ,setlang]=useState(['en'])
+    const[SelectValue ,setSelectValue]=useState('en')
 
     const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
     const Lang=e.target.value;
-    setlang(Lang==='en'? 'en': 'es')
-}
+    setSelectValue(Lang)
+    }
+    const onAppend=()=>{
+        if(!(lang.includes(SelectValue))){
+        setlang([...lang, SelectValue])
+        setCategory([...category,{lang:SelectValue, name:''}])
+        }
+    }
+    const onDelete=(exp, index)=>{
+        if(index > 0 ){
+        setlang((e)=>e.filter((f)=>f !== exp))
+        setCategory(category.filter((e)=>e.lang!==exp))
+        }
+    }
 /*Name*/
     const handleName:React.ChangeEventHandler<HTMLInputElement> = (e:any)=>{
     const Name=e.target.value;
-    const cate= [...category]
-    
-    if(lang==='en'){
-        cate[1].name=Name
-        setCategory(cate)
-    }else if(lang==='es'){
-        cate[0].name=Name
-        setCategory(cate)
+    const id=e.target.id;
+    if(category.find((e)=>e.lang===id)){
+
+        category.find((e)=>e.lang===id).name=Name
+        setValue('subcategory', category)
+        
+    }else{
+        setCategory([...category, {lang:id,name:Name}])
+        setValue('subcategory', category)
     }
-    setValue('subcategory', category)
-}
+    
    
+    
+   console.log(getValues())
+} 
+/*submit*/  
+    const onSubmit:SubmitHandler<EventSubcategory >= (data:EventSubcategory)=>{
+        const formData=new FormData
+        formData.append('subcategory',JSON.stringify(data))
+      const updateData={updateSubCategory_id:`${query.id}`,eventSubCategory:formData}
+      
+        mutate(updateData)
+    };
 
     return (
         <>
             {/* Breadcrumb section */}
             <div>
-                <Heading breadcrumb={breadcrumb} langBread onChange={LangSelect} />
+                <HeadingSelect breadcrumb={breadcrumb} langBread onChange={LangSelect} onAppend={onAppend}/>
             </div>
             <div className="flex flex-1 pt-6">
                 <div className="w-screen min-h-0 overflow-hidden">
@@ -113,13 +153,19 @@ const EventCreateSubcategory = () => {
                                     return(<option>{e.category}</option>)})}
                                 </select>
                             </div>
-                            <InputLang lang={lang} onChange={handleName} />
+                            {
+                            lang.map((e, index)=>{
+                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
+                            })
+                            }
                         </div>
+                        
+                        <ToastContainer/>
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit />
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>

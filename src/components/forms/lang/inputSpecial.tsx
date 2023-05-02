@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { CustomLabel, CustomError } from '@/components/forms';
 import { FormStyles } from '@/helpers';
 import { useFormContext, Controller,useForm} from 'react-hook-form';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
   ssr: false,
@@ -53,16 +54,18 @@ const formats = [
 type Props = {
   index?: number,
   control?:any,
+  onClick?:React.MouseEventHandler;
+  lang:string;
 
 
 };
 
-export const InputSpecial = ({ index = 0, control}: Props) => {
+export const InputSpecial = ({ index = 0, control, onClick,lang}: Props) => {
   
   const formMethods = useFormContext();
   const t = useTranslations('Common_Forms');
-  const lang = formMethods?.watch(`event_general.content.${index}.lang`);
-  const baseErrors = formMethods?.formState?.errors?.['event_general']?.["content"]?.[index];
+  formMethods?.setValue(`category.${index}.lang`,lang);
+  const baseErrors = formMethods?.formState?.errors?.['category']?.[index];
   return (
     <div className="col-span-12 sm:col-span-12 lg:col-span-6">
       <div className="h-[120vw] sm:h-[60vw] lg:h-[27vw] gap-x-16 gap-y-10 border-2">
@@ -115,6 +118,13 @@ export const InputSpecial = ({ index = 0, control}: Props) => {
           <div className="absolute -top-5 w-fit bg-white px-2 py-1 text-xl font-black uppercase text-customShadow">
             {lang}
           </div>
+           {index > 0? < XMarkIcon
+            onClick={onClick}
+            name="delete"
+            width='1.5rem'
+            height='1.5rem'
+            className="absolute right-[5%] top-[8%] text-gray-500 hover:text-red-400"
+          />:null}
         </div>
       </div>
     </div>

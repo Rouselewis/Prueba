@@ -82,10 +82,10 @@ export function useDeleteEventSpecialCategory( ) {
   const queryClient=useQueryClient();
   
 
-  const {mutate, isLoading, isError, isSuccess}= useMutation(
-    deleteEventSpecialCategory,{onSuccess: (data,catDel)=>{
+  const {mutate, isLoading, isError, isSuccess}= useMutation((id:string)=>{
+    return deleteEventSpecialCategory(id)},{onSuccess: (data,catDel)=>{
     return queryClient.setQueryData([key], (prev:any)=>{
-      prev.map((dat)=>{
+      prev?.items?.map((dat)=>{
         if(dat._id===catDel){
          return dat.status=!dat.status
         }else{

@@ -15,21 +15,42 @@ type form={
     picture: File;
 }
 
-
-
-export function  useCategories() {
-  const {data, isLoading}=useQuery([key], ()=>getEventsCategories());
-  return {data, isLoading}
+export function useCategories() {
+  return useQuery([key], getEventsCategories);
 }
 
 export function useMutationCreateEventCategory() {
   const queryClient = useQueryClient();
 
+  return useMutation(createEventCategory, {
+    onSuccess: (event_category) => {
+      queryClient.setQueryData([key], (prevEventCategory: any) =>
+        prevEventCategory?.concat(event_category)
+      );
+      queryClient.invalidateQueries([key]);
+    },
+  });
+}
+
+export function useEventCategories() {
+  return useQuery<EventCategory[]>([key], getEventsCategories);
+}
+
+export function useEventCategory(category_id: string) {
+  return useQuery<EventCategory>([key, category_id], () =>readEventCategory(category_id)
+  );
+}
+export function useAllEventCategories() {
+  const {data, isLoading}=useQuery([key], ()=>getEventsCategories());
+  return {data, isLoading}
+}
+
+export function useCreateEventCategory() {
+  const queryClient = useQueryClient();
+
  const {mutate, isLoading, isError, isSuccess}= useMutation((category:FormData)=> createEventCategory(category), {
     onSuccess: (data, event_category) => {
-      console.log('dataCreate', data)
       return queryClient.setQueryData([key], (prevEvent:any) =>{
-        console.log('prev', prevEvent)
         return prevEvent?.push(data)}
       );
     },
@@ -56,7 +77,7 @@ export function useUpdateEventCategory(  ) {
         
          
       return await updateEventCategory(values.id, values.category )},{onSuccess: (data,value)=>{
-          queryClient.setQueryData([key], (prev:any)=>prev.map((item)=>{
+          queryClient.setQueryData([key], (prev:any)=>prev?.map((item)=>{
              return item._id===value.id? value.category:item
           }))
       }}
@@ -72,14 +93,14 @@ export function useDeleteEventCategory( ) {
   const {mutate, isLoading, isError, isSuccess}= useMutation((id:string)=>{
         return deleteEventCategory(id)},{onSuccess: (data,categoryDel)=>{
          return queryClient.setQueryData([key], (prev:any)=>{
-             prev.map((dat)=>{
+           prev?.map((dat)=>{
               if(dat._id===categoryDel){
                return dat.status=!dat.status
               }else{
                 return dat
               }
             })
-         return prev
+           return prev 
         })
       }}
   )

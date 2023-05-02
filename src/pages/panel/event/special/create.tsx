@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color'
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
-import { Heading } from '@/components/headers/admin/heading';
+import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 // Forms
 import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,14 +16,13 @@ import { InputSpecial } from '@/components/forms/lang';
 import Map from '@/components/forms/forms/map';
 import {createEventSpecialCategory} from '@/interfaces/event';
 import {useEventsSpecialsCategories,
-useCreateEventSpecialCategory,
-useReadEventSpecialCategory,
-useUpdateEventSpecialCategory,
-useDeleteEventSpecialCategory}  from '@/hooks/event/event_special_category';
+useCreateEventSpecialCategory}  from '@/hooks/event/event_special_category';
 import Dropzone from 'react-dropzone';
 import Image from 'next/image';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { useMe } from '@/hooks/user/user';
+import { ToastContainer, toast } from 'react-toastify';
+import { ImageURL } from '@/helpers/imageURL';
 
 
 type locationTypes={
@@ -43,11 +42,33 @@ const EventCreateSpecialCategory = () => {
         { page: t('event.special'), href: '/panel/event/special' },
         { page: t('actions.create'), href: '' }
     ]
-
+    
     const {mutate, isLoading, isError, isSuccess}= useCreateEventSpecialCategory()
     const user=useMe()
+     const toastMsj=()=>{
+    if( isSuccess){
+           
+        toast.success(' created :)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success create',
+                text:'This is a success message '
+            }
+        } ) 
+    }else if(isError){
+        toast.error(' Error, NO created :(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error create',
+                text:'This is a error message  ' 
+            }
+        } )
+    
+    }
+    }
     
     const methods = useForm<createEventSpecialCategory>();
+    
  //input file config   
     const [upload, setUpload ]=useState('');
     const [upload2, setUpload2 ]=useState('');
@@ -78,7 +99,7 @@ const EventCreateSpecialCategory = () => {
     const handleSelectFile=(e)=>{
                const file=e.target.files[0]
                setUpload(file.name)
-               methods.setValue('header_img', file.name)
+               methods.setValue('header_img', ImageURL( file.name))
                setHeader_event(file)
        }
        
@@ -86,7 +107,7 @@ const EventCreateSpecialCategory = () => {
       
             const files=e.target.files[0]
             setUpload2(files.name)
-            methods.setValue('event_img', files.name )  
+            methods.setValue('event_img', ImageURL(files.name) )  
             setEvent_img(files)
             
     };
@@ -142,48 +163,57 @@ const EventCreateSpecialCategory = () => {
        
     }
 
+/*Lang*/
+ const[category,setCategory]=useState( [{lang:'en', name:''}])
+
+/*Lang*/
+    const[lang ,setlang]=useState(['en'])
+    const[SelectValue ,setSelectValue]=useState('en')
+
+    const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
+    const Lang=e.target.value;
+    setSelectValue(Lang)
+    }
+    const onAppend=()=>{
+        if(!(lang.includes(SelectValue))){
+        setlang([...lang, SelectValue])
+        setCategory([...category,{lang:SelectValue, name:''}])
+        }
+    }
+    const onDelete=(exp, index)=>{
+        if(index > 0 ){
+        setlang((e)=>e.filter((f)=>f !== exp))
+        setCategory(category.filter((e)=>e.lang!==exp))
+        }
+    }
+
+const [mapSearch,setMapSearch]=useState('')
+const search=(e)=>{
+setMapSearch(e.target.value)
+}
+const[initialDate,setinitialDate]=useState('')
+const dateInit=(e)=>{
+    setinitialDate(e.target.value)
+    methods.setValue('initial_date',e.target.value )
+}
+const dateEnd=(e)=>{
+    methods.setValue('final_date', e.target.value )
+}
 /*submit form*/ 
     const onSubmit:SubmitHandler<createEventSpecialCategory>= (data:createEventSpecialCategory)=>{
         const DataForm=new FormData
         DataForm.append("event_special_category", JSON.stringify(data))
         DataForm.append("header_img", Header_event)
         DataForm.append("event_img", Event_img)
-        mutate(DataForm)
-    };
-   
-    
-    
-
-/*Lang*/
-const[lang ,setlang]=useState(0)
-
-const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
-    const description=methods.getValues( `category.${lang}.description`)
-    methods.setValue('description',description)
-    const Lang=e.target.value;
-    setlang(Lang==='en'? 0: 1)
-    methods.setValue(`category.${lang}.lang`,lang===0?'en':'es')
-   
-
-}
-
-const [mapSearch,setMapSearch]=useState('')
-const search=(e)=>{
-setMapSearch(e.target.value)
-}
-const dateInit=(e)=>{
-    methods.setValue('initial_date',e.target.value )
-}
-const dateEnd=(e)=>{
-    methods.setValue('final_date', e.target.value )
-}
+     mutate(DataForm)
+};
 
 console.log('value',methods.getValues())
     return (
         <>
             {/* Breadcrumb section */}
             <div>
-                <Heading breadcrumb={breadcrumb} langBread onChange={LangSelect}/>
+                <HeadingSelect breadcrumb={breadcrumb} langBread onChange={LangSelect}  onAppend={onAppend}/>
             </div>
             <FormProvider {...methods}>
             <div className="flex flex-1 pt-6">
@@ -312,7 +342,7 @@ console.log('value',methods.getValues())
                                 </div>
                                 <div className="w-full ">
                                     <CustomLabel field="final_date" name={tc('field_final_date')}/>
-                                    <input type='date' onChange={dateEnd} min={'2023-04-26'} max={'2026-04-26'} placeholder='Selecciona Fecha final'  className={FormStyles('input')} />
+                                    <input type='date' onChange={dateEnd} min={initialDate} max={'2026-04-26'} placeholder='Selecciona Fecha final'  className={FormStyles('input')} />
                                 </div>
                             
                             </div>
@@ -374,14 +404,30 @@ console.log('value',methods.getValues())
                                     </div>
                                 </div>
                             </div>
-                            <InputSpecial index={lang }  control={methods.control}/>
+                            
+                         {
+                            lang.map((e, index)=>{
+                               return(  <InputSpecial index={index} key={index} lang={e} control={methods.control} onClick={()=>onDelete(e,index)}/>)
+                            
+                            })
+                        }
+                        <div className="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-6">
+                            <CustomLabel field="description" name='description' required />
+                                    <input
+                                        type="text"
+                                        {...methods.register('description')}
+                                        placeholder={tc("field_description")}
+                                        className={FormStyles('input')}
+                                    />
                         </div>
+                        </div>
+                        <ToastContainer/>
 
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit />
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>

@@ -10,7 +10,7 @@ import { columnsEventCategory } from '@/components/admin/tables/columns/columnsE
 import { Heading } from '@/components/headers/admin/heading';
 // Import Interface
 import { EventCategory as EventCategoryInterface } from '@/interfaces/event';
-import { useCategories, useDeleteEventCategory,useUpdateEventCategory} from '@/hooks/event/event_category';
+import { useAllEventCategories, useDeleteEventCategory,useUpdateEventCategory} from '@/hooks/event/event_category';
 
 
 export interface dataTable {
@@ -22,7 +22,7 @@ export interface dataTable {
 
 const  EventCategory = () => {
     const locale = useLocale();
-    const {data, isLoading}= useCategories();
+    const {data, isLoading}= useAllEventCategories();
     
     let dataTableE=[]
     if(isLoading){

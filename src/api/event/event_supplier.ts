@@ -6,7 +6,7 @@ export const getEventsSuppliers = async () => {
     return data;
 };
 
-export const createEventSupplier = async (supplier: EventSupplier) => {
+export const createEventSupplier = async (supplier: FormData) => {
     const { data } = await axios.post(`/events/suppliers/`, supplier);
 
     return data;
@@ -18,7 +18,7 @@ export const readEventSupplier = async (id: string) => {
     return data;
 }
 
-export const updateEventSupplier = async (id: string, supplier: EventSupplier) => {
+export const updateEventSupplier = async (id: string, supplier: FormData) => {
     const { data } = await axios.put(`/events/suppliers/${id}`, supplier);
 
     return data;

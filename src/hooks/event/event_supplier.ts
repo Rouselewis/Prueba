@@ -51,11 +51,11 @@ export  function useUpdateEventSupplier( ) {
 
   const queryClient=useQueryClient();
 
-  const {mutate, isLoading, isError, isSuccess}= useMutation((values:{id:string,supplier:EventSupplier})=>{
+  const {mutate, isLoading, isError, isSuccess}= useMutation((values:{id:string,supplier:FormData})=>{
         
          
     return  updateEventSupplier(values.id, values.supplier )},{onSuccess: (data,value)=>{
-        return queryClient.setQueryData([key], (prev:any)=>prev.map((item)=>{
+        return queryClient.setQueryData([key], (prev:any)=>prev?.map((item)=>{
            return item._id===value.id? value.supplier:item
         }))
     }}
@@ -73,14 +73,15 @@ export function useDeleteEventSupplier( ) {
   const {mutate, isLoading, isError, isSuccess}= useMutation(
     deleteEventSupplier,{onSuccess: (data,supplierDel)=>{
     return queryClient.setQueryData([key], (prev:any)=>{
-      prev.map((dat)=>{
+      return prev?.map((dat)=>{
         if(dat._id===supplierDel){
-         return dat.status=!dat.status
+          dat.status = !dat.status
+         return dat
         }else{
           return dat
         }
       })
-    return prev})
+     })
 }}
 )
 return {mutate, isLoading, isError, isSuccess};

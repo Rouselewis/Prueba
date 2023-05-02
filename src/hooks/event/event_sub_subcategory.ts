@@ -21,11 +21,11 @@ export function useCreateEventSubSubcategory() {
     
   
   const {mutate, isLoading, isError, isSuccess}= useMutation(
-    async (data:any)=> await createSubSubcategory(data),{onSuccess:(data, event_category) => {
+    (data:any)=>  createSubSubcategory(data),{onSuccess:(data, event_category) => {
       
       return queryClient.setQueryData([key], (prevEvent:any) =>{
-        console.log('prev', prevEvent)
-        return prevEvent.push(data)}
+       
+        return prevEvent?.push(data)}
       );
     },
   })
@@ -46,9 +46,8 @@ export  function useUpdateEventCategory(  ) {
 
   const {mutate, isLoading, isError, isSuccess}= useMutation((value:{updateCategory_id: string, eventSubSubCategory:FormData})=>{
     return updateSubSubcategory(value.updateCategory_id, value.eventSubSubCategory)},{onSuccess: (data)=>{
-          queryClient.setQueryData([key], (prevEvent:any) =>{
-            console.log('prev', prevEvent)
-            return prevEvent.push(data)}
+          return queryClient.setQueryData([key], (prevEvent:any) =>{
+            return prevEvent?.push(data)}
             )}}
   )
 return {mutate, isLoading, isError, isSuccess};
@@ -60,7 +59,7 @@ export  function useDeleteEventSubSubCategory( ) {
 
   const {mutate, isLoading, isError, isSuccess}= useMutation((id:string)=>{
         return deleteSubSubcategory(id)},{onSuccess: (data,categoryDel)=>{
-          queryClient.setQueryData([key], (prev:any)=>{
+         return  queryClient.setQueryData([key], (prev:any)=>{
            prev?.map((dat)=>{
               if(dat._id===categoryDel){
                return dat.status=!dat.status

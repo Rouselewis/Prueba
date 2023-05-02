@@ -27,7 +27,7 @@ const EventSubsubcategory = () => {
     const buttonBread =  { text: tb('add_event_subsubcategory'), href: '/panel/admin/event/subsubcategory/create' }
 
     const {isError,isLoading,data}=useSubsubCategories()
-    console.log('subsubcategory',data)
+    
     let dataTableE = [];
     data?.map((item) => {
         let dataIn = {

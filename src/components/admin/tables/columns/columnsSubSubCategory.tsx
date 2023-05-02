@@ -50,6 +50,7 @@ export function columnsCategory(category: string) {
       color={currentColor} 
       status={props.row.original.status}  
       id={props.row.original.id} 
+      isSuccess={isSuccess}
       changeStatus={mutate}/>,
     }),
     columnHelper.accessor('options', {

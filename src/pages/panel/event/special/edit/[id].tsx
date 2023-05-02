@@ -25,6 +25,9 @@ import Image from 'next/image';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { useMe } from '@/hooks/user/user';
 import { useRouter } from 'next/router';
+import { ImageURL } from '@/helpers/imageURL';
+import { ToastContainer, toast } from 'react-toastify';
+import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 
 
 type locationTypes={
@@ -49,6 +52,27 @@ const EventCreateSpecialCategory = () => {
     const {mutate, isLoading, isError, isSuccess}= useUpdateEventSpecialCategory()
     const user=useMe()
     const{query}=useRouter()
+    const toastMsj=()=>{
+    if( isSuccess){
+           
+        toast.success(' created :)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success create',
+                text:'This is a success message '
+            }
+        } ) 
+    }else if(isError){
+        toast.error(' Error, NO created :(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error create',
+                text:'This is a error message  ' 
+            }
+        } )
+    
+    }
+    }
     
     const methods = useForm<createEventSpecialCategory>();
  //input file config   
@@ -81,7 +105,7 @@ const EventCreateSpecialCategory = () => {
     const handleSelectFile=(e)=>{
                const file=e.target.files[0]
                setUpload(file.name)
-               methods.setValue('header_img', file.name)
+               methods.setValue('header_img', ImageURL(file.name))
                setHeader_event(file)
        }
        
@@ -89,7 +113,7 @@ const EventCreateSpecialCategory = () => {
       
             const files=e.target.files[0]
             setUpload2(files.name)
-            methods.setValue('event_img', files.name )  
+            methods.setValue('event_img', ImageURL(files.name) )  
             setEvent_img(files)
             
     };
@@ -158,23 +182,37 @@ const EventCreateSpecialCategory = () => {
     
 
 /*Lang*/
-const[lang ,setlang]=useState(0)
+/*Lang*/
+ const[category,setCategory]=useState( [{lang:'en', name:''}])
 
-const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
-    const description=methods.getValues( `category.${lang}.description`)
-    methods.setValue('description',description)
+/*Lang*/
+    const[lang ,setlang]=useState(['en'])
+    const[SelectValue ,setSelectValue]=useState('en')
+
+    const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
     const Lang=e.target.value;
-    setlang(Lang==='en'? 0: 1)
-    methods.setValue(`category.${lang}.lang`,lang===0?'en':'es')
-   
-
-}
+    setSelectValue(Lang)
+    }
+    const onAppend=()=>{
+        if(!(lang.includes(SelectValue))){
+        setlang([...lang, SelectValue])
+        setCategory([...category,{lang:SelectValue, name:''}])
+        }
+    }
+    const onDelete=(exp, index)=>{
+        if(index > 0 ){
+        setlang((e)=>e.filter((f)=>f !== exp))
+        setCategory(category.filter((e)=>e.lang!==exp))
+        }
+    }
 
 const [mapSearch,setMapSearch]=useState('')
 const search=(e)=>{
 setMapSearch(e.target.value)
 }
+const[initialDate,setinitialDate]=useState('')
 const dateInit=(e)=>{
+    setinitialDate(e.target.value)
     methods.setValue('initial_date',e.target.value )
 }
 const dateEnd=(e)=>{
@@ -186,7 +224,7 @@ console.log('value',methods.getValues())
         <>
             {/* Breadcrumb section */}
             <div>
-                <Heading breadcrumb={breadcrumb} langBread onChange={LangSelect}/>
+                <HeadingSelect breadcrumb={breadcrumb} langBread onChange={LangSelect} onAppend={onAppend}/>
             </div>
             <FormProvider {...methods}>
             <div className="flex flex-1 pt-6">
@@ -315,7 +353,7 @@ console.log('value',methods.getValues())
                                 </div>
                                 <div>
                                     <CustomLabel field="final_date" name={tc('field_final_date')}/>
-                                    <input type='date' onChange={dateEnd} min={'2023-04-26'} max={'2026-04-26'} placeholder='Selecciona Fecha final'  className={FormStyles('input')} />
+                                    <input type='date' onChange={dateEnd} min={initialDate} max={'2026-04-26'} placeholder='Selecciona Fecha final'  className={FormStyles('input')} />
                                 </div>
                             </div>
                             <div className="col-span-12 sm:col-span-4 md:col-span-4 lg:col-span-4">
@@ -376,14 +414,29 @@ console.log('value',methods.getValues())
                                     </div>
                                 </div>
                             </div>
-                            <InputSpecial index={lang }  control={methods.control}/>
+                            {
+                            lang.map((e, index)=>{
+                               return(  <InputSpecial index={index} key={index} lang={e} control={methods.control} onClick={()=>onDelete(e,index)}/>)
+                            
+                            })
+                            }
                         </div>
-
+                        <div className="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-6">
+                            <CustomLabel field="description" name='description' required />
+                            <input
+                                type="text"
+                                {...methods.register('description')}
+                                placeholder={tc("field_description")}
+                                className={FormStyles('input')}
+                            />
+                        </div>
+                        
+                        <ToastContainer/>
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit />
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>

@@ -26,9 +26,8 @@ export function useCreateEventSubcategory() {
   
   const {mutate, isLoading, isError, isSuccess}= useMutation(
     createEventSubcategory, {onSuccess: (data, event_SubCategory) => {
-     console.log(data)
-     queryClient.setQueryData([key], (prevEventSubCategory:any) =>{
-       return prevEventSubCategory.push(event_SubCategory)}
+     return queryClient.setQueryData([key], (prevEventSubCategory:any) =>{
+       return prevEventSubCategory?.push(event_SubCategory)}
      );
    },
  }); 
@@ -45,11 +44,11 @@ export function useUpdateEventSubCategory(  ) {
   const queryClient=useQueryClient();
   
 
-  const {mutate, isLoading, isError, isSuccess}= useMutation((values:{updateSubCategory_id: string, eventSubCategory:EventSubcategory})=>{
+  const {mutate, isLoading, isError, isSuccess}= useMutation((values:{updateSubCategory_id: string, eventSubCategory:FormData})=>{
         
          
       return updateEventSubcategory(values.updateSubCategory_id,values.eventSubCategory )},{onSuccess: (data,value)=>{
-          queryClient.setQueryData([key], (prev:any)=>prev.map((item)=>{
+          return queryClient.setQueryData([key], (prev:any)=>prev?.map((item)=>{
              return item._id===value.updateSubCategory_id? value.eventSubCategory:item
           }))
       }}
@@ -65,8 +64,8 @@ export function useDeleteEventSubCategory( ) {
 
   const {mutate, isLoading, isError, isSuccess}= useMutation((id:string)=>{
         return deleteEventSubcategory(id)},{onSuccess: (data,categoryDel)=>{
-          queryClient.setQueryData([key], (prev:any)=>{
-            prev.map((dat)=>{
+        return queryClient.setQueryData([key], (prev:any)=>{
+            prev?.map((dat)=>{
               if(dat._id===categoryDel){
                return dat.status=!dat.status
               }else{

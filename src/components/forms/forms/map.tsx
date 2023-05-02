@@ -13,7 +13,7 @@ type MapInterface ={
     searchAddress:string;
     center:{lat:number,lng:number};
     markerPosition:{lat:number,lng:number};
-    handleMapClick:(e:any)=>void;
+    handleMapClick?:(e:any)=>void;
 }
 
 

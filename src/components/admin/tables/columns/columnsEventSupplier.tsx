@@ -11,7 +11,7 @@ export function columnsEventSupplier() {
 
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
-  const{mutate, isLoading,isError}=useDeleteEventSupplier()
+  const{mutate, isLoading,isError,isSuccess}=useDeleteEventSupplier()
 
   return ([
     columnHelper.accessor('select', {
@@ -56,6 +56,8 @@ export function columnsEventSupplier() {
       color={currentColor} 
       status={props.row.original.status}  
       id={props.row.original.id} 
+      isSuccess={isSuccess}
+      isError={isError}
       changeStatus={mutate}/>
       ),
     }),

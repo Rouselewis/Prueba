@@ -32,12 +32,10 @@ export function useUpdateEventVenueCategory() {
     const queryClient=useQueryClient();
     
   
-    const {mutate, isLoading, isError, isSuccess}= useMutation((value:{ updateCategory_id: string, eventCategory:interfaceEventVenueCategory})=>{
+    const {mutate, isLoading, isError, isSuccess}= useMutation((value:{ updateCategory_id: string, eventCategory:FormData})=>{
           return updateEventVenueCategory(value.updateCategory_id,value.eventCategory)},{
             onSuccess:  (event_venue_category) => {
-              console.log(event_venue_category)
               return queryClient.setQueryData([key],(prev:any,data)=>prev?.map((item)=>{
-console.log(prev,data)
               return item._id===data.id ?data:item}))
             }}
       )
@@ -48,7 +46,7 @@ console.log(prev,data)
 export function useCreateEventVenueCategory() {
   const queryClient = useQueryClient();
 
-  const{mutate, isLoading, isError, isSuccess}= useMutation(async (venueCategory:interfaceEventVenueCategory)=> await createEventVenueCategory(venueCategory), {
+  const{mutate, isLoading, isError, isSuccess}= useMutation( (venueCategory:FormData)=>  createEventVenueCategory(venueCategory), {
       onSuccess: (event_venue_category) => {
       return queryClient.setQueryData([key], (prevEventCategory: any) =>{
         return prevEventCategory?.push(event_venue_category)}
@@ -72,7 +70,7 @@ export function useDeleteEventVenueCategory() {
   const {mutate, isLoading, isError, isSuccess}= useMutation((id:string)=>{
         return deleteEventVenueCategory(id)},{onSuccess: (data,categoryDel)=>{
         return queryClient.setQueryData([key], (prev:any)=>{
-             prev.map((dat)=>{
+             prev?.map((dat)=>{
               if(dat._id===categoryDel){
                return dat.status=!dat.status
               }else{

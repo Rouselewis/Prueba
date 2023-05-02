@@ -19,17 +19,12 @@ import { EventCategory } from '@/interfaces/event';
 //icon
 import {ArrowPathIcon} from '@heroicons/react/24/outline';
 /*Hooks */
-import {useMutationCreateEventCategory, useCategories} from '@/hooks/event/event_category';
+import {useCreateEventCategory, useCategories} from '@/hooks/event/event_category';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
-import { type } from 'os';
 import { toast, ToastContainer } from 'react-toastify';
 import { ImageURL } from '@/helpers/imageURL';
 
-type formInterface={
-event_category:EventCategory;
-picture:File;
-}
 
 const EventCreateCategory = () => {
     const t = useTranslations("Panel_SideBar");
@@ -39,7 +34,7 @@ const EventCreateCategory = () => {
     
 
 const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventCategory>();
-const {mutate, isLoading, isError, isSuccess}= useMutationCreateEventCategory()
+const {mutate, isLoading, isError, isSuccess}= useCreateEventCategory()
 
     const toastMsj=()=>{
     if( isSuccess){
@@ -223,7 +218,7 @@ console.log('values', getValues())
                             
                             {
                             lang.map((e, index)=>{
-                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
+                                return (<InputLang key={index} index={index}  lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
                             })
                             }
                         </div>

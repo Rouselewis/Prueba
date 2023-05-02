@@ -35,17 +35,18 @@ const EventCreateSubsubcategory = () =>  {
         { page: t('admin.event.subsubcategory'), href: '/panel/admin/event/subsubcategory' },
         { page: t('actions.create'), href: '' }
     ]
+    const{ mutate,isSuccess}=useUpdateEventCategory()
     
-    const toastSuccess=()=>{
+    const toastMsj=()=>{
+    if(isSuccess){
         toast.success('Event sub-sub-Category updated :)',{
             data:{
                 tittle:'success update',
                 text:'This is a success message '
             }
         } )
-    }
-    const toastError=(e)=>{
-        console.log(e)
+    }else{
+    
         toast.error(' Error, NO updated :(',{
             data:{
                 tittle:'error update',
@@ -53,9 +54,10 @@ const EventCreateSubsubcategory = () =>  {
             }
         } )
     }
+}
 
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
-    const{ mutate,isSuccess}=useUpdateEventCategory()
+    
     const {query,push}=useRouter()
     const locale = useLocale();
       //drop file
@@ -150,7 +152,7 @@ const EventCreateSubsubcategory = () =>  {
             } 
             
         })
-        setValue('category_id',subcategorySelectId[0]?.id)
+        setValue('category_id',subcategorySelectId[0]?.id?.id)
         const subcategory_id=subcategorySelect[0].subId
         setValue('subcategory_id',subcategory_id)
 
@@ -260,7 +262,7 @@ const EventCreateSubsubcategory = () =>  {
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit onClick={()=>isSuccess?toastSuccess:toastError(errors)}/>
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>

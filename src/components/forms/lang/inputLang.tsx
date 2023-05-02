@@ -12,20 +12,18 @@ import { useForm, SubmitHandler, UseFormRegister } from 'react-hook-form';
 export const InputLang = ({
   lang,
   onChange,
-  index,
   onClick,
-  key
+  index
 }: {
   lang?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  key?:number;
   onClick?:React.MouseEventHandler;
   index?:number;
 }) => {
   const t = useTranslations('Common_Forms');
 
   return (
-    <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+    <div  className="col-span-12 sm:col-span-6 lg:col-span-3">
       <div className="h-fit gap-x-16 gap-y-10 border-2">
         <div className="inputCoverAd relative space-y-1 px-5 pt-10 pb-10">
           <CustomLabel field="name" name={t('field_name')} />

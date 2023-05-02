@@ -63,6 +63,7 @@ const { mutate,isLoading,isError,isSuccess}=useDeleteEventCategory()
         color={currentColor}
         id={props.row.original.id} 
         status={props.row.original.status} 
+        isSuccess={isSuccess}
         changeStatus={mutate}/>
       )},
     }),

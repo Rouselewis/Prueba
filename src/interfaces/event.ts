@@ -43,6 +43,85 @@ export interface Event {
   status?: boolean;
   created_at: string;
 }
+
+export interface EventNew {
+  event_request: {
+    event_general: {
+      supplier_id: string;
+      category_id: string;
+      sub_category_id: string;
+      sub_sub_cateogry_id: string;
+      tags: string[];
+      content: {
+        name: string;
+        description: string;
+        lang: string;
+      }[];
+    };
+    event_aditional: {
+      social_media: {
+        facebook: string;
+        instagram: string;
+        twitter: string;
+      };
+      info: {
+        age_limit: number;
+        duration: string;
+        content: {
+          lang: string;
+          general: string;
+          observations: string;
+          services: string;
+          restrictions: string;
+          access_limit: string;
+        }[];
+      };
+    };
+    event_dates: {
+      dates: {
+        range: {
+          start_at: Date;
+          end_at: Date;
+        };
+      };
+      schedules: {
+        start_at: Date;
+        end_at: Date;
+        costs: {
+          cost: number;
+          lower: number;
+          high: number;
+        };
+        urls: {
+          ticket: string;
+          streaming: string;
+        };
+      }[];
+    };
+    event_direction: {
+      venue_name: string;
+      address: {
+        latitude: string;
+        longitude: string;
+        address: string;
+        address2: string;
+        city: string;
+        state: {
+          long_name: string;
+          short_name: string;
+        };
+        country: {
+          long_name: string;
+          short_name: string;
+        };
+        zipcode: string;
+      };
+    };
+  };
+  picture_web: File;
+  app_web: File;
+  flyer: File;
+}
 export interface formInterface {
 event_category:EventCategory;
 picture:File;
@@ -212,14 +291,14 @@ export interface createEventSpecialCategory {
 
 
 export interface EventSubcategory {
-  category_id: {id:string, collection: string};
+  category_id: string
   subcategory: BasicTranslate[];
   status?: boolean;
 }
 
 export interface EventSubsubcategory {
-  category_id: {};
-  subcategory_id: {};
+  category_id: string;
+  subcategory_id: string;
   sub_subcategory: string;
   picture:string;
   status?: boolean;

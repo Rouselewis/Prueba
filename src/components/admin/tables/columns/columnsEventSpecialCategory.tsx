@@ -11,7 +11,7 @@ export function columnsEventSpecialCategory() {
 
   const currentColor = CurrentColor();
   const columnHelper = createColumnHelper<any>();
-  const{mutate,isLoading,isError}=useDeleteEventSpecialCategory()
+  const{mutate,isLoading,isError,isSuccess}=useDeleteEventSpecialCategory()
 
   return ([
     columnHelper.accessor('select', {
@@ -61,6 +61,8 @@ export function columnsEventSpecialCategory() {
         color={currentColor} 
         id={props.row.original.id} 
         status={props.row.original.status} 
+        isError={isError}
+        isSuccess={isSuccess}
         changeStatus={mutate} />
       ),
     }),

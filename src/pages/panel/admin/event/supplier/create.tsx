@@ -16,6 +16,7 @@ import { LinkIcon } from '@heroicons/react/24/solid';
 import { EventSupplier } from '@/interfaces/event';
 import { useCreateEventSupplier } from '@/hooks/event/event_supplier';
 import { useRouter } from 'next/router';
+import { ToastContainer, toast } from 'react-toastify';
 
 const EventCreateSuplier = () => {
     const t = useTranslations("Panel_SideBar");
@@ -30,13 +31,30 @@ const EventCreateSuplier = () => {
     const {query,push}=useRouter()
 
     const{mutate,isError,isSuccess}=useCreateEventSupplier()
-    const { 
-        register,
-        handleSubmit,
-        setValue, 
-        formState: { errors },
-         reset,
-         getValues } = useForm<EventSupplier>();
+    const toastMsj=()=>{
+    if( isSuccess){
+           
+        toast.success(' created :)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success create',
+                text:'This is a success message '
+            }
+        } ) 
+    }else if(isError){
+        toast.error(' Error, NO created :(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error create',
+                text:'This is a error message  ' 
+            }
+        } )
+    
+    }
+    }
+    
+
+    const { register,handleSubmit,setValue, formState: { errors },reset,getValues } = useForm<EventSupplier>();
 
    console.log(getValues())
     const [initColor, setInitColor]=useState<string>('#ffffff');
@@ -44,9 +62,11 @@ const EventCreateSuplier = () => {
         setInitColor(color.hex)
         setValue('color', initColor )
     }
-
+//submit
     const onSubmit:SubmitHandler<EventSupplier>= (data:EventSupplier )=>{
-        mutate(data)
+        const formData= new FormData
+        formData.append('event_supplier', JSON.stringify(data))
+        mutate(formData)
       };
     return (
         <>
@@ -132,12 +152,14 @@ const EventCreateSuplier = () => {
                                 />
                             </div>
                         </div>
+                        
+                        <ToastContainer/>
 
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel />
-                                <CustomSubmit onClick={()=>isSuccess?push('/en/panel/admin/event/supplier'):console.log('error')}/>
+                                <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
                     </form>
