@@ -42,18 +42,18 @@ const EventCreateSubsubcategory = () => {
     const toastMsj=()=>{
     if(isSuccess){
            
-        toast.success('Event sub-sub-Category updated :)',{
+        toast.success('Event sub-sub-Category created :)',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success update',
+                tittle:'success Created',
                 text:'This is a success message '
             }
         } ) 
     }else{
-        toast.error(' Error, NO updated :(',{
+        toast.error(' Error, NO created :(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'error update',
+                tittle:'error create',
                 text:'This is a error message  ' 
             }
         } )

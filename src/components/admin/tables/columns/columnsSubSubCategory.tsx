@@ -50,6 +50,7 @@ export function columnsCategory(category: string) {
       color={currentColor} 
       status={props.row.original.status}  
       id={props.row.original.id} 
+      isError={isError}
       isSuccess={isSuccess}
       changeStatus={mutate}/>,
     }),

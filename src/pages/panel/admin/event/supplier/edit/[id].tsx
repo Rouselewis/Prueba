@@ -36,18 +36,18 @@ const EventCreateSuplier = () => {
     const toastMsj=()=>{
     if( isSuccess){
            
-        toast.success(' created :)',{
+        toast.success(' updated successfull :)',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success create',
+                tittle:'success Update',
                 text:'This is a success message '
             }
         } ) 
     }else if(isError){
-        toast.error(' Error, NO created :(',{
+        toast.error(' Error, NO Update :(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'error create',
+                tittle:'error Update',
                 text:'This is a error message  ' 
             }
         } )

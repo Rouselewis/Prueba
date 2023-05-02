@@ -54,6 +54,7 @@ export function columnsCategory(category: string) {
       status={props.row.original.status}  
       id={props.row.original.id} 
       isSuccess={isSuccess}
+      isError={isError}
       changeStatus={mutate}/>
     }),
     columnHelper.accessor('options', {

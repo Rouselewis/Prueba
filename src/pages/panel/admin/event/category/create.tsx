@@ -39,18 +39,18 @@ const {mutate, isLoading, isError, isSuccess}= useCreateEventCategory()
     const toastMsj=()=>{
     if( isSuccess){
            
-        toast.success('Event sub-sub-Category updated :)',{
+        toast.success('Event ategory Created:)',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success update',
+                tittle:'success create',
                 text:'This is a success message '
             }
         } ) 
     }else{
-        toast.error(' Error, NO updated :(',{
+        toast.error(' Error, No created:(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'error update',
+                tittle:'error create',
                 text:'This is a error message  ' 
             }
         } )

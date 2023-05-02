@@ -55,18 +55,18 @@ const EventCreateSpecialCategory = () => {
     const toastMsj=()=>{
     if( isSuccess){
            
-        toast.success(' created :)',{
+        toast.success(' update :)',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success create',
+                tittle:'success update',
                 text:'This is a success message '
             }
         } ) 
     }else if(isError){
-        toast.error(' Error, NO created :(',{
+        toast.error(' Error, NO update :(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'error create',
+                tittle:'error update',
                 text:'This is a error message  ' 
             }
         } )
@@ -181,8 +181,7 @@ const EventCreateSpecialCategory = () => {
     
     
 
-/*Lang*/
-/*Lang*/
+
  const[category,setCategory]=useState( [{lang:'en', name:''}])
 
 /*Lang*/
@@ -238,7 +237,7 @@ console.log('value',methods.getValues())
                                      const file=acceptedFiles[0]
                                      setUpload(file?.name)
                                      setHeader_event(file)
-                                     methods.setValue('header_img', file?.name)
+                                     methods.setValue('header_img', ImageURL(file?.name))
                                      
                                     
                                      
@@ -287,7 +286,7 @@ console.log('value',methods.getValues())
                             {({getRootProps,getInputProps,acceptedFiles})=>{ 
                                      const file=acceptedFiles[0]
                                      setUpload2(file?.name)
-                                     methods.setValue('event_img', file?.name)
+                                     methods.setValue('event_img', ImageURL(file?.name))
                                      setEvent_img(file)
                                          
                                     

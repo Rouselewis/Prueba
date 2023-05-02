@@ -42,7 +42,7 @@ const EventCreateSuplier = () => {
             }
         } ) 
     }else if(isError){
-        toast.error(' Error, NO created :(',{
+        toast.error(' Error, No created :(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
                 tittle:'error create',

@@ -42,7 +42,7 @@ const EventCreateVenueCategory = () => {
         toast.error(' Error, No create:(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'create error ',
+                tittle:' error, fail create ',
                 text:'This is a error message  ' 
             }
         } )
