@@ -1,15 +1,17 @@
 /** @format */
-import React, { useState,  useCallback} from 'react';
+import React, { useState, useRef,useEffect, useCallback} from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
+import axios from '@/lib/axios';
 // Helpers
 import { FormStyles } from "@/helpers";
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
-import { Heading } from '@/components/headers/admin/heading';
+import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 // Forms
 import { useForm, SubmitHandler } from "react-hook-form";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CustomCancel, CustomLabel, CustomSubmit } from '@/components/forms';
@@ -21,62 +23,58 @@ import {ArrowPathIcon} from '@heroicons/react/24/outline';
 import {useUpdateEventCategory, useReadEventCategory} from '@/hooks/event/event_category';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { toast, ToastContainer } from 'react-toastify';
 import { ImageURL } from '@/helpers/imageURL';
-import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
-type formInterface={
-event_category:EventCategory;
-picture:File;
-}
 
-const EventCreateCategory = () => {
+const EventCreateCategory = ({dataInit}) => {
+    const{query, push,locale}=useRouter()
+    console.log(dataInit)
     const t = useTranslations("Panel_SideBar");
     const tf = useTranslations("Common_Forms");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
     
 
-    const{query,push}=useRouter()
-    const{dataQuery}=useReadEventCategory(`${query.id}`)
-    const {mutate, isLoading, isError, isSuccess}= useUpdateEventCategory()
-    
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success('Event sub-sub-Category updated :)',{
+const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm({defaultValues:dataInit});
+const {mutate, isLoading, isError, isSuccess}= useUpdateEventCategory()
+console.log('afuera',isSuccess)
+
+if( isError){
+        toast.error(' Error, No updated:(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success update',
-                text:'This is a success message '
-            }
-        } ) 
-    }else{
-        toast.error(' Error, NO updated :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error update',
+                tittle:'error create',
                 text:'This is a error message  ' 
             }
         } )
+       
+}else if (isSuccess){
+        toast.success('Event category Updated:)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success create',
+                text:'This is a success message '
+            }
+        } ) 
+        
+         push(`/${locale}/panel/admin/event/category`)
     
-    }
-    }
-
+}
     
-    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventCategory>();
 
     //drop file
     const [upload, setUpload ]=useState('');
     const[url,setUrl]=useState('')
-    const[uploadImg,setUploadImg]=useState<File>()
+    const [fileUpload,SetFileUpload]=useState()
    
 
     const onDrop=useCallback((acceptedFile)=>{
     const file= acceptedFile[0]
         setUpload(file.name)
-        setUploadImg(file)
-        setValue('picture', ImageURL(file.name))
+        SetFileUpload(file)
+        setValue('picture',file.name)
         const link= URL.createObjectURL(file)
         setUrl(link)
       
@@ -90,8 +88,8 @@ const EventCreateCategory = () => {
     const handleSelectFile=(e)=>{
             const file=e.target.files[0]
             setUpload(file.name)
-            setUploadImg(file)
-            setValue('picture', ImageURL(file.name))
+            SetFileUpload(file)
+            setValue('picture', file.name)
             const link= URL.createObjectURL(file)
             setUrl(link)
     }
@@ -102,35 +100,38 @@ const EventCreateCategory = () => {
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/category' },
         { page: t('admin.event.category'), href: '/panel/admin/event/category' },
-        { page: t('actions.edit'), href: '' }
+        { page: t('actions.update'), href: '' }
     ];
+    
 
     
 
 
 /*input color config*/
-    const [initColor, setInitColor]=useState<string>('#ffffff');
+    const [initColor, setInitColor]=useState<string>(dataInit.color);
     const  onChangeColor=(color:any)=>{ 
         setInitColor(color.hex)
         setValue('color', initColor )
     }
 
 /*submit form*/ 
-    const onSubmit:SubmitHandler<EventCategory >= (data:EventCategory )=>{
-        const formData=new FormData
-        formData.append('event_category',JSON.stringify(data))
-        formData.append('picture', uploadImg)
-    const dataUpdate={id:`${query.id}`,category: formData }
-    
-      mutate(dataUpdate)
+    const onSubmit:SubmitHandler<EventCategory>= (data:EventCategory)=>{
+        const form=new FormData
+        form.append("event_category",JSON.stringify(data))
+        if(fileUpload){
+        form.append("picture",fileUpload)
+        }
+        
+       
+      mutate({id:`${query.id}`,category:form})
     };
    
-
     
-    const[category,setCategory]=useState( [{lang:'en', name:''}])
+    
+    const[category,setCategory]=useState( dataInit.category)
 
 /*Lang*/
-    const[lang ,setlang]=useState(['en'])
+    const[lang ,setlang]=useState(dataInit.category.map((e)=>e.lang))
     const[SelectValue ,setSelectValue]=useState('en')
 
     const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
@@ -156,21 +157,24 @@ const EventCreateCategory = () => {
     if(category.find((e)=>e.lang===id)){
 
         category.find((e)=>e.lang===id).name=Name
+        setValue('category', category)
         
     }else{
         setCategory([...category, {lang:id,name:Name}])
+        setValue('category', category)
     }
     
    
     
    
 } 
-setValue('category', category)
+
+console.log('values', getValues())
     return (
         <>
             {/* Breadcrumb section */}
             <div>
-                <Heading breadcrumb={breadcrumb} langBread onChange={LangSelect}/>
+                <HeadingSelect breadcrumb={breadcrumb} langBread onChange={LangSelect} onAppend={onAppend}/>
             </div>
             <div className="flex flex-1 pt-6">
                 <div className="w-screen min-h-0 overflow-hidden">
@@ -180,20 +184,8 @@ setValue('category', category)
                                 <CustomLabel field="icon-upload" name={tc('field_icon')} required />
                                 <div {...getRootProps()} className="mt-2 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                                     <div className="space-y-1 text-center">
-                                        {upload===''?<svg
-                                            className="mx-auto h-12 w-12 text-gray-400"
-                                            stroke="currentColor"
-                                            fill="none"
-                                            viewBox="0 0 48 48"
-                                            aria-hidden="true"
-                                        >
-                                            <path
-                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>:
+                                        {upload===''?<Image src={ImageURL(dataInit.picture)} alt='Event image' className="mx-auto" width={70} height={60}></Image>
+                                            :
                                         <Image src={url} alt='Event image' className="mx-auto" width={70} height={60}></Image>}
                                         <div className="flex text-sm text-gray-600 justify-center">
                                             <label
@@ -218,20 +210,19 @@ setValue('category', category)
                                 color={initColor}
                                 />
                             </div>
-                             {
+                            
+                            {
                             lang.map((e, index)=>{
-                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
+                                return (<InputLang key={index} index={index}  lang={e} onChange={handleName} onClick={()=>onDelete(e,index)} category={dataInit.category}/>)
                             })
                             }
                         </div>
-                        
                         <ToastContainer/>
-
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/category`)}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>
@@ -251,10 +242,19 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     }
 }
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
+export async function getStaticProps({ locale,params }: GetStaticPropsContext) {
+
+    const { data } = await axios.get(`/events/categories/${params.id}`);
+
+
+    delete data.created_at
+    delete data.status
+    delete data.updated_at
+    delete data._id
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
+            dataInit:data,
         },
     };
 }

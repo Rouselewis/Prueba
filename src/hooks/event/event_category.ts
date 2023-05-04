@@ -77,9 +77,16 @@ export function useUpdateEventCategory(  ) {
         
          
       return await updateEventCategory(values.id, values.category )},{onSuccess: (data,value)=>{
-          queryClient.setQueryData([key], (prev:any)=>prev?.map((item)=>{
-             return item._id===value.id? value.category:item
-          }))
+          queryClient.setQueryData([key], (prev:any)=>{const newArray = prev?.map((item)=>{
+             if( item._id===value.id){
+                 return  data
+             }else{
+                  return item
+              }
+          })
+          return newArray
+        })
+         
       }}
   )
 return {mutate, isLoading, isError, isSuccess};

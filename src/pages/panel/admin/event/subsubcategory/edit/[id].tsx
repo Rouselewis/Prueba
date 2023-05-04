@@ -2,7 +2,8 @@
 import { useCallback, useState } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
+import axios from '@/lib/axios';
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { Heading } from '@/components/headers/admin/heading';
@@ -24,42 +25,45 @@ import { useUpdateEventCategory,useReadEventSubSubcategory} from '@/hooks/event/
 import { useRouter } from 'next/router';
 import {toast, ToastContainer}from 'react-toastify'
 
-const EventCreateSubsubcategory = () =>  {
+const EventCreateSubsubcategory = ({dataInit}) =>  {
     const t = useTranslations("Panel_SideBar");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
+    const {query,push}=useRouter()
+    const locale = useLocale();
 
     const breadcrumb = [
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/category' },
         { page: t('admin.event.subsubcategory'), href: '/panel/admin/event/subsubcategory' },
-        { page: t('actions.create'), href: '' }
+        { page: t('actions.update'), href: '' }
     ]
-    const{ mutate,isSuccess}=useUpdateEventCategory()
+    const{ mutate,isSuccess, isError}=useUpdateEventCategory()
     
     const toastMsj=()=>{
-    if(isSuccess){
+    if(isError){
+          toast.error(' Error, NO updated :(',{
+            data:{
+                tittle:'error update',
+                text:'This is a error message  ' 
+            }
+        } )
+        
+    }else{
         toast.success('Event sub-sub-Category updated :)',{
             data:{
                 tittle:'success update',
                 text:'This is a success message '
             }
         } )
-    }else{
-    
-        toast.error(' Error, NO updated :(',{
-            data:{
-                tittle:'error update',
-                text:'This is a error message  ' 
-            }
-        } )
+        push(`/${locale}/panel/admin/event/subsubcategory`)
+      
     }
 }
 
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
     
-    const {query,push}=useRouter()
-    const locale = useLocale();
+    
       //drop file
       const [upload, setUpload ]=useState('');
       const[url,setUrl]=useState('');
@@ -91,7 +95,7 @@ const EventCreateSubsubcategory = () =>  {
       
 
 //data subcategory
-    const { isError,isLoading, data}=useSubCategories();
+    const { isLoading, data}=useSubCategories();
     let dataSub=[]
     if(isLoading){
         null
@@ -261,7 +265,7 @@ const EventCreateSubsubcategory = () =>  {
                         <ToastContainer/>
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/subsubcategory`)}/>
                                 <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
@@ -282,10 +286,12 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     }
 }
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
+export async function getStaticProps({ locale,params }: GetStaticPropsContext) {
+     const { data } = await axios.get(`/events/subsubcategories/${params.id}`);
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
+            dataInit:data
         },
     };
 }

@@ -2,7 +2,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
+import axios from '@/lib/axios';
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { Heading } from '@/components/headers/admin/heading';
@@ -36,7 +37,8 @@ type locationTypes={
     types:[];
 }
 
-const EventCreateSpecialCategory = () => {
+const EventCreateSpecialCategory = ({dataInit}) => {
+    console.log(dataInit)
     const t = useTranslations("Panel_SideBar");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
@@ -46,7 +48,7 @@ const EventCreateSpecialCategory = () => {
         { page: t('admin.admin'), href: '/panel/event' },
         { page: t('event.event'), href: '/panel/event/special' },
         { page: t('event.special'), href: '/panel/event/special' },
-        { page: t('actions.edit'), href: '' }
+        { page: t('actions.update'), href: '' }
     ]
 
     const {mutate, isLoading, isError, isSuccess}= useUpdateEventSpecialCategory()
@@ -74,7 +76,7 @@ const EventCreateSpecialCategory = () => {
     }
     }
     
-    const methods = useForm<createEventSpecialCategory>();
+    const methods = useForm<createEventSpecialCategory>({defaultValues:dataInit});
  //input file config   
     const [upload, setUpload ]=useState('');
     const [upload2, setUpload2 ]=useState('');
@@ -456,10 +458,13 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     }
 }
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
+export async function getStaticProps({ locale,params }: GetStaticPropsContext) {
+    const { data } = await axios.get(`/events/specials/categories/${params.id}`);
+    
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
+            dataInit:data
         },
     };
 }

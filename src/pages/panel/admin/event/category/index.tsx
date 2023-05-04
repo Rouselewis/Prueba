@@ -11,6 +11,7 @@ import { Heading } from '@/components/headers/admin/heading';
 // Import Interface
 import { EventCategory as EventCategoryInterface } from '@/interfaces/event';
 import { useAllEventCategories, useDeleteEventCategory,useUpdateEventCategory} from '@/hooks/event/event_category';
+import { ImageURL } from '@/helpers/imageURL';
 
 
 export interface dataTable {
@@ -31,8 +32,8 @@ const  EventCategory = () => {
     data?.map((item) => {
         let dataIn = {
             id: item._id,
-            icon: item.picture,
-            category: item.category.find((obj) => obj.lang == locale)?.name,
+            icon: ImageURL(item.picture),
+            category: item.category?.find((obj) => obj.lang == locale)?.name,
             status: item.status
         }
         dataTableE.push(dataIn)  

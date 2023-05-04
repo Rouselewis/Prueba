@@ -13,12 +13,14 @@ export const InputLang = ({
   lang,
   onChange,
   onClick,
-  index
+  index,
+  category
 }: {
   lang?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onClick?:React.MouseEventHandler;
   index?:number;
+  category?:any;
 }) => {
   const t = useTranslations('Common_Forms');
 
@@ -30,6 +32,7 @@ export const InputLang = ({
           <input
             onChange={onChange}
             type="text"
+            defaultValue={category?.find((e)=>e.lang===lang).name}
             id={lang}
             autoComplete={t('field_name')}
             placeholder={t('field_name')}

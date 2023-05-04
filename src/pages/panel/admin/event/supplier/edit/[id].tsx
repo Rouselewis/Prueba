@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
+import axios from '@/lib/axios';
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { Heading } from '@/components/headers/admin/heading';
@@ -18,7 +19,7 @@ import { useUpdateEventSupplier,useReadEventSupplier } from '@/hooks/event/event
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 
-const EventCreateSuplier = () => {
+const EventCreateSuplier = ({dataInit}) => {
     const t = useTranslations("Panel_SideBar");
     const tc = useTranslations("Common_Forms");
 
@@ -184,10 +185,12 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     }
 }
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
+export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
+    const { data } = await axios.get(`/events/suppliers/${params.id}`);
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
+            dataInit:data
         },
     };
 }

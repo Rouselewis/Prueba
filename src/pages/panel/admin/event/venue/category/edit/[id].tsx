@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
+import axios from '@/lib/axios';
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { HeadingSelect } from '@/components/headers/admin/headingSelect';
@@ -16,7 +17,7 @@ import { useUpdateEventVenueCategory,useReadEventVenueCategory} from '@/hooks/ev
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 
-const EventCreateVenueCategory = () => {
+const EventCreateVenueCategory = ({dataInit}) => {
     const t = useTranslations("Panel_SideBar");
     const locale = useLocale();
     const{push,query}=useRouter()
@@ -141,10 +142,13 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     }
 }
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
+export async function getStaticProps({ locale,params }: GetStaticPropsContext) {
+
+const { data } = await axios.get(`/events/venues/categories/${params.id}`);
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
+            dataInit:data
         },
     };
 }

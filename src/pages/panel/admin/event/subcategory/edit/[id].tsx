@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
+import axios from '@/lib/axios';
 // Layout and Header
 import AdminLayout from "@/components/layout/admin";
 import { Heading } from '@/components/headers/admin/heading';
@@ -22,19 +23,18 @@ import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 
 
 
-const EventCreateSubcategory = () => {
+const EventCreateSubcategory = ({dataInit}) => {
     const {data}=useCategories()
-    const { locales, query } = useRouter();
+    const {push, query } = useRouter();
     const dataColor= CurrentColor();
     const t = useTranslations("Panel_SideBar");
     const tc = useTranslations("Common_Forms");
     const locale = useLocale();
     
-    const dataQuery=useReadEventSubcategory(`${query.id}`)
-    console.log(dataQuery?.data)
+   console.log('data', dataInit)
 
     const{mutate, isLoading, isError, isSuccess}=useUpdateEventSubCategory()
-    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventSubcategory>();
+    const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm({defaultValues:dataInit});
     const toastMsj=()=>{
     if( isSuccess){
            
@@ -44,7 +44,9 @@ const EventCreateSubcategory = () => {
                 tittle:'success Update',
                 text:'This is a success message '
             }
+           
         } ) 
+        push(`/${locale}/panel/admin/event/subcategory`)
     }else if(isError){
         toast.error(' Error, No Update :(',{
             position:toast.POSITION.TOP_RIGHT,
@@ -164,7 +166,7 @@ const EventCreateSubcategory = () => {
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/category`)}/>
                                 <CustomSubmit onClick={toastMsj}/>
                             </div>
                         </div>
@@ -185,10 +187,13 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     }
 }
 
-export async function getStaticProps({ locale }: GetStaticPropsContext) {
+export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
+    
+    const { data } = await axios.get(`/events/subcategories/${params.id} `);
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
+            dataInit:data
         },
     };
 }
