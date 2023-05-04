@@ -28,27 +28,27 @@ const EventCreateVenueCategory = () => {
     ]
     const {mutate,isLoading,isError,isSuccess}=useCreateEventVenueCategory()
     const{push}=useRouter()
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success('Event Created :)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'create success ',
-                text:'This is a success message '
-            }
-        } ) 
-    }else{
-        toast.error(' Error, No create:(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:' error, fail create ',
-                text:'This is a error message  ' 
-            }
-        } )
-    
-    }
-    }
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event venue category updated :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success Updated',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No updated :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error Updated',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
 
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm< interfaceEventVenueCategory>();
     
@@ -124,8 +124,8 @@ console.log(getValues())
                         <ToastContainer/>
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event`)} />
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

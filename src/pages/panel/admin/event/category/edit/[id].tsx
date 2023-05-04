@@ -41,27 +41,7 @@ const { register, handleSubmit,setValue, formState: { errors }, reset,getValues 
 const {mutate, isLoading, isError, isSuccess}= useUpdateEventCategory()
 console.log('afuera',isSuccess)
 
-if( isError){
-        toast.error(' Error, No updated:(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error create',
-                text:'This is a error message  ' 
-            }
-        } )
-       
-}else if (isSuccess){
-        toast.success('Event category Updated:)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'success create',
-                text:'This is a success message '
-            }
-        } ) 
-        
-         push(`/${locale}/panel/admin/event/category`)
-    
-}
+
     
 
     //drop file
@@ -113,6 +93,34 @@ if( isError){
         setInitColor(color.hex)
         setValue('color', initColor )
     }
+useEffect(()=>{
+if (isSuccess){
+    toast.success('Event category Updated:)',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'success Updated',
+                text:'This is a success message '
+            }
+         
+    } )
+    push(`/${locale}/panel/admin/event/category`)   
+}else if(isError){
+    toast.error(' Error, No updated:(',{
+            position:toast.POSITION.TOP_RIGHT,
+            data:{
+                tittle:'error Updated',
+                text:'This is a error message  ' 
+            }
+        } )
+}
+
+},[isSuccess,isError])
+
+        
+ 
+       
+     
+    
 
 /*submit form*/ 
     const onSubmit:SubmitHandler<EventCategory>= (data:EventCategory)=>{
@@ -164,9 +172,6 @@ if( isError){
         setValue('category', category)
     }
     
-   
-    
-   
 } 
 
 console.log('values', getValues())

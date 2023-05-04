@@ -32,27 +32,26 @@ const EventCreateSubcategory = () => {
     const tc = useTranslations("Common_Forms");
     const locale = useLocale();
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubcategory>();
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success(' created :)',{
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event sub category created :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success Updated',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No created:(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success create',
-                text:'This is a success message '
-            }
-        } ) 
-    }else{
-        toast.error(' Error, NO created :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error create',
+                tittle:'error Updated',
                 text:'This is a error message  ' 
             }
         } )
-    
-    }
-    }
+    }},[isSuccess, isError])
     
 
     let dataTableE=[]
@@ -159,8 +158,8 @@ const EventCreateSubcategory = () => {
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/subcategory`)} />
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

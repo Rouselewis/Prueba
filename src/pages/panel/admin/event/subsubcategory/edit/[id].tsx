@@ -40,28 +40,29 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
     ]
     const{ mutate,isSuccess, isError}=useUpdateEventCategory()
     
-    const toastMsj=()=>{
-    if(isError){
-          toast.error(' Error, NO updated :(',{
-            data:{
-                tittle:'error update',
-                text:'This is a error message  ' 
-            }
-        } )
-        
-    }else{
-        toast.success('Event sub-sub-Category updated :)',{
-            data:{
-                tittle:'success update',
-                text:'This is a success message '
-            }
-        } )
-        push(`/${locale}/panel/admin/event/subsubcategory`)
-      
-    }
-}
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event sub subcategory updated :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success Updated',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No updated :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error Updated',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
 
-    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
+    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm({defaultValue:dataInit});
     
     
       //drop file
@@ -266,7 +267,7 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
                                 <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/subsubcategory`)}/>
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

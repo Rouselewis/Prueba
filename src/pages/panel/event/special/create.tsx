@@ -45,27 +45,27 @@ const EventCreateSpecialCategory = () => {
     
     const {mutate, isLoading, isError, isSuccess}= useCreateEventSpecialCategory()
     const user=useMe()
-     const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success(' created :)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'success create',
-                text:'This is a success message '
-            }
-        } ) 
-    }else if(isError){
-        toast.error(' Error, NO created :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error create',
-                text:'This is a error message  ' 
-            }
-        } )
-    
-    }
-    }
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event Special created :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success Updated',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No created :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error Updated',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
     
     const methods = useForm<createEventSpecialCategory>();
     
@@ -426,8 +426,8 @@ console.log('value',methods.getValues())
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event`)} />
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

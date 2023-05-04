@@ -39,27 +39,27 @@ const EventCreateSubsubcategory = () => {
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
     const{ mutate,isSuccess}=useCreateEventSubSubcategory()
 
-    const toastMsj=()=>{
-    if(isSuccess){
-           
-        toast.success('Event sub-sub-Category created :)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'success Created',
-                text:'This is a success message '
-            }
-        } ) 
-    }else{
-        toast.error(' Error, NO created :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error create',
-                text:'This is a error message  ' 
-            }
-        } )
-    
-    }
-    }
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event sub sub category created :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success create',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No created :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error create',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
     const locale = useLocale();
     
       //drop file
@@ -266,8 +266,8 @@ const EventCreateSubsubcategory = () => {
                         <ToastContainer/>
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/subsubcategory`)}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

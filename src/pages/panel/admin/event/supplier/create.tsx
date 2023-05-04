@@ -21,6 +21,27 @@ import { ToastContainer, toast } from 'react-toastify';
 const EventCreateSuplier = () => {
     const t = useTranslations("Panel_SideBar");
     const tc = useTranslations("Common_Forms");
+     useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event supplier created :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success create',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No created :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error create',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
 
     const breadcrumb = [
         { page: t('admin.admin'), href: '/panel/admin' },
@@ -158,8 +179,8 @@ const EventCreateSuplier = () => {
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/supplier`)}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

@@ -27,41 +27,41 @@ const EventCreateSuplier = ({dataInit}) => {
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/supplier' },
         { page: t('admin.event.supplier'), href: '/panel/admin/event/supplier' },
-        { page: t('actions.edit'), href: '' }
+        { page: t('actions.update'), href: '' }
     ]
     const {query,push }=useRouter()
 
     const{mutate,
         isError,
         isSuccess}=useUpdateEventSupplier()
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success(' updated successfull :)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'success Update',
-                text:'This is a success message '
-            }
-        } ) 
-    }else if(isError){
-        toast.error(' Error, NO Update :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error Update',
-                text:'This is a error message  ' 
-            }
-        } )
-    
-    }
-    }
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event supplier updated :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success Updated',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/category`)   
+        }else if(isError){
+            toast.error(' Error, No updated :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error Updated',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
     const { 
         register,
         handleSubmit,
         setValue, 
         formState: { errors },
         reset,
-        getValues } = useForm<EventSupplier>();
+        getValues } = useForm({defaultValue:dataInit});
 
     const [initColor, setInitColor]=useState<string>('#ffffff');
     const  onChangeColor=(color:any)=>{ 
@@ -164,8 +164,8 @@ const EventCreateSuplier = ({dataInit}) => {
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/supplier`)}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

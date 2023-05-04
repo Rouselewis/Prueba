@@ -36,27 +36,28 @@ const EventCreateCategory = () => {
 const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm<EventCategory>();
 const {mutate, isLoading, isError, isSuccess}= useCreateEventCategory()
 
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success('Event ategory Created:)',{
+useEffect(()=>{
+if (isSuccess){
+    toast.success('Event category created :)',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'success create',
+                tittle:'success Updated',
                 text:'This is a success message '
             }
-        } ) 
-    }else{
-        toast.error(' Error, No created:(',{
+         
+    } )
+    push(`/${locale}/panel/admin/event/category`)   
+}else if(isError){
+    toast.error(' Error, No created:(',{
             position:toast.POSITION.TOP_RIGHT,
             data:{
-                tittle:'error create',
+                tittle:'error Updated',
                 text:'This is a error message  ' 
             }
         } )
-    
-    }
-    }
+}
+
+},[isSuccess,isError])
 
     //drop file
     const [upload, setUpload ]=useState('');
@@ -226,8 +227,8 @@ console.log('values', getValues())
                         {/* Buttons section */}
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event/category`)}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>

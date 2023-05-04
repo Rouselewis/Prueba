@@ -22,37 +22,37 @@ const EventCreateVenueCategory = ({dataInit}) => {
     const locale = useLocale();
     const{push,query}=useRouter()
     const name=useReadEventVenueCategory(`${query.id}`)?.data?.category?.find((obj) => obj.lang == locale)?.name
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success(' updated :)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'success update',
-                text:'This is a success message '
-            }
-        } ) 
-    }else{
-        toast.error(' Error, NO updated :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error update',
-                text:'This is a error message  ' 
-            }
-        } )
-    
-    }
-    }
+    useEffect(()=>{
+        if (isSuccess){
+            toast.success('Event venue category updated :)',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'success Updated',
+                        text:'This is a success message '
+                    }
+                
+            } )
+            push(`/${locale}/panel/admin/event/`)   
+        }else if(isError){
+            toast.error(' Error, No updated :(',{
+                    position:toast.POSITION.TOP_RIGHT,
+                    data:{
+                        tittle:'error Updated',
+                        text:'This is a error message' 
+                    }
+                } )
+        }
+    },[isSuccess,isError])
     const breadcrumb = [
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/venue' },
         { page: t('admin.event.venue'), href: '/panel/admin/event/venue' },
         { page: t('admin.event.category'), href: '/panel/admin/event/venue/category' },
-        { page: t('actions.edit')+` / ${name}`, href: '' }
+        { page: t('actions.update'), href: '' }
     ]
     const {mutate,isLoading,isError,isSuccess}= useUpdateEventVenueCategory()
     
-    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm< interfaceEventVenueCategory>();
+    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm({defaultValue:dataInit});
 
 
     const onSubmit:SubmitHandler< interfaceEventVenueCategory>= (data: interfaceEventVenueCategory)=>{
@@ -121,8 +121,8 @@ const EventCreateVenueCategory = ({dataInit}) => {
                         <ToastContainer/>
                         <div className="divide-y divide-gray-200">
                             <div className="mt-4 flex justify-end gap-x-3 py-4 px-4 sm:px-6">
-                                <CustomCancel />
-                                <CustomSubmit onClick={toastMsj}/>
+                                <CustomCancel onClick={()=>push(`/${locale}/panel/admin/event`)}/>
+                                <CustomSubmit />
                             </div>
                         </div>
                     </form>
