@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 // Table
 import { createColumnHelper } from '@tanstack/react-table';
-import { Checkbox, OptionsEvent, SwitchEvent } from './components';
+import { Checkbox, OptionsEvent, SwitchEvent ,Icon} from './components';
 // Helpers
 import { CurrentColor } from '@/helpers';
 import {useDeleteEventSubSubCategory}from '@/hooks/event/event_sub_subcategory'
@@ -36,6 +36,13 @@ export function columnsCategory(category: string) {
             }}
           />
         </div>
+      ),
+    }),
+    columnHelper.accessor('icon', {
+      id: 'icon',
+      header: () => tcc('admin.event.icon'),
+      cell: props => (
+        <Icon imageSrc={props.getValue()} />
       ),
     }),
     columnHelper.accessor('category', {

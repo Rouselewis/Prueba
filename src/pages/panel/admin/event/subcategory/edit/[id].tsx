@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
@@ -26,7 +26,6 @@ import { HeadingSelect } from '@/components/headers/admin/headingSelect';
 const EventCreateSubcategory = ({dataInit}) => {
     const {data}=useCategories()
     const {push, query } = useRouter();
-    const dataColor= CurrentColor();
     const t = useTranslations("Panel_SideBar");
     const tc = useTranslations("Common_Forms");
     const locale = useLocale();
@@ -35,7 +34,8 @@ const EventCreateSubcategory = ({dataInit}) => {
 
     const{mutate, isLoading, isError, isSuccess}=useUpdateEventSubCategory()
     const { register, handleSubmit,setValue, formState: { errors }, reset,getValues } = useForm({defaultValues:dataInit});
-   useEffect(()=>{
+   
+    useEffect(()=>{
         if (isSuccess){
             toast.success('Event sub category updated :)',{
                     position:toast.POSITION.TOP_RIGHT,
@@ -45,7 +45,7 @@ const EventCreateSubcategory = ({dataInit}) => {
                     }
                 
             } )
-            push(`/${locale}/panel/admin/event/category`)   
+            push(`/${locale}/panel/admin/event/subcategory`)   
         }else if(isError){
             toast.error(' Error, No updated :(',{
                     position:toast.POSITION.TOP_RIGHT,
@@ -70,20 +70,21 @@ const EventCreateSubcategory = ({dataInit}) => {
     const handleSelected=(e)=>{
          const id= dataTableE.find((pre)=> pre.category===e.target.value)?.id
           setValue('category_id', id )
+          
     }
 
     const breadcrumb = [
         { page: t('admin.admin'), href: '/panel/admin' },
         { page: t('admin.event.event'), href: '/panel/admin/event/subcategory' },
         { page: t('admin.event.subcategory'), href: '/panel/admin/event/subcategory' },
-        { page: t('actions.edit')  , href: '' }
+        { page: t('actions.update')  , href: '' }
         
     ]
 
-  const[category,setCategory]=useState( [{lang:'en', name:''}])
+  const[category,setCategory]=useState( dataInit.subcategory)
 
 /*Lang*/
-    const[lang ,setlang]=useState(['en'])
+    const[lang ,setlang]=useState(dataInit.subcategory?.map((e)=> e.lang))
     const[SelectValue ,setSelectValue]=useState('en')
 
     const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
@@ -115,20 +116,17 @@ const EventCreateSubcategory = ({dataInit}) => {
         setCategory([...category, {lang:id,name:Name}])
         setValue('subcategory', category)
     }
-    
    
-    
-   console.log(getValues())
 } 
+ 
 /*submit*/  
     const onSubmit:SubmitHandler<EventSubcategory >= (data:EventSubcategory)=>{
-        const formData=new FormData
-        formData.append('subcategory',JSON.stringify(data))
-      const updateData={updateSubCategory_id:`${query.id}`,eventSubCategory:formData}
-      
-        mutate(updateData)
+       
+      const updateData={updateSubCategory_id:`${query.id}`,eventSubCategory:JSON.stringify(data)}
+      mutate(updateData)
+        
     };
-
+   
     return (
         <>
             {/* Breadcrumb section */}
@@ -144,17 +142,16 @@ const EventCreateSubcategory = ({dataInit}) => {
                                 <select
                                     id="category"
                                     className={FormStyles('select')}
-                                    defaultValue={''}
                                     onChange={handleSelected}
                                 >
-                                    <option value=''>{tc('field_select_category')}</option>
-                                    {dataTableE.map((e)=>{
-                                    return(<option>{e.category}</option>)})}
+                                    <option >{dataTableE.find((e)=>e.id===dataInit.category_id)?.category}</option>
+                                    {dataTableE.map((e, i)=>{
+                                    return(<option key={i}>{e.category}</option>)})}
                                 </select>
                             </div>
                             {
-                            lang.map((e, index)=>{
-                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)}/>)
+                            lang?.map((e, index)=>{
+                                return (<InputLang key={index} index={index} lang={e} onChange={handleName} onClick={()=>onDelete(e,index)} category={dataInit.subcategory}/>)
                             })
                             }
                         </div>
@@ -186,7 +183,14 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
     
-    const { data } = await axios.get(`/events/subcategories/${params.id} `);
+    const { data } = await axios.get(`/events/subcategories/${params.id}`);
+
+    delete data._id
+    delete data.status
+    delete data.created_at
+    delete data.updated_at
+    data.category_id=data.category_id.id
+    
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,

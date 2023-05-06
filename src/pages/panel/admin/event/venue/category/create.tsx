@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 // Layout and Header
@@ -27,7 +27,7 @@ const EventCreateVenueCategory = () => {
         { page: t('actions.create'), href: '' }
     ]
     const {mutate,isLoading,isError,isSuccess}=useCreateEventVenueCategory()
-    const{push}=useRouter()
+    const{push,locale}=useRouter()
     useEffect(()=>{
         if (isSuccess){
             toast.success('Event venue category updated :)',{

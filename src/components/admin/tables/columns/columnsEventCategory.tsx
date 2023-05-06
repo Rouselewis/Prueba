@@ -51,7 +51,7 @@ const { mutate,isLoading,isError,isSuccess}=useDeleteEventCategory()
     }),
     columnHelper.accessor('category', {
       id: 'category',
-      header: () => category,
+      header: () =>  tcc('admin.event.category'),
       cell: props => props.getValue()
     }),
     columnHelper.accessor('status', {

@@ -11,6 +11,7 @@ import { Heading } from '@/components/headers/admin/heading';
 // Import Interface
 import {useSubsubCategories,useDeleteEventSubSubCategory} from '@/hooks/event/event_sub_subcategory';
 import { EventSubsubcategory as EventSubsubcategoryInterface } from '@/interfaces/event';
+import { ImageURL } from '@/helpers/imageURL';
 
 
 const EventSubsubcategory = () => {
@@ -35,7 +36,7 @@ const EventSubsubcategory = () => {
             category_id: item.category_id,
             subcategory_id: item.subcategory_id,
             category: item.sub_subcategory,
-            icon: item.picture,
+            icon: ImageURL(item.picture),
             status:item.status
             }
         dataTableE.push(dataIn)

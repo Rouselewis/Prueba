@@ -1,6 +1,6 @@
 /** @format */
 import "react-toastify/dist/ReactToastify.css";
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GetStaticPropsContext } from "next";
 import { useTranslations, useLocale} from "next-intl";
 import { SketchPicker } from 'react-color'
@@ -23,9 +23,11 @@ import Image from 'next/image';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import {ImageURL} from '@/helpers/imageURL';
 import {toast, ToastContainer}from 'react-toastify';
+import { useRouter } from "next/router";
 
 
 const EventCreateSubsubcategory = () => {
+    const { locales,push } = useRouter();
     const t = useTranslations("Panel_SideBar");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
@@ -37,7 +39,7 @@ const EventCreateSubsubcategory = () => {
         { page: t('actions.create'), href: '' }
     ]
     const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm<EventSubsubcategory>();
-    const{ mutate,isSuccess}=useCreateEventSubSubcategory()
+    const{ mutate,isSuccess,isError}=useCreateEventSubSubcategory()
 
     useEffect(()=>{
         if (isSuccess){
@@ -49,7 +51,7 @@ const EventCreateSubsubcategory = () => {
                     }
                 
             } )
-            push(`/${locale}/panel/admin/event/category`)   
+            push(`/${locale}/panel/admin/event/subsubcategory`)   
         }else if(isError){
             toast.error(' Error, No created :(',{
                     position:toast.POSITION.TOP_RIGHT,
@@ -59,6 +61,7 @@ const EventCreateSubsubcategory = () => {
                     }
                 } )
         }
+
     },[isSuccess,isError])
     const locale = useLocale();
     
@@ -95,7 +98,7 @@ const EventCreateSubsubcategory = () => {
       
 
 //data subcategory
-    const { isError,isLoading, data}=useSubCategories();
+    const { isLoading, data}=useSubCategories();
     let dataSub=[]
     if(isLoading){
         null

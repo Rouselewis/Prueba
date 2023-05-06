@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color'
@@ -20,7 +20,9 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const EventCreateSuplier = () => {
     const t = useTranslations("Panel_SideBar");
+    const { locales,push,locale } = useRouter();
     const tc = useTranslations("Common_Forms");
+    const{mutate,isError,isSuccess}=useCreateEventSupplier()
      useEffect(()=>{
         if (isSuccess){
             toast.success('Event supplier created :)',{
@@ -49,31 +51,8 @@ const EventCreateSuplier = () => {
         { page: t('admin.event.supplier'), href: '/panel/admin/event/supplier' },
         { page: t('actions.create'), href: '' }
     ]
-    const {query,push}=useRouter()
+   
 
-    const{mutate,isError,isSuccess}=useCreateEventSupplier()
-    const toastMsj=()=>{
-    if( isSuccess){
-           
-        toast.success(' created :)',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'success create',
-                text:'This is a success message '
-            }
-        } ) 
-    }else if(isError){
-        toast.error(' Error, No created :(',{
-            position:toast.POSITION.TOP_RIGHT,
-            data:{
-                tittle:'error create',
-                text:'This is a error message  ' 
-            }
-        } )
-    
-    }
-    }
-    
 
     const { register,handleSubmit,setValue, formState: { errors },reset,getValues } = useForm<EventSupplier>();
 

@@ -6,12 +6,12 @@ import {
     updateEventSubcategory,
     deleteEventSubcategory} from '@/api/event/event_subcategory'
 import { EventSubcategory } from '@/interfaces/event';
-import { useState } from 'react';
+import { Group } from 'konva/lib/Group';
 
 const key = "event_subcategory";
 
 export function useSubCategories() {
-    const{data,isLoading,isError}=useQuery([key], getEventsSubcategories)
+    const{data,isLoading,isError}=useQuery([key],()=> getEventsSubcategories())
 
    
     return {isError,isLoading,data}
@@ -44,11 +44,13 @@ export function useUpdateEventSubCategory(  ) {
   const queryClient=useQueryClient();
   
 
-  const {mutate, isLoading, isError, isSuccess}= useMutation((values:{updateSubCategory_id: string, eventSubCategory:FormData})=>{
-        
+  const {mutate, isLoading, isError, isSuccess}= useMutation((values:{updateSubCategory_id: string, eventSubCategory:string})=>{
+       
          
       return updateEventSubcategory(values.updateSubCategory_id,values.eventSubCategory )},{onSuccess: (data,value)=>{
-          return queryClient.setQueryData([key], (prev:any)=>{ const newArray = prev?.map((item)=>{
+          return queryClient.setQueryData([key], (prev:any)=>{
+            console.log(prev) 
+            const newArray = prev?.map((item)=>{
              if( item._id===value.updateSubCategory_id){
                  return  data
              }else{

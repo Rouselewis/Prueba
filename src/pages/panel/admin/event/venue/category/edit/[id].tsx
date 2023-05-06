@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
 import axios from '@/lib/axios';
@@ -21,7 +21,9 @@ const EventCreateVenueCategory = ({dataInit}) => {
     const t = useTranslations("Panel_SideBar");
     const locale = useLocale();
     const{push,query}=useRouter()
-    const name=useReadEventVenueCategory(`${query.id}`)?.data?.category?.find((obj) => obj.lang == locale)?.name
+   
+    const {mutate,isLoading,isError,isSuccess}= useUpdateEventVenueCategory()
+    
     useEffect(()=>{
         if (isSuccess){
             toast.success('Event venue category updated :)',{
@@ -50,9 +52,8 @@ const EventCreateVenueCategory = ({dataInit}) => {
         { page: t('admin.event.category'), href: '/panel/admin/event/venue/category' },
         { page: t('actions.update'), href: '' }
     ]
-    const {mutate,isLoading,isError,isSuccess}= useUpdateEventVenueCategory()
     
-    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm({defaultValue:dataInit});
+    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm({defaultValues:dataInit});
 
 
     const onSubmit:SubmitHandler< interfaceEventVenueCategory>= (data: interfaceEventVenueCategory)=>{

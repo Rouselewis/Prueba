@@ -10,7 +10,7 @@ import { EventCategory } from '@/interfaces/event';
 import { useForm, SubmitHandler, UseFormRegister } from 'react-hook-form';
 import { useState } from 'react';
 
-export const InputLang = ({
+export const EventInputLang = ({
   lang,
   onChange,
   onClick,

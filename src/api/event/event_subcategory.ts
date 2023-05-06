@@ -18,8 +18,16 @@ export const readEventSubcategory = async (id: string) => {
     return data;
 }
 
-export const updateEventSubcategory = async (id: string, subcategory:FormData) => {
-    const { data } = await axios.put(`/events/subcategories/${id}`, subcategory);
+export const updateEventSubcategory = async (id: string, subcategory:string) => {
+    const { data } = await axios.put(`/events/subcategories/${id}`, subcategory,
+    {
+       
+        headers:{
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    }
+    );
 
     return data;
 }

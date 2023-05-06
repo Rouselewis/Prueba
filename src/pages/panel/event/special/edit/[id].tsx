@@ -53,7 +53,7 @@ const EventCreateSpecialCategory = ({dataInit}) => {
 
     const {mutate, isLoading, isError, isSuccess}= useUpdateEventSpecialCategory()
     const user=useMe()
-    const{query}=useRouter()
+    const{query,locale, push}=useRouter()
     useEffect(()=>{
         if (isSuccess){
             toast.success('Event supplier updated :)',{

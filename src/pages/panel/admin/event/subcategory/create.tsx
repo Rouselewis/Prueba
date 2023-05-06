@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
@@ -26,7 +26,7 @@ import { ToastContainer, toast } from 'react-toastify';
 const EventCreateSubcategory = () => {
     const {data}=useCategories();
     const{ mutate,isLoading,isError,isSuccess}=useCreateEventSubcategory()
-    const { locales } = useRouter();
+    const { locales,push } = useRouter();
     const dataColor= CurrentColor();
     const t = useTranslations("Panel_SideBar");
     const tc = useTranslations("Common_Forms");

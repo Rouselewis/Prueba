@@ -23,6 +23,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { useMe } from '@/hooks/user/user';
 import { ToastContainer, toast } from 'react-toastify';
 import { ImageURL } from '@/helpers/imageURL';
+import { useRouter } from 'next/router';
 
 
 type locationTypes={
@@ -45,6 +46,7 @@ const EventCreateSpecialCategory = () => {
     
     const {mutate, isLoading, isError, isSuccess}= useCreateEventSpecialCategory()
     const user=useMe()
+    const {locale, push}=useRouter()
     useEffect(()=>{
         if (isSuccess){
             toast.success('Event Special created :)',{

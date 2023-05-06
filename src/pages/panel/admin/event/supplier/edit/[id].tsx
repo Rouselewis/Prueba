@@ -1,5 +1,5 @@
 /** @format */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color';
@@ -29,7 +29,7 @@ const EventCreateSuplier = ({dataInit}) => {
         { page: t('admin.event.supplier'), href: '/panel/admin/event/supplier' },
         { page: t('actions.update'), href: '' }
     ]
-    const {query,push }=useRouter()
+    const {query,push,locale }=useRouter()
 
     const{mutate,
         isError,
@@ -61,7 +61,7 @@ const EventCreateSuplier = ({dataInit}) => {
         setValue, 
         formState: { errors },
         reset,
-        getValues } = useForm({defaultValue:dataInit});
+        getValues } = useForm({defaultValues:dataInit});
 
     const [initColor, setInitColor]=useState<string>('#ffffff');
     const  onChangeColor=(color:any)=>{ 

@@ -15,7 +15,7 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CustomCancel, CustomLabel, CustomSubmit } from '@/components/forms';
-import {InputLang } from '@/components/forms/lang';
+import {EventInputLang} from '@/components/forms/lang';
 import { EventCategory } from '@/interfaces/event';
 //icon
 import {ArrowPathIcon} from '@heroicons/react/24/outline';
@@ -29,7 +29,7 @@ import { useRouter } from 'next/router';
 
 
 const EventCreateCategory = ({dataInit}) => {
-    const{query, push,locale}=useRouter()
+    const{query, push,locale, locales}=useRouter()
     console.log(dataInit)
     const t = useTranslations("Panel_SideBar");
     const tf = useTranslations("Common_Forms");
@@ -127,11 +127,15 @@ if (isSuccess){
         const form=new FormData
         form.append("event_category",JSON.stringify(data))
         if(fileUpload){
-        form.append("picture",fileUpload)
+            form.append("picture",fileUpload)
         }
         
-       
-      mutate({id:`${query.id}`,category:form})
+        try {
+            mutate({id:`${query.id}`,category:form})
+        } catch (error) {
+            console.log(error)
+        }
+      
     };
    
     
@@ -140,6 +144,7 @@ if (isSuccess){
 
 /*Lang*/
     const[lang ,setlang]=useState(dataInit.category.map((e)=>e.lang))
+    const[langRest ,setlangRest]=useState(locales)
     const[SelectValue ,setSelectValue]=useState('en')
 
     const LangSelect:React.ChangeEventHandler<HTMLSelectElement> = (e:any)=>{
@@ -149,32 +154,41 @@ if (isSuccess){
     const onAppend=()=>{
         if(!(lang.includes(SelectValue))){
         setlang([...lang, SelectValue])
+        setlangRest(langRest.filter((e)=>e!==SelectValue))
         setCategory([...category,{lang:SelectValue, name:''}])
         }
     }
     const onDelete=(exp, index)=>{
         if(index > 0 ){
         setlang((e)=>e.filter((f)=>f !== exp))
+        setlangRest([...langRest,exp])
         setCategory(category.filter((e)=>e.lang!==exp))
+        reset({category:category.filter((e)=>e.lang!==exp)})
         }
     }
+    const changeIndSelect=(e,index:number)=>{
+        const lastArray=lang.slice();
+        lastArray[index]=e.target.value;
+        setlang(lastArray)
+        const arr= category.slice()
+        arr[index].name=''
+        setCategory(arr)
+        reset({category:arr})
+       
+    }
 /*Name*/
-    const handleName:React.ChangeEventHandler<HTMLInputElement> = (e:any)=>{
+    const handleName = (e:any,index)=>{
     const Name=e.target.value;
     const id=e.target.id;
-    if(category.find((e)=>e.lang===id)){
-
-        category.find((e)=>e.lang===id).name=Name
-        setValue('category', category)
-        
-    }else{
-        setCategory([...category, {lang:id,name:Name}])
-        setValue('category', category)
+    if(lang.includes(id)){
+        const lastCate=category.slice();
+        lastCate[index].lang=id
+        lastCate[index].name=Name
+        setCategory(lastCate)
     }
-    
+   setValue('category', category)
 } 
 
-console.log('values', getValues())
     return (
         <>
             {/* Breadcrumb section */}
@@ -218,7 +232,17 @@ console.log('values', getValues())
                             
                             {
                             lang.map((e, index)=>{
-                                return (<InputLang key={index} index={index}  lang={e} onChange={handleName} onClick={()=>onDelete(e,index)} category={dataInit.category}/>)
+                                return (<EventInputLang
+                                    key={index}
+                                    index={index} 
+                                    lang={e} 
+                                    onChange={(e)=>handleName(e,index)} 
+                                    onClick={()=>onDelete(e,index)} 
+                                    category={dataInit.category}
+                                    arrayLang={langRest}
+                                    selectBoolean={locales.length>lang.length}
+                                    onlyChange={(e)=>changeIndSelect(e,index)}
+                                    />)
                             })
                             }
                         </div>
@@ -250,8 +274,6 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
 export async function getStaticProps({ locale,params }: GetStaticPropsContext) {
 
     const { data } = await axios.get(`/events/categories/${params.id}`);
-
-
     delete data.created_at
     delete data.status
     delete data.updated_at

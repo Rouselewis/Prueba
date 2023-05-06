@@ -1,5 +1,5 @@
 /** @format */
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticPropsContext } from "next";
 import { useLocale, useTranslations } from "next-intl";
 import { SketchPicker } from 'react-color';
@@ -26,6 +26,7 @@ import { useRouter } from 'next/router';
 import {toast, ToastContainer}from 'react-toastify'
 
 const EventCreateSubsubcategory = ({dataInit}) =>  {
+    console.log('data',dataInit)
     const t = useTranslations("Panel_SideBar");
     const tp = useTranslations('Panel_Profile_Request');
     const tc = useTranslations("Common_Forms");
@@ -50,7 +51,7 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
                     }
                 
             } )
-            push(`/${locale}/panel/admin/event/category`)   
+            push(`/${locale}/panel/admin/event/subsubcategory`)   
         }else if(isError){
             toast.error(' Error, No updated :(',{
                     position:toast.POSITION.TOP_RIGHT,
@@ -62,7 +63,7 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
         }
     },[isSuccess,isError])
 
-    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm({defaultValue:dataInit});
+    const { register, handleSubmit,setValue, formState: { errors }, reset, getValues } = useForm({defaultValues:dataInit});
     
     
       //drop file
@@ -74,7 +75,7 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
       const file= acceptedFile[0]
           setUpload(file.name)
           setuploadImg(file)
-          setValue('picture', ImageURL(file.name))
+          setValue('picture', file.name)
           const link= URL.createObjectURL(file)
           setUrl(link)
         
@@ -89,7 +90,7 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
               const file=e.target.files[0]
               setUpload(file.name)
               setuploadImg(file)
-              setValue('picture', ImageURL(file.name))
+              setValue('picture', file.name)
               const link= URL.createObjectURL(file)
               setUrl(link)
       }
@@ -192,7 +193,7 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
                                     className={FormStyles('select')}
                                     defaultValue={''}
                                 >
-                                    <option value=''>{tc('field_select_category')}</option>
+                                    <option className='bg-gray-300' aria-disabled> {dataTableE.find((e)=>e.id===dataInit.category_id)?.category}</option>
                                     {dataTableE.map((item, i)=>{
                                       return (<option key={i}> {item.category}</option>) })}
                                 </select>
@@ -206,30 +207,18 @@ const EventCreateSubsubcategory = ({dataInit}) =>  {
                                     className={FormStyles('select')}
                                     defaultValue={''}
                                 >
-                                    <option value=''>{tc('field_select_subcategory')}</option>
+                                    <option  >{dataSub.find((e)=>e.subId===dataInit.subcategory_id)?.category}</option>
                                     {dataSubcategory.length>=1?
                                     dataSubcategory.map((item,i)=> <option key={i}> {item.category}</option>)
-                                    :<option> Sub-categoria no asignada</option> }
+                                    :<option> not found</option> }
                                 </select>
                             </div>
                             <div className="col-span-12 sm:col-span-6 lg:col-span-6">
                                 <CustomLabel field="icon-upload" name={tc('field_icon')} required />
                                 <div {...getRootProps() }className="mt-2 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                                     <div className="space-y-1 text-center">
-                                        {upload===''?<svg
-                                            className="mx-auto h-12 w-12 text-gray-400"
-                                            stroke="currentColor"
-                                            fill="none"
-                                            viewBox="0 0 48 48"
-                                            aria-hidden="true"
-                                        >
-                                            <path
-                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>:
+                                        {upload===''?<Image src={ImageURL(dataInit.picture)} alt='Event image' className="mx-auto" width={70} height={60}></Image>
+                                        :
                                         <Image src={url} alt='Event image' className="mx-auto" width={70} height={60}></Image>}
                                         
                                         <div className="flex text-sm text-gray-600">
@@ -288,7 +277,12 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
 }
 
 export async function getStaticProps({ locale,params }: GetStaticPropsContext) {
-     const { data } = await axios.get(`/events/subsubcategories/${params.id}`);
+    const { data } = await axios.get(`/events/subsubcategories/${params.id}`);
+    delete data.updated_at
+    delete data.created_at
+    delete data._id
+    data.category_id=data.category_id.id
+    data.subcategory_id=data.subcategory_id.id
     return {
         props: {
             messages: (await import(`@/messages/${locale}.json`)).default,
